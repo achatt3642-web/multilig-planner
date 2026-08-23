@@ -50,7 +50,9 @@ const SURFACE_DISPLAY_TERMINAL_OVERLAP_TOLERANCE_MM = 2.3;
 const SURFACE_TERMINAL_VALIDATION_FRACTION = 0.35;
 const SURFACE_ROUTE_MIN_SEGMENTS = 160;
 const SURFACE_ROUTE_MAX_SEGMENTS = 2_048;
-const SURFACE_ROUTE_CACHE_LIMIT = 96;
+// Repeated handle drags produce unique routes. Keep only the most recent
+// plans so presentation meshes cannot retain hundreds of megabytes.
+const SURFACE_ROUTE_CACHE_LIMIT = 24;
 
 const GRAFT_COLORS = [
   "#f2ccd8",
@@ -62,7 +64,6 @@ const centroidByVertices = new WeakMap<object, Vec3 | null>();
 const boundsByVertices = new WeakMap<object, { min: Vec3; max: Vec3 } | null>();
 const surfaceObjectIds = new WeakMap<object, number>();
 const surfaceRouteCache = new Map<string, Vec3[]>();
-const surfaceTubeValidationCache = new Map<string, boolean>();
 const surfaceLigamentMeshCache = new Map<string, LigamentMeshGeometry>();
 let nextSurfaceObjectId = 1;
 
@@ -224,7 +225,7 @@ function surfaceRouteKey(
     surfaceObjectId(mesh.vertices as object),
     surfaceObjectId(mesh.faces as object),
   ].join(":")).sort().join("|");
-  return `surface-route-v23:${span.procedure}:${radiusMm}:${endpointKey}:${meshKey}`;
+  return `surface-route-v24:${span.procedure}:${radiusMm}:${endpointKey}:${meshKey}`;
 }
 
 function rememberSurfaceRoute(key: string, centers: Vec3[]): Vec3[] {
@@ -592,12 +593,15 @@ function surfaceRouteOutwardDirection(
   return direction;
 }
 
-function surfaceBulgeEnvelope(t: number): number {
-  // One unit-height quartic arc with zero value and slope at both attachments.
-  // Its finite, continuous endpoint curvature lets the intact circular tube
-  // leave a convex cortex promptly without adding a joined segment or a local
-  // obstacle-following kink.
-  return 16 * t ** 2 * (1 - t) ** 2;
+function surfaceBulgeEnvelope(t: number, peakT: number): number {
+  if (t <= 0 || t >= 1) return 0;
+  // Reparameterize the same unit-height quartic so its peak follows the
+  // patient-specific obstruction instead of always bowing at mid-span.
+  // Value and first derivative remain zero at both attachments, preserving a
+  // single smooth, taut arc without joined segments or local kinks.
+  const denominator = (1 - peakT) * t + peakT * (1 - t);
+  const u = denominator > 0 ? ((1 - peakT) * t) / denominator : t;
+  return 16 * u ** 2 * (1 - u) ** 2;
 }
 
 function surfaceRouteSegmentCount(
@@ -619,6 +623,7 @@ function surfaceCurveCenters(
   end: Vec3,
   exteriorDirection: Vec3,
   bulgeMm: number,
+  peakT: number,
   segmentCountOverride?: number,
 ): Vec3[] {
   const segmentCount = segmentCountOverride ?? surfaceRouteSegmentCount(
@@ -629,8 +634,50 @@ function surfaceCurveCenters(
   return Array.from({ length: segmentCount + 1 }, (_, pathIndex) => {
     const t = pathIndex / segmentCount;
     const base = quinticHermite(start, startDerivative, end, endDerivative, t);
-    return add3(base, scale3(exteriorDirection, bulgeMm * surfaceBulgeEnvelope(t)));
+    return add3(base, scale3(exteriorDirection, bulgeMm * surfaceBulgeEnvelope(t, peakT)));
   });
+}
+
+function surfaceClearanceDeficitPeakT(options: {
+  baseCenters: readonly Vec3[];
+  radiusMm: number;
+  meshes: readonly ViewerMeshPayload[];
+}): number {
+  const { baseCenters, radiusMm, meshes } = options;
+  let maximumDeficitMm = 0;
+  let weightedT = 0;
+  let totalWeight = 0;
+  baseCenters.forEach((center, index) => {
+    const t = baseCenters.length > 1 ? index / (baseCenters.length - 1) : 0.5;
+    const allowedOverlapMm = displayOverlapToleranceAt(t);
+    const samplingMarginMm = allowedOverlapMm === SURFACE_DISPLAY_OVERLAP_TOLERANCE_MM
+      ? SURFACE_ROUTE_SAMPLING_MARGIN_MM
+      : 0;
+    let pointDeficitMm = 0;
+    meshes.forEach((mesh) => {
+      if (pointDefinitelyOutsideMeshBounds(
+        center,
+        mesh,
+        radiusMm + allowedOverlapMm + samplingMarginMm,
+      )) return;
+      const contact = closestMeshSurfaceContact(center, mesh);
+      if (!contact) return;
+      pointDeficitMm = Math.max(
+        pointDeficitMm,
+        radiusMm + samplingMarginMm - allowedOverlapMm - contact.signedDistanceMm,
+      );
+    });
+    const deficitMm = Math.max(0, pointDeficitMm);
+    maximumDeficitMm = Math.max(maximumDeficitMm, deficitMm);
+    const weight = deficitMm ** 2;
+    weightedT += t * weight;
+    totalWeight += weight;
+  });
+  // Avoid moving an already-clear route in response to segmentation noise.
+  // The 40-60% bound keeps the arc globally taut on unfamiliar knees while
+  // still allowing the clearance lift to follow a proximal/distal obstacle.
+  if (maximumDeficitMm < 0.25 || totalWeight <= 1e-9) return 0.5;
+  return Math.max(0.4, Math.min(0.6, weightedT / totalWeight));
 }
 
 function displayOverlapToleranceAt(t: number): number {
@@ -719,13 +766,12 @@ function surfaceTubeCandidateValid(
  */
 function minimumGeometryDrivenBulgeMm(options: {
   atBulge: (bulgeMm: number) => Vec3[];
-  chordLengthMm: number;
   radiusMm: number;
   meshes: readonly ViewerMeshPayload[];
+  maximumBulgeMm: number;
 }): number | null {
-  const { atBulge, chordLengthMm, radiusMm, meshes } = options;
+  const { atBulge, radiusMm, meshes, maximumBulgeMm } = options;
   if (surfaceTubeCandidateValid(atBulge(0), radiusMm, meshes)) return 0;
-  const maximumBulgeMm = Math.min(40, Math.max(radiusMm * 6, chordLengthMm * 0.34));
   const coarseStepMm = Math.max(0.65, radiusMm * 0.4);
   let previous = 0;
   for (let candidate = coarseStepMm; candidate <= maximumBulgeMm + 1e-6; candidate += coarseStepMm) {
@@ -734,12 +780,24 @@ function minimumGeometryDrivenBulgeMm(options: {
       previous = boundedCandidate;
       continue;
     }
+    // Refine the first valid interval by deterministic subdivision. This does
+    // not assume that validity is globally monotone on a concave bone mask.
     let lower = previous;
     let upper = boundedCandidate;
-    for (let iteration = 0; iteration < 8; iteration += 1) {
-      const midpoint = (lower + upper) / 2;
-      if (surfaceTubeCandidateValid(atBulge(midpoint), radiusMm, meshes)) upper = midpoint;
-      else lower = midpoint;
+    for (let iteration = 0; iteration < 3; iteration += 1) {
+      const interval = (upper - lower) / 8;
+      let firstValid = upper;
+      let priorSample = lower;
+      for (let sampleIndex = 1; sampleIndex <= 8; sampleIndex += 1) {
+        const sample = lower + interval * sampleIndex;
+        if (surfaceTubeCandidateValid(atBulge(sample), radiusMm, meshes)) {
+          firstValid = sample;
+          break;
+        }
+        priorSample = sample;
+      }
+      lower = priorSample;
+      upper = firstValid;
     }
     return upper;
   }
@@ -827,6 +885,27 @@ function surfaceWrappedCenterline(
   const { controlA, controlB } = curveControls(span, start, end);
   const startDerivative = scale3(sub3(controlA, start), 3);
   const endDerivative = scale3(sub3(end, controlB), 3);
+  const chordLengthMm = distance3(start, end);
+  const measurementSegmentCount = Math.max(
+    64,
+    Math.min(384, Math.ceil(chordLengthMm / 0.5)),
+  );
+  const baseCenters = surfaceCurveCenters(
+    start,
+    startDerivative,
+    endDerivative,
+    end,
+    exteriorDirection,
+    0,
+    0.5,
+    measurementSegmentCount,
+  );
+  const peakT = surfaceClearanceDeficitPeakT({ baseCenters, radiusMm, meshes });
+  const maximumBulgeMm = Math.min(40, Math.max(radiusMm * 6, chordLengthMm * 0.34));
+  // Every candidate uses one fixed sample lattice. Otherwise increasing the
+  // bulge changes the sample locations and can make the validity test alias
+  // between apparently valid and invalid routes.
+  const validationSegmentCount = surfaceRouteSegmentCount(start, end, maximumBulgeMm);
   const atBulge = (bulgeMm: number) => surfaceCurveCenters(
     start,
     startDerivative,
@@ -834,18 +913,23 @@ function surfaceWrappedCenterline(
     end,
     exteriorDirection,
     bulgeMm,
+    peakT,
+    validationSegmentCount,
   );
-  const chordLengthMm = distance3(start, end);
   const bulgeMm = minimumGeometryDrivenBulgeMm({
     atBulge,
-    chordLengthMm,
     radiusMm,
     meshes,
+    maximumBulgeMm,
   });
   if (bulgeMm === null) return rememberSurfaceRoute(cacheKey, []);
+  const finalCenters = atBulge(bulgeMm);
+  if (!surfaceTubeCandidateValid(finalCenters, radiusMm, meshes)) {
+    return rememberSurfaceRoute(cacheKey, []);
+  }
   return rememberSurfaceRoute(
     cacheKey,
-    distinctCenterlinePoints(resamplePolylineByArcLength(atBulge(bulgeMm))),
+    distinctCenterlinePoints(resamplePolylineByArcLength(finalCenters)),
   );
 }
 
@@ -1051,109 +1135,6 @@ function surfaceFrames(
   });
 }
 
-function terminalTubeSurfaceClearsMeshes(options: {
-  span: LigamentSpan;
-  radiusMm: number;
-  centers: readonly Vec3[];
-  vertices: readonly number[][];
-  faces: readonly number[][];
-  meshes: readonly ViewerMeshPayload[];
-  startCenterIndex: number;
-  endCenterIndex: number;
-}): boolean {
-  const {
-    span,
-    radiusMm,
-    centers,
-    vertices,
-    faces,
-    meshes,
-    startCenterIndex,
-    endCenterIndex,
-  } = options;
-  const validationKey = `${surfaceRouteKey(span, radiusMm, meshes)}:constant-terminal-volume-v3`;
-  const cached = surfaceTubeValidationCache.get(validationKey);
-  if (cached !== undefined) return cached;
-
-  const lastRingIndex = centers.length - 1;
-  const terminalRingCount = Math.max(
-    1,
-    Math.ceil(lastRingIndex * SURFACE_TERMINAL_VALIDATION_FRACTION),
-  );
-  const ringVertexCount = centers.length * RADIAL_SEGMENTS;
-  const isProximalVertex = (vertexIndex: number): boolean =>
-    vertexIndex === startCenterIndex ||
-    (vertexIndex < ringVertexCount && Math.floor(vertexIndex / RADIAL_SEGMENTS) <= terminalRingCount);
-  const isDistalVertex = (vertexIndex: number): boolean =>
-    vertexIndex === endCenterIndex ||
-    (vertexIndex < ringVertexCount && Math.floor(vertexIndex / RADIAL_SEGMENTS) >= lastRingIndex - terminalRingCount);
-
-  const proximalSamples: Vec3[] = [];
-  const distalSamples: Vec3[] = [];
-  const proximalFaceSamples: Vec3[] = [];
-  const distalFaceSamples: Vec3[] = [];
-  const proximalVertexIndices = new Set<number>();
-  const distalVertexIndices = new Set<number>();
-  faces.forEach((face) => {
-    const proximal = face.some(isProximalVertex);
-    const distal = face.some(isDistalVertex);
-    if (!proximal && !distal) return;
-    const a = vertices[face[0]];
-    const b = vertices[face[1]];
-    const c = vertices[face[2]];
-    const centroid = {
-      x: (a[0] + b[0] + c[0]) / 3,
-      y: (a[1] + b[1] + c[1]) / 3,
-      z: (a[2] + b[2] + c[2]) / 3,
-    };
-    if (proximal) {
-      face.forEach((index) => proximalVertexIndices.add(index));
-      proximalFaceSamples.push(centroid);
-    }
-    if (distal) {
-      face.forEach((index) => distalVertexIndices.add(index));
-      distalFaceSamples.push(centroid);
-    }
-  });
-  proximalVertexIndices.forEach((index) => {
-    const point = vertices[index];
-    proximalSamples.push({ x: point[0], y: point[1], z: point[2] });
-  });
-  distalVertexIndices.forEach((index) => {
-    const point = vertices[index];
-    distalSamples.push({ x: point[0], y: point[1], z: point[2] });
-  });
-  proximalSamples.push(...proximalFaceSamples);
-  distalSamples.push(...distalFaceSamples);
-
-  const samplesRemainExterior = (samples: readonly Vec3[]): boolean => {
-    let maximumOverlapMm = 0;
-    for (const point of samples) {
-      for (const mesh of meshes) {
-        if (pointDefinitelyOutsideMeshBounds(point, mesh)) continue;
-        const contact = closestMeshSurfaceContact(point, mesh);
-        if (!contact) return false;
-        if (meshPointContainment(point, mesh) !== "inside") continue;
-        if (contact.distanceMm > maximumOverlapMm) {
-          maximumOverlapMm = contact.distanceMm;
-        }
-      }
-    }
-    return maximumOverlapMm <= SURFACE_DISPLAY_TERMINAL_OVERLAP_TOLERANCE_MM + 1e-6;
-  };
-  const clears = meshes.length > 0 &&
-    proximalSamples.length > 0 &&
-    distalSamples.length > 0 &&
-    samplesRemainExterior(proximalSamples) &&
-    samplesRemainExterior(distalSamples);
-  if (surfaceTubeValidationCache.size >= SURFACE_ROUTE_CACHE_LIMIT) {
-    const oldest = surfaceTubeValidationCache.keys().next().value as string | undefined;
-    if (oldest) surfaceTubeValidationCache.delete(oldest);
-  }
-  surfaceTubeValidationCache.set(validationKey, clears);
-  return clears;
-}
-
 function ligamentMesh(
   span: LigamentSpan,
   anatomyMeshes: readonly ViewerMeshPayload[],
@@ -1272,21 +1253,12 @@ function ligamentMesh(
     }
   }
 
-  if (surfaceMeshes.length && !terminalTubeSurfaceClearsMeshes({
-    span,
-    radiusMm,
-    centers,
-    vertices,
-    faces,
-    meshes: surfaceMeshes,
-    startCenterIndex,
-    endCenterIndex,
-  })) {
-    // Reject gross burial, but accept the documented sub-voxel presentation
-    // overlap instead of visually warping the graft around a faceted mask.
-    return { vertices: [], faces: [], midpoint: toTuple(span.proximal.point), fiberPaths: [], unavailableReason: "The final constant-radius tube exceeded the display-mask overlap tolerance." };
-  }
-
+  // The final centerline was already accepted by
+  // surfaceTubeCandidateValid(). For a constant-radius tube, the nearest
+  // center-to-surface distance bounds the whole circular cross-section by the
+  // triangle inequality. Re-testing every generated ring vertex and face
+  // centroid was mathematically redundant and made each small drag take
+  // several seconds on the patient mesh.
   const result = {
     vertices,
     faces,
@@ -1315,6 +1287,8 @@ export function buildReconstructedLigamentPayloads(options: {
   procedureById: Readonly<Record<string, ProcedureIdentity>>;
   anatomyMeshes: readonly ViewerMeshPayload[];
   selectedChannelId: string | null;
+  /** Omit for legacy render-all behavior; an explicit set makes solving lazy. */
+  visibleGraftVisibilityKeys?: ReadonlySet<string>;
 }): ReconstructedLigamentPayloads {
   const endpointsByProcedure = new Map<string, AttachedEndpoint[]>();
   const centroidByMeshId = new Map<string, Vec3 | null>();
@@ -1341,7 +1315,6 @@ export function buildReconstructedLigamentPayloads(options: {
   const labels: ViewerLabelPayload[] = [];
   const grafts: ReconstructedLigamentDescriptor[] = [];
   spans.forEach((span) => {
-    const mesh = ligamentMesh(span, options.anatomyMeshes);
     const id = `reconstructed-graft:${span.procedureId}:${span.bundleKey}`;
     const visibilityKey = [
       span.procedure,
@@ -1349,6 +1322,28 @@ export function buildReconstructedLigamentPayloads(options: {
       span.proximal.channel.semanticKey ?? span.proximal.channel.label,
       span.distal.channel.semanticKey ?? span.distal.channel.label,
     ].join(":");
+    if (
+      options.visibleGraftVisibilityKeys &&
+      !options.visibleGraftVisibilityKeys.has(visibilityKey)
+    ) {
+      // Preserve a cheap descriptor so the per-graft toggle remains present,
+      // but do not run the patient-surface solver until the clinician asks to
+      // see this preview.
+      grafts.push({
+        id,
+        visibilityKey,
+        procedureId: span.procedureId,
+        procedure: span.procedure,
+        bundleKey: span.bundleKey,
+        bundleRole: resolvedSpanBundleRole(span),
+        label: span.label,
+        channelIds: [span.proximal.channel.id, span.distal.channel.id],
+        rendered: false,
+        unavailableReason: null,
+      });
+      return;
+    }
+    const mesh = ligamentMesh(span, options.anatomyMeshes);
     const rendered = mesh.vertices.length > 0 && mesh.faces.length > 0;
     grafts.push({
       id,

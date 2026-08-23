@@ -613,8 +613,12 @@ export interface BuildViewerSceneOptions {
    * removes a channel from deterministic geometry generation or analysis.
    */
   visibleProcedureIdentities?: ReadonlySet<ProcedureIdentity>;
-  /** Ephemeral per-graft visibility; keys come from graft descriptors. */
-  hiddenGraftVisibilityKeys?: ReadonlySet<string>;
+  /**
+   * Ephemeral, opt-in per-graft visibility; keys come from graft descriptors.
+   * Omitting the set preserves the full-scene API, while an empty set keeps
+   * descriptors available without generating any graft display meshes.
+   */
+  visibleGraftVisibilityKeys?: ReadonlySet<string>;
   /**
    * Ephemeral, decimated anatomy meshes resolved from the local imaging asset
    * service. Full-resolution clinical assets are deliberately not persisted in
@@ -747,13 +751,10 @@ export function buildViewerScene(options: BuildViewerSceneOptions): {
     procedureById: options.procedureById,
     anatomyMeshes: meshes.filter((mesh) => mesh.layer === "bones"),
     selectedChannelId: options.selectedChannelId,
+    visibleGraftVisibilityKeys: options.visibleGraftVisibilityKeys,
   });
-  const visibleGraftIds = new Set(reconstructedLigaments.grafts
-    .filter((graft) => !options.hiddenGraftVisibilityKeys?.has(graft.visibilityKey))
-    .map((graft) => graft.id));
-  meshes.push(...reconstructedLigaments.meshes.filter((mesh) => visibleGraftIds.has(mesh.id)));
-  labels.push(...reconstructedLigaments.labels.filter((label) =>
-    visibleGraftIds.has(label.id.endsWith(":label") ? label.id.slice(0, -6) : label.id)));
+  meshes.push(...reconstructedLigaments.meshes);
+  labels.push(...reconstructedLigaments.labels);
   if (options.ghostMeshes) meshes.push(...options.ghostMeshes);
 
   const selected = options.channels.find((channel) =>

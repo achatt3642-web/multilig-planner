@@ -45,12 +45,12 @@ describe("bundled de-identified knee demo", () => {
     expect(createHash("sha256").update(planBytes).digest("hex"))
       .toBe("7a7060bc1056c8c04fa165ed9c564e1738678db291ff4db043b6bbb76eef3083");
     expect(createHash("sha256").update(workspaceBytes).digest("hex"))
-      .toBe("1fd95cfb3d219671abdc382c912d2ca3c36a0357ec704fa76348269b3ba295d9");
+      .toBe("6a96ba58dbfbf477c6f882e375e3b05af10e9d4bd8da630cf986747d4afe9b3f");
 
     expect(workspace.highlightedProcedures).toEqual(["ACL", "PCL", "MCL_POL_PMC", "ALL", "MEDIAL_ROOT"]);
     expect(workspace.focusedProcedure).toBe("ACL");
     expect(workspace.selectedChannelId).toBe("demo-channel-acl-tibia");
-    expect(workspace.hiddenGraftVisibilityKeys).toEqual([]);
+    expect(workspace.visibleGraftVisibilityKeys).toEqual([]);
     expect(workspace.stepIndex).toBe(1);
     expect(workspace.globalOpacity).toBe(1);
 

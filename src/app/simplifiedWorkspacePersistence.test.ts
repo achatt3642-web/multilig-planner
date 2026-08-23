@@ -28,7 +28,7 @@ describe("saved simplified workspace defaults", () => {
       highlightedProcedures: ["ACL", "PCL"],
       focusedProcedure: "PCL" as const,
       selectedChannelId,
-      hiddenGraftVisibilityKeys: ["ACL:single:femur:tibia"],
+      visibleGraftVisibilityKeys: ["ACL:single:femur:tibia"],
       drafts: { ACL: createEmptySimplifiedSelection("ACL") },
       stepIndex: 1,
       layerVisibility: { ...DEFAULT_LAYER_VISIBILITY, grafts: true, safety: false },
@@ -51,7 +51,7 @@ describe("saved simplified workspace defaults", () => {
       highlightedProcedures: ["MEDIAL_ROOT"],
       focusedProcedure: "MEDIAL_ROOT",
       selectedChannelId: null,
-      hiddenGraftVisibilityKeys: [],
+      visibleGraftVisibilityKeys: [],
       drafts: { MEDIAL_ROOT: medialRoot },
       stepIndex: 0,
       layerVisibility: { ...DEFAULT_LAYER_VISIBILITY },
@@ -75,14 +75,36 @@ describe("saved simplified workspace defaults", () => {
       highlightedProcedures: ["LATERAL_ROOT"],
       focusedProcedure: "LATERAL_ROOT",
       selectedChannelId: null,
-      hiddenGraftVisibilityKeys: [],
+      hiddenGraftVisibilityKeys: ["LATERAL_ROOT:posterior:tibia:tibia"],
       drafts: { LATERAL_ROOT: posteriorRoot },
       stepIndex: 0,
       layerVisibility: { ...DEFAULT_LAYER_VISIBILITY },
       globalOpacity: 1,
     }));
 
-    expect(loadSimplifiedWorkspaceDefaults(storage, plan)?.drafts.LATERAL_ROOT).toEqual(posteriorRoot);
+    const restored = loadSimplifiedWorkspaceDefaults(storage, plan);
+    expect(restored?.drafts.LATERAL_ROOT).toEqual(posteriorRoot);
+    expect(restored?.visibleGraftVisibilityKeys).toEqual([]);
+  });
+
+  it("migrates version-2 inverse graft visibility to previews off", () => {
+    const plan = createSyntheticDemoCase();
+    const storage = memoryStorage();
+    storage.setItem(SIMPLIFIED_WORKSPACE_KEY, JSON.stringify({
+      format: "multilig-simplified-workspace",
+      version: 2,
+      planId: plan.id,
+      highlightedProcedures: ["ACL"],
+      focusedProcedure: "ACL",
+      selectedChannelId: null,
+      hiddenGraftVisibilityKeys: [],
+      drafts: {},
+      stepIndex: 0,
+      layerVisibility: { ...DEFAULT_LAYER_VISIBILITY },
+      globalOpacity: 1,
+    }));
+
+    expect(loadSimplifiedWorkspaceDefaults(storage, plan)?.visibleGraftVisibilityKeys).toEqual([]);
   });
 
   it("drops stale channels and invalid procedure values without touching the plan", () => {
@@ -92,7 +114,7 @@ describe("saved simplified workspace defaults", () => {
       highlightedProcedures: ["ACL", "CUSTOM" as "ACL"],
       focusedProcedure: "CUSTOM" as "ACL",
       selectedChannelId: "missing-channel",
-      hiddenGraftVisibilityKeys: ["MCL_POL_PMC:single:femur:tibia", "", "MCL_POL_PMC:single:femur:tibia"],
+      visibleGraftVisibilityKeys: ["MCL_POL_PMC:single:femur:tibia", "", "MCL_POL_PMC:single:femur:tibia"],
       drafts: {},
       stepIndex: -2,
       layerVisibility: { ...DEFAULT_LAYER_VISIBILITY },
@@ -101,7 +123,7 @@ describe("saved simplified workspace defaults", () => {
     expect(defaults.highlightedProcedures).toEqual(["ACL"]);
     expect(defaults.focusedProcedure).toBe("ACL");
     expect(defaults.selectedChannelId).toBeNull();
-    expect(defaults.hiddenGraftVisibilityKeys).toEqual(["MCL_POL_PMC:single:femur:tibia"]);
+    expect(defaults.visibleGraftVisibilityKeys).toEqual(["MCL_POL_PMC:single:femur:tibia"]);
     expect(defaults.stepIndex).toBe(0);
     expect(defaults.globalOpacity).toBe(1);
     expect(plan).toEqual(source);

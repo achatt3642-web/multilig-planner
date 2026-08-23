@@ -103,6 +103,17 @@ function dot(a: Vector3, b: Vector3): number {
   return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
+function distanceFromLine(point: Vector3, start: Vector3, end: Vector3): number {
+  const direction = normalize(subtract(end, start));
+  const offset = subtract(point, start);
+  const projection = dot(offset, direction);
+  return Math.hypot(
+    offset[0] - direction[0] * projection,
+    offset[1] - direction[1] * projection,
+    offset[2] - direction[2] * projection,
+  );
+}
+
 function pointStaysWithinDisplayOverlap(
   point: Vector3,
   bone: ViewerMeshPayload,
@@ -264,6 +275,15 @@ describe("current de-identified MRI graft-volume regression", () => {
           gapAtFraction(0.5),
           gapAtFraction(0.75),
         )).toBeLessThanOrEqual(4.25);
+      } else {
+        // The ALL obstruction on this knee is distal rather than centered.
+        // A symmetric lift produced the visibly lax loop reported in the
+        // deployed demo; the patient-derived asymmetric arc stays taut.
+        const centerlineChordLength = distance(ringCenters[0], ringCenters.at(-1)!);
+        const maximumChordDeviation = Math.max(...ringCenters.map((point) =>
+          distanceFromLine(point, ringCenters[0], ringCenters.at(-1)!)));
+        expect(pathLength / centerlineChordLength, mesh.id).toBeLessThanOrEqual(1.06);
+        expect(maximumChordDeviation / centerlineChordLength, mesh.id).toBeLessThanOrEqual(0.125);
       }
       expect(pathLength / chordLength, mesh.id).toBeLessThanOrEqual(1.16);
 

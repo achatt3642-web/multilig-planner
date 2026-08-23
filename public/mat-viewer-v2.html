@@ -3980,6 +3980,7 @@
     let multiligListenersInstalled = false;
     let multiligHoveredHandleGroup = null;
     let multiligHoveredChannelId = null;
+    let multiligAnatomySignature = null;
     const multiligMeshObjects = new Map();
     const multiligChannelLabels = new Map();
 
@@ -4005,17 +4006,16 @@
       const center = bounds.getCenter(new THREE.Vector3());
       const size = bounds.getSize(new THREE.Vector3());
       const reach = Math.max(20, size.x, size.y, size.z) * 0.7;
-      // Patient RAS +X points right. MAT's clinician-facing display convention
-      // mirrors the direct patient-space projection at the screen edges, so the
-      // M/L badges intentionally use the opposite projected edge. Unverified
-      // laterality remains visibly dashed and uses the same screen convention.
+      // Patient RAS +X points right. Place each badge on the same screen edge as
+      // its projected patient-space side. Unverified laterality remains visibly
+      // dashed and uses the same projection convention.
       const medialSign = laterality === "right" ? -1 : laterality === "left" ? 1 : 0;
       let medialOnLeft = false;
       if (medialSign !== 0) {
         const medialProjected = center.clone().add(new THREE.Vector3(medialSign * reach, 0, 0)).project(camera);
         const lateralProjected = center.clone().add(new THREE.Vector3(-medialSign * reach, 0, 0)).project(camera);
         if (Number.isFinite(medialProjected.x) && Number.isFinite(lateralProjected.x)) {
-          medialOnLeft = medialProjected.x > lateralProjected.x;
+          medialOnLeft = medialProjected.x < lateralProjected.x;
         }
       }
       for (const marker of [medial, lateral]) {
@@ -4050,10 +4050,10 @@
       return new THREE.Color(fallback);
     }
 
-    function multiligDisposeRoot(root) {
+    function multiligDisposeRoot(root, preserveChild = null) {
       if (!root) return;
-      while (root.children.length) {
-        const child = root.children[0];
+      for (const child of [...root.children]) {
+        if (typeof preserveChild === "function" && preserveChild(child)) continue;
         root.remove(child);
         child.traverse((node) => {
           node.geometry?.dispose?.();
@@ -4792,15 +4792,37 @@
 
     function multiligApplyScene(scenePayload) {
       if (!scenePayload || !multiligEnsureRoots()) return;
+      const preserveAnatomy = scenePayload.preserveAnatomy === true;
+      const requestedAnatomySignature = typeof scenePayload.anatomySignature === "string"
+        ? scenePayload.anatomySignature
+        : null;
+      if (preserveAnatomy && (
+        requestedAnatomySignature === null ||
+        requestedAnatomySignature !== multiligAnatomySignature
+      )) {
+        // Never apply a partial scene over unknown/stale anatomy. The adapter
+        // responds by resending the same revision with its complete bone payload.
+        multiligPostToParent({ type: "multilig_anatomy_refresh_required" });
+        return;
+      }
       multiligClearHoveredLabels();
       multiligActiveScene = scenePayload;
       multiligSelectedChannelId = scenePayload.selectedChannelId
         ? String(scenePayload.selectedChannelId)
         : null;
-      multiligDisposeRoot(multiligPlanningRoot);
+      multiligDisposeRoot(
+        multiligPlanningRoot,
+        preserveAnatomy
+          ? (child) => child.isMesh && String(child.userData?.multiligLayer || "") === "bones"
+          : null,
+      );
       multiligDisposeRoot(multiligHandleRoot);
       multiligDisposeRoot(multiligLabelRoot);
       multiligMeshObjects.clear();
+      for (const object of multiligPlanningRoot.children) {
+        const id = String(object.userData?.multiligId || "");
+        if (id) multiligMeshObjects.set(id, object);
+      }
       const meshes = Array.isArray(scenePayload.meshes) ? scenePayload.meshes : [];
       for (const payload of meshes) {
         const object = multiligCreateMesh(payload);
@@ -4808,6 +4830,7 @@
         multiligPlanningRoot.add(object);
         multiligMeshObjects.set(object.userData.multiligId, object);
       }
+      if (!preserveAnatomy) multiligAnatomySignature = requestedAnatomySignature;
       const lines = Array.isArray(scenePayload.lines) ? scenePayload.lines : [];
       for (const payload of lines) {
         const object = multiligCreateLine(payload);

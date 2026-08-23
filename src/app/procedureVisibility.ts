@@ -29,3 +29,15 @@ export function toggleProcedureVisibility(
     action: "hide",
   };
 }
+
+/**
+ * Removes preview requests owned by one procedure. A procedure that is hidden
+ * and later shown therefore returns with every graft preview explicitly off.
+ */
+export function withoutGraftPreviewsForProcedure(
+  visibilityKeys: readonly string[],
+  identity: ProcedureIdentity,
+): string[] {
+  const prefix = `${identity}:`;
+  return visibilityKeys.filter((key) => !key.startsWith(prefix));
+}

@@ -88,7 +88,7 @@
   "focusedProcedure": "ACL",
   "format": "multilig-simplified-workspace",
   "globalOpacity": 1,
-  "hiddenGraftVisibilityKeys": [],
+  "visibleGraftVisibilityKeys": [],
   "highlightedProcedures": [
     "ACL",
     "PCL",
@@ -115,5 +115,5 @@
   "savedAt": "2026-01-01T00:00:00.000Z",
   "selectedChannelId": "demo-channel-acl-tibia",
   "stepIndex": 1,
-  "version": 1
+  "version": 3
 }

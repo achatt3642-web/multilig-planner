@@ -131,7 +131,7 @@ export function createBundledDemoWorkspaceDefaults(plan: PlanCase): SimplifiedWo
     highlightedProcedures: fixture.highlightedProcedures,
     focusedProcedure: fixture.focusedProcedure,
     selectedChannelId: fixture.selectedChannelId,
-    hiddenGraftVisibilityKeys: fixture.hiddenGraftVisibilityKeys,
+    visibleGraftVisibilityKeys: fixture.visibleGraftVisibilityKeys,
     drafts: fixture.drafts,
     stepIndex: fixture.stepIndex,
     layerVisibility: fixture.layerVisibility,

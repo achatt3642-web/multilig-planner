@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   StandardView,
   ViewerHandleChange,
@@ -8,6 +8,7 @@ import type {
 } from "./types";
 import { parseViewerHandleChange } from "./protocol";
 import { publicAssetPath } from "../publicAssetPath";
+import { prepareViewerSceneTransport } from "./sceneTransport";
 
 interface Props {
   scene: ViewerPlanningScene;
@@ -43,11 +44,35 @@ export function MatViewerV2Adapter({
   onScreenshot,
 }: Props) {
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const sceneRef = useRef(scene);
+  const lastPostedSceneRef = useRef<ViewerPlanningScene | null>(null);
+  const anatomySignatureRef = useRef<string | null>(null);
+  const readyCallbackSentRef = useRef(false);
   const [ready, setReady] = useState(false);
+  sceneRef.current = scene;
   const title = useMemo(
     () => `MAT Viewer v2 · scene revision ${scene.revision}`,
     [scene.revision],
   );
+
+  const postPlanningScene = useCallback((nextScene: ViewerPlanningScene, forceFull = false) => {
+    const target = frameRef.current?.contentWindow;
+    if (!target) return;
+    const prepared = prepareViewerSceneTransport(
+      nextScene,
+      forceFull ? null : anatomySignatureRef.current,
+    );
+    target.postMessage(prepared.payload, window.location.origin);
+    anatomySignatureRef.current = prepared.anatomySignature;
+    lastPostedSceneRef.current = nextScene;
+  }, []);
+
+  const notifyReady = useCallback(() => {
+    setReady(true);
+    if (readyCallbackSentRef.current) return;
+    readyCallbackSentRef.current = true;
+    onReady?.();
+  }, [onReady]);
 
   useEffect(() => {
     const receive = (event: MessageEvent<ViewerMessage>) => {
@@ -57,8 +82,16 @@ export function MatViewerV2Adapter({
         !event.data
       ) return;
       if (event.data.type === "multilig_viewer_ready") {
-        setReady(true);
-        onReady?.();
+        if (lastPostedSceneRef.current !== sceneRef.current) {
+          postPlanningScene(sceneRef.current);
+        }
+        notifyReady();
+        return;
+      }
+      if (event.data.type === "multilig_anatomy_refresh_required") {
+        anatomySignatureRef.current = null;
+        lastPostedSceneRef.current = null;
+        postPlanningScene(sceneRef.current, true);
         return;
       }
       const handleChange = parseViewerHandleChange(event.data);
@@ -76,12 +109,12 @@ export function MatViewerV2Adapter({
     };
     window.addEventListener("message", receive);
     return () => window.removeEventListener("message", receive);
-  }, [onHandleChange, onReady, onScreenshot, onSelectChannel]);
+  }, [notifyReady, onHandleChange, onScreenshot, onSelectChannel, postPlanningScene]);
 
   useEffect(() => {
-    if (!ready) return;
-    frameRef.current?.contentWindow?.postMessage(scene, window.location.origin);
-  }, [ready, scene]);
+    if (!ready || lastPostedSceneRef.current === scene) return;
+    postPlanningScene(scene);
+  }, [postPlanningScene, ready, scene]);
 
   useEffect(() => {
     if (!ready || !standardView) return;
@@ -104,9 +137,10 @@ export function MatViewerV2Adapter({
   }, [ready, screenshotRequest]);
 
   const handleLoad = () => {
-    setReady(true);
-    frameRef.current?.contentWindow?.postMessage(scene, window.location.origin);
-    onReady?.();
+    if (lastPostedSceneRef.current !== sceneRef.current) {
+      postPlanningScene(sceneRef.current);
+    }
+    notifyReady();
   };
 
   const clearViewerHover = () => {

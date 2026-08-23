@@ -27,7 +27,10 @@ import {
   simplifiedTechniqueSelectionsEqual,
 } from "./app/configureSimplifiedProcedure";
 import { activeVariant, procedureLabel, updateChannel } from "./app/planOperations";
-import { toggleProcedureVisibility } from "./app/procedureVisibility";
+import {
+  toggleProcedureVisibility,
+  withoutGraftPreviewsForProcedure,
+} from "./app/procedureVisibility";
 import { graftPreviewTitle } from "./app/graftPreviewPresentation";
 import {
   SIMPLIFIED_PROCEDURES,
@@ -584,8 +587,8 @@ export default function SimplifiedApp() {
   const selectedChannel = variant.channels.find((channel) => channel.id === selectedChannelId) ?? null;
   const [focusedProcedure, setFocusedProcedure] = useState<SimplifiedProcedureIdentity | null>(initialWorkspace?.focusedProcedure ?? null);
   const [highlightedProcedures, setHighlightedProcedures] = useState<SimplifiedProcedureIdentity[]>(initialWorkspace?.highlightedProcedures ?? []);
-  const [hiddenGraftVisibilityKeys, setHiddenGraftVisibilityKeys] = useState<string[]>(
-    initialWorkspace?.hiddenGraftVisibilityKeys ?? [],
+  const [visibleGraftVisibilityKeys, setVisibleGraftVisibilityKeys] = useState<string[]>(
+    initialWorkspace?.visibleGraftVisibilityKeys ?? [],
   );
   const [drafts, setDrafts] = useState<Partial<Record<SimplifiedProcedureIdentity, SimplifiedTechniqueSelection>>>(initialWorkspace?.drafts ?? {});
   const [stepIndex, setStepIndex] = useState(initialWorkspace?.stepIndex ?? 0);
@@ -641,9 +644,9 @@ export default function SimplifiedApp() {
     () => new Set<ProcedureIdentity>(highlightedProcedures),
     [highlightedProcedures],
   );
-  const hiddenGraftVisibilitySet = useMemo<ReadonlySet<string>>(
-    () => new Set(hiddenGraftVisibilityKeys),
-    [hiddenGraftVisibilityKeys],
+  const visibleGraftVisibilitySet = useMemo<ReadonlySet<string>>(
+    () => new Set(visibleGraftVisibilityKeys),
+    [visibleGraftVisibilityKeys],
   );
   const procedureById = useMemo(
     () => Object.fromEntries(plan.procedures.map((procedure) => [procedure.id, procedure.structure])),
@@ -720,6 +723,9 @@ export default function SimplifiedApp() {
     ensureDraft(identity);
     setStepIndex(0);
     const transition = toggleProcedureVisibility(highlightedProcedures, focusedProcedure, identity);
+    if (transition.action !== "focus") {
+      setVisibleGraftVisibilityKeys((current) => withoutGraftPreviewsForProcedure(current, identity));
+    }
     setHighlightedProcedures(transition.highlighted as SimplifiedProcedureIdentity[]);
     const nextFocusedProcedure = transition.action === "hide"
       ? (transition.highlighted.at(-1) as SimplifiedProcedureIdentity | undefined) ?? null
@@ -737,26 +743,29 @@ export default function SimplifiedApp() {
     if (!identity || !SIMPLIFIED_PROCEDURES.some((item) => item.id === identity)) return;
     const simplifiedIdentity = identity as SimplifiedProcedureIdentity;
     ensureDraft(simplifiedIdentity);
+    if (!highlightedSet.has(simplifiedIdentity)) {
+      setVisibleGraftVisibilityKeys((current) => withoutGraftPreviewsForProcedure(current, simplifiedIdentity));
+    }
     setHighlightedProcedures((current) => current.includes(simplifiedIdentity) ? current : [...current, simplifiedIdentity]);
     setFocusedProcedure(simplifiedIdentity);
     setSelectedChannelId(channelId);
     const boneStepIndex = flowStepsFor(simplifiedIdentity).findIndex((step) => step.bone === channel.bone);
     if (boneStepIndex >= 0) setStepIndex(boneStepIndex);
-  }, [ensureDraft, procedureById, variant.channels]);
+  }, [ensureDraft, highlightedSet, procedureById, variant.channels]);
 
   const viewerModel = useMemo(() => buildViewerScene({
     revision: history.present.sequence,
     channels: variant.channels,
     procedureById,
     visibleProcedureIdentities: highlightedSet,
-    hiddenGraftVisibilityKeys: hiddenGraftVisibilitySet,
+    visibleGraftVisibilityKeys: visibleGraftVisibilitySet,
     selectedChannelId,
     layerVisibility,
     globalOpacity,
     anatomyMeshes: interactionAnatomyMeshes,
     laterality: plan.laterality,
     lateralityVerified: plan.lateralityVerified,
-  }), [globalOpacity, hiddenGraftVisibilitySet, highlightedSet, history.present.sequence, interactionAnatomyMeshes, layerVisibility, plan.laterality, plan.lateralityVerified, procedureById, selectedChannelId, variant.channels]);
+  }), [globalOpacity, highlightedSet, history.present.sequence, interactionAnatomyMeshes, layerVisibility, plan.laterality, plan.lateralityVerified, procedureById, selectedChannelId, variant.channels, visibleGraftVisibilitySet]);
 
   const handleViewerChange = useCallback((change: ViewerHandleChange) => {
     if (change.phase !== "commit") return;
@@ -1140,7 +1149,7 @@ export default function SimplifiedApp() {
       highlightedProcedures,
       focusedProcedure,
       selectedChannelId,
-      hiddenGraftVisibilityKeys,
+      visibleGraftVisibilityKeys,
       drafts,
       stepIndex,
       layerVisibility: { ...layerVisibility, grafts: true },
@@ -1160,7 +1169,7 @@ export default function SimplifiedApp() {
     setSelectedChannelId(workspace?.selectedChannelId ?? null);
     setFocusedProcedure(workspace?.focusedProcedure ?? null);
     setHighlightedProcedures(workspace?.highlightedProcedures ?? []);
-    setHiddenGraftVisibilityKeys(workspace?.hiddenGraftVisibilityKeys ?? []);
+    setVisibleGraftVisibilityKeys(workspace?.visibleGraftVisibilityKeys ?? []);
     setDrafts(workspace?.drafts ?? {});
     setStepIndex(workspace?.stepIndex ?? 0);
     setLayerVisibility({
@@ -1205,21 +1214,21 @@ export default function SimplifiedApp() {
           <div className="simple-left-layer-toggle" aria-label="Individual graft visibility">
             <div className="simple-graft-list-heading"><strong>Graft previews</strong><span>Toggle on/off graft preview</span></div>
             {viewerModel.grafts.length ? viewerModel.grafts.map((graft) => {
-              const visible = graft.rendered && !hiddenGraftVisibilitySet.has(graft.visibilityKey);
+              const requested = visibleGraftVisibilitySet.has(graft.visibilityKey);
+              const visible = requested && graft.rendered;
               const title = graftPreviewTitle(graft);
               return <button
                 key={graft.visibilityKey}
                 type="button"
-                className={`simple-graft-toggle ${visible ? "active" : ""}`}
-                aria-pressed={visible}
+                className={`simple-graft-toggle ${requested ? "active" : ""}`}
+                aria-pressed={requested}
                 aria-label={`${title} graft preview`}
-                disabled={!graft.rendered}
                 title={graft.unavailableReason ?? "Reconstructed ligament planning preview; not a biomechanical simulation"}
-                onClick={() => setHiddenGraftVisibilityKeys((current) => current.includes(graft.visibilityKey)
+                onClick={() => setVisibleGraftVisibilityKeys((current) => current.includes(graft.visibilityKey)
                   ? current.filter((key) => key !== graft.visibilityKey)
                   : [...current, graft.visibilityKey])}
               >
-                <span><strong>{title}</strong><small>{graft.rendered ? visible ? "Visible" : "Hidden" : "Not available"}</small></span>
+                <span><strong>{title}</strong><small>{visible ? "Visible" : requested && graft.unavailableReason ? "Not available" : "Hidden"}</small></span>
                 <i aria-hidden="true"><b /></i>
               </button>;
             }) : <div className="simple-graft-empty">A graft toggle appears after a highlighted procedure has two valid fixation attachments.</div>}

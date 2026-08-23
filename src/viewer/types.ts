@@ -108,6 +108,19 @@ export interface ViewerLabelPayload {
 export interface ViewerPlanningScene {
   type: "multilig_planning_scene";
   revision: number;
+  /**
+   * Iframe-transport hint set only by MatViewerV2Adapter. When true, `meshes`
+   * contains dynamic planning meshes only and Viewer v2 must retain the bone
+   * meshes from the preceding full scene. Clinical scene builders should leave
+   * this unset.
+   */
+  preserveAnatomy?: boolean;
+  /**
+   * Deterministic fingerprint paired with `preserveAnatomy`. Viewer v2 rejects
+   * a partial update if this does not match its currently loaded anatomy and
+   * asks the host for a full refresh.
+   */
+  anatomySignature?: string;
   meshes: ViewerMeshPayload[];
   lines: ViewerLinePayload[];
   handles: ViewerHandlePayload[];

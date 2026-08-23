@@ -11,13 +11,14 @@ export const SIMPLIFIED_WORKSPACE_KEY = "multilig-planner:simplified-workspace:v
 
 export interface SimplifiedWorkspaceDefaults {
   format: "multilig-simplified-workspace";
-  version: 2;
+  version: 3;
   planId: string;
   savedAt: string;
   highlightedProcedures: SimplifiedProcedureIdentity[];
   focusedProcedure: SimplifiedProcedureIdentity | null;
   selectedChannelId: string | null;
-  hiddenGraftVisibilityKeys: string[];
+  /** Graft previews are opt-in; absent keys never trigger display-mesh generation. */
+  visibleGraftVisibilityKeys: string[];
   drafts: Partial<Record<SimplifiedProcedureIdentity, SimplifiedTechniqueSelection>>;
   stepIndex: number;
   layerVisibility: ViewerPlanningScene["layerVisibility"];
@@ -64,7 +65,7 @@ export function createSimplifiedWorkspaceDefaults(
   );
   return {
     format: "multilig-simplified-workspace",
-    version: 2,
+    version: 3,
     planId: plan.id,
     savedAt,
     highlightedProcedures,
@@ -72,8 +73,8 @@ export function createSimplifiedWorkspaceDefaults(
     selectedChannelId: state.selectedChannelId && activeChannelIds.has(state.selectedChannelId)
       ? state.selectedChannelId
       : null,
-    hiddenGraftVisibilityKeys: [...new Set(
-      state.hiddenGraftVisibilityKeys.filter((value) => typeof value === "string" && value.length > 0),
+    visibleGraftVisibilityKeys: [...new Set(
+      state.visibleGraftVisibilityKeys.filter((value) => typeof value === "string" && value.length > 0),
     )],
     drafts: sanitizeDrafts(state.drafts),
     stepIndex: Number.isInteger(state.stepIndex) && state.stepIndex >= 0 ? state.stepIndex : 0,
@@ -102,18 +103,23 @@ export function loadSimplifiedWorkspaceDefaults(
     const parsed = JSON.parse(json) as Partial<Omit<SimplifiedWorkspaceDefaults, "version">> & { version?: number };
     if (
       parsed.format !== "multilig-simplified-workspace" ||
-      (parsed.version !== 1 && parsed.version !== 2) ||
+      (parsed.version !== 1 && parsed.version !== 2 && parsed.version !== 3) ||
       parsed.planId !== plan.id ||
       !Array.isArray(parsed.highlightedProcedures) ||
       !parsed.layerVisibility ||
       typeof parsed.layerVisibility !== "object"
     ) return null;
+    const legacyWorkspace = parsed.version === 1 || parsed.version === 2;
     return createSimplifiedWorkspaceDefaults(plan, {
       highlightedProcedures: parsed.highlightedProcedures.filter(isProcedure),
       focusedProcedure: isProcedure(parsed.focusedProcedure) ? parsed.focusedProcedure : null,
       selectedChannelId: typeof parsed.selectedChannelId === "string" ? parsed.selectedChannelId : null,
-      hiddenGraftVisibilityKeys: Array.isArray(parsed.hiddenGraftVisibilityKeys)
-        ? parsed.hiddenGraftVisibilityKeys.filter((value): value is string => typeof value === "string" && value.length > 0)
+      // Versions 1 and 2 stored an inverse hidden-list, which made an empty
+      // list mean "render every graft". Migrating those sessions to an empty
+      // opt-in list prevents an old browser session from unexpectedly enabling
+      // expensive previews on startup.
+      visibleGraftVisibilityKeys: !legacyWorkspace && Array.isArray(parsed.visibleGraftVisibilityKeys)
+        ? parsed.visibleGraftVisibilityKeys.filter((value): value is string => typeof value === "string" && value.length > 0)
         : [],
       drafts: sanitizeDrafts(parsed.drafts),
       stepIndex: typeof parsed.stepIndex === "number" ? parsed.stepIndex : 0,

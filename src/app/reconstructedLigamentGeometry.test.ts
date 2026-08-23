@@ -534,7 +534,7 @@ describe("reconstructed ligament display geometry", () => {
     expect(scene.labels?.filter((label) => label.layer === "grafts")).toHaveLength(1);
   });
 
-  it("hides one graft without hiding another highlighted procedure or changing geometry", () => {
+  it("generates only explicitly visible graft meshes while retaining every highlighted descriptor", () => {
     const plan = createSyntheticDemoCase();
     const channels = plan.variants[0].channels
       .filter((channel) => channel.procedureId === "proc-acl" || channel.procedureId === "proc-pcl")
@@ -551,13 +551,19 @@ describe("reconstructed ligament display geometry", () => {
     };
     const all = buildViewerScene(options);
     const acl = all.grafts.find((graft) => graft.procedure === "ACL")!;
+    const pcl = all.grafts.find((graft) => graft.procedure === "PCL")!;
     const pclMesh = all.scene.meshes.find((mesh) => mesh.id.startsWith("reconstructed-graft:proc-pcl"))!;
     const filtered = buildViewerScene({
       ...options,
-      hiddenGraftVisibilityKeys: new Set([acl.visibilityKey]),
+      visibleGraftVisibilityKeys: new Set([pcl.visibilityKey]),
     });
 
-    expect(filtered.grafts).toEqual(all.grafts);
+    expect(filtered.grafts.map(({ id, visibilityKey }) => ({ id, visibilityKey })))
+      .toEqual(all.grafts.map(({ id, visibilityKey }) => ({ id, visibilityKey })));
+    expect(filtered.grafts.find((graft) => graft.id === acl.id)).toMatchObject({
+      rendered: false,
+      unavailableReason: null,
+    });
     expect(filtered.scene.meshes.some((mesh) => mesh.id === acl.id)).toBe(false);
     expect(filtered.scene.labels?.some((label) => label.id === `${acl.id}:label`)).toBe(false);
     expect(filtered.scene.meshes.find((mesh) => mesh.id === pclMesh.id)?.vertices).toEqual(pclMesh.vertices);
