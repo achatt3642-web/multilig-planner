@@ -1,0 +1,39 @@
+{
+  "name": "multilig-planner",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "build:pages": "MULTILIG_PUBLIC_BASE=./ npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:segmentation": "./scripts/run_mat_nnunet_bridge.sh test",
+    "segmentation:capabilities": "./scripts/run_mat_nnunet_bridge.sh capabilities",
+    "segmentation:serve": "./scripts/run_mat_nnunet_bridge.sh serve --storage-root .multilig-local/segmentation",
+    "typecheck": "tsc -b --pretty false",
+    "lint": "eslint . --max-warnings 0 && node scripts/check_mat_viewer_syntax.mjs",
+    "check": "npm run test && npm run typecheck && npm run lint && npm run build"
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "three": "0.160.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^5.0.2",
+    "eslint": "^9.34.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.41.0",
+    "vite": "^7.1.4",
+    "vitest": "^3.2.4"
+  }
+}

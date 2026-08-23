@@ -1,0 +1,44 @@
+node_modules/
+dist/
+coverage/
+.multilig-local/
+.vite/
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+.env
+.env.local
+.env.*
+!.env.example
+
+# Credentials and signing material must never enter source control.
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Clinical source imaging, derived label maps, meshes, and case exports are
+# local-only by default. Explicitly reviewed synthetic/de-identified fixtures
+# should use a narrowly allowlisted fixture directory and file type instead.
+*.nii
+*.nii.gz
+*.dcm
+*.dicom
+DICOMDIR
+*.nrrd
+*.mha
+*.mhd
+*.seg
+*.tar.gz
+*.tgz
+*.stl
+*.obj
+*.ply
+*.vtk
+*.vtp
+clinical-data/
+patient-data/
+dicom/
+uploads/
+exports/
