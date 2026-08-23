@@ -59,6 +59,6 @@ The included fallback anatomy is synthetic and nonclinical. The connected MAT mo
 
 ## Hosted demonstration
 
-The GitHub Pages build is a static, de-identified planning demonstration. It never contains the source MRI, label maps, MRI-derived patient meshes, local plan exports, or nnUNet model files. A new browser origin therefore opens with the synthetic test anatomy. MRI import and nnUNetv2 inference remain local-only through the loopback bridge described above; the public site does not upload clinical images or provide a clinical segmentation service.
+The public demonstration is deployed separately at [multilig-planner.org](https://multilig-planner.org/). The GitHub Pages build is static and de-identified. It never contains the source MRI, label maps, MRI-derived patient meshes, local plan exports, or nnUNet model files. A new browser origin therefore opens with the synthetic test anatomy. MRI import and nnUNetv2 inference remain local-only through the loopback bridge described above; the public site does not upload clinical images or provide a clinical segmentation service.
 
 The public build is produced by `.github/workflows/pages.yml`. It uses a relative asset base so the application, Viewer v2 iframe, logo, and vendored Three.js modules work both at a GitHub Pages project URL and at a future independently approved custom domain.
