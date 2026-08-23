@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { LOCAL_PLAN_KEY, loadInitialPlan } from "../App";
+import { LOCAL_PLAN_KEY, loadBundledInitialPlan, loadInitialPlan } from "../App";
 import { BUNDLED_DEMO_PLAN_ID, createBundledDemoPlan } from "../demo/bundledDemo";
 import { serializePlan } from "../store/planHistory";
 import { createSyntheticDemoCase } from "./caseFactory";
@@ -73,5 +73,16 @@ describe("initial plan selection", () => {
     const loaded = loadInitialPlan();
     expect(loaded.id).toBe(BUNDLED_DEMO_PLAN_ID);
     expect(loaded.variants[0].channels[0].depthMm).toBe(31);
+  });
+
+  it("provides a uniform published opening plan regardless of browser-saved state", () => {
+    const canonical = createBundledDemoPlan();
+    const saved = structuredClone(canonical);
+    saved.variants[0].channels[0].depthMm = 31;
+    installStorage(serializePlan(saved));
+
+    const published = loadBundledInitialPlan();
+    expect(published.id).toBe(BUNDLED_DEMO_PLAN_ID);
+    expect(published.variants[0].channels[0].depthMm).toBe(canonical.variants[0].channels[0].depthMm);
   });
 });

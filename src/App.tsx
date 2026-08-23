@@ -551,10 +551,14 @@ export function normalizeLoadedPlan(plan: PlanCase): PlanCase {
   );
 }
 
+export function loadBundledInitialPlan(): PlanCase {
+  return normalizeLoadedPlan(createBundledDemoPlan());
+}
+
 export function loadInitialPlan(): PlanCase {
   try {
     const saved = loadPlanLocally<PlanCase>(LOCAL_PLAN_KEY);
-    if (!saved) return normalizeLoadedPlan(createBundledDemoPlan());
+    if (!saved) return loadBundledInitialPlan();
     const initial = normalizeLoadedPlan(saved);
     if (usesBundledDemoAnatomy(initial)) return initial;
     return initial.imaging.segmentationRuns.length
@@ -564,7 +568,7 @@ export function loadInitialPlan(): PlanCase {
     // Corrupt, incompatible, or unavailable browser storage must never prevent a
     // planning workspace from opening. The bundled fixture is de-identified,
     // geometry-only, unreviewed, and explicitly research/demo use only.
-    return normalizeLoadedPlan(createBundledDemoPlan());
+    return loadBundledInitialPlan();
   }
 }
 

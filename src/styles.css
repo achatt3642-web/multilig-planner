@@ -456,14 +456,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
 /* Deliberately compact reconstruction workspace. Viewer v2 remains the center. */
 .simplified-app { --cyan: var(--blue); --cyan-dim: #102b46; }
-.simple-command-bar { grid-template-columns: auto minmax(160px, 1fr) auto; }
+.simple-command-bar { grid-template-columns: auto minmax(0, 1fr); }
 .simple-command-bar .cmd-btn { border-color: var(--viewer-button-border); background: var(--viewer-button-bg); color: var(--viewer-button-color); }
 .simple-command-bar .cmd-btn:hover { border-color: #5c9bd6; background: rgba(13, 38, 78, .96); }
-.simple-case-state { min-width: 0; display: flex; align-items: center; gap: 8px; color: #82959e; font-size: 9px; }
-.simple-case-state strong { max-width: 190px; overflow: hidden; color: #d8e2e6; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-.simple-case-state span { padding: 3px 7px; border: 1px solid #3a5360; border-radius: 10px; }
-.simple-case-state span.patient { color: #9bcaf0; border-color: #315f97; background: #0b1d3a; }
-.simple-case-state span.demo { color: #d0ad6d; border-color: #66502e; background: #2d2418; }
 
 .simple-workspace {
   min-height: 0;
@@ -644,6 +639,5 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 @media (max-width: 1180px) {
   .simple-workspace { grid-template-columns: 205px minmax(380px, 1fr) 292px; }
   .simple-command-bar .brand-sub { display: none; }
-  .simple-case-state span { display: none; }
   .simple-viewer-toolbar .tool-button { padding-inline: 5px; }
 }

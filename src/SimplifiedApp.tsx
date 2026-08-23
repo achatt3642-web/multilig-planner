@@ -90,7 +90,7 @@ import {
   ImportDialog,
   LOCAL_PLAN_KEY,
   deidentifiedLocalSnapshot,
-  loadInitialPlan,
+  loadBundledInitialPlan,
   normalizeLoadedPlan,
   type SegmentationUiState,
 } from "./App";
@@ -571,12 +571,14 @@ export function TechniquePanel({
 }
 
 export default function SimplifiedApp() {
-  const [history, setHistory] = useState(() => createPlanHistory(loadInitialPlan()));
+  // The public demo always opens from the deployed, repository-owned fixture.
+  // Browser-saved sessions remain available only through the explicit reload
+  // control and can never replace the published opening configuration.
+  const [history, setHistory] = useState(() => createPlanHistory(loadBundledInitialPlan()));
   const plan = history.present.snapshot;
   const variant = activeVariant(plan);
   const initialWorkspace = useRef(
-    loadSimplifiedWorkspaceDefaults(localStorage, plan)
-      ?? (usesBundledDemoAnatomy(plan) ? createBundledDemoWorkspaceDefaults(plan) : null),
+    usesBundledDemoAnatomy(plan) ? createBundledDemoWorkspaceDefaults(plan) : null,
   ).current;
   const [selectedChannelId, setSelectedChannelId] = useState<string | null>(initialWorkspace?.selectedChannelId ?? null);
   const selectedChannel = variant.channels.find((channel) => channel.id === selectedChannelId) ?? null;
@@ -1130,10 +1132,9 @@ export default function SimplifiedApp() {
     }, "Updated imaging review");
   };
 
-  const hasPatientSegmentation = plan.imaging.segmentationRuns.length > 0;
   const hasBundledDemoAnatomy = usesBundledDemoAnatomy(plan);
 
-  const saveCurrentAsDefault = () => {
+  const saveCurrentSession = () => {
     savePlanLocally(LOCAL_PLAN_KEY, deidentifiedLocalSnapshot(plan));
     saveSimplifiedWorkspaceDefaults(localStorage, plan, {
       highlightedProcedures,
@@ -1145,12 +1146,12 @@ export default function SimplifiedApp() {
       layerVisibility: { ...layerVisibility, grafts: true },
       globalOpacity,
     });
-    showToast("Current ligament geometry and workspace settings saved as the opening default.");
+    showToast("Session saved in this browser only. Published initial parameters are unchanged.");
   };
 
-  const reloadSavedDefault = () => {
+  const reloadInitialSession = () => {
     const loaded = loadPlanLocally<PlanCase>(LOCAL_PLAN_KEY);
-    if (!loaded) { showToast("No saved default plan found."); return; }
+    if (!loaded) { showToast("No browser-saved session found."); return; }
     const normalized = normalizeLoadedPlan(loaded);
     const workspace = loadSimplifiedWorkspaceDefaults(localStorage, normalized)
       ?? (usesBundledDemoAnatomy(normalized) ? createBundledDemoWorkspaceDefaults(normalized) : null);
@@ -1171,19 +1172,18 @@ export default function SimplifiedApp() {
     setPatientAnatomyMeshes(
       normalized.imaging.segmentationRuns.length || usesBundledDemoAnatomy(normalized) ? [] : null,
     );
-    showToast("Saved default plan and Viewer settings reloaded.");
+    showToast("Browser-saved session and Viewer settings reloaded.");
   };
 
   return <div className="app-shell simplified-app">
     <header className="command-bar simple-command-bar">
       <div className="brand"><img className="brand-mark" src={publicAssetPath("multilig-planner-logo.png")} alt="" aria-hidden="true" draggable={false} /><div><div className="brand-name">Multilig Planner</div><div className="brand-sub">Clinician-directed 3D planning</div></div></div>
-      <div className="simple-case-state"><strong>{plan.deidentifiedLabel}</strong><span className={hasPatientSegmentation ? "patient" : "demo"}>{hasPatientSegmentation ? "MRI-derived bone model" : hasBundledDemoAnatomy ? "De-identified MRI-derived demo" : "Synthetic test model"}</span></div>
       <div className="toolbar-actions">
         <button className="cmd-btn icon-only" aria-label="Undo" title="Undo" disabled={!history.past.length} onClick={() => setHistory(undoPlan)}>↶</button>
         <button className="cmd-btn icon-only" aria-label="Redo" title="Redo" disabled={!history.future.length} onClick={() => setHistory(redoPlan)}>↷</button>
         <button className="cmd-btn" onClick={() => setShowImport(true)}>Import MRI</button>
-        <button className="cmd-btn" onClick={saveCurrentAsDefault}>Save default</button>
-        <button className="cmd-btn" onClick={reloadSavedDefault}>Reload default</button>
+        <button className="cmd-btn" title="Save this plan in this browser without changing the published initial parameters" onClick={saveCurrentSession}>Save session</button>
+        <button className="cmd-btn" onClick={reloadInitialSession}>Reload initial session</button>
         <button className="cmd-btn" onClick={() => downloadText("multilig-plan.deidentified.json", planToJson(deidentifiedLocalSnapshot(plan)), "application/json")}>Export JSON</button>
       </div>
     </header>
