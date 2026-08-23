@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Multilig Planner is a patient-specific planning workspace for complex multiligament knee reconstruction." />
+  <meta name="theme-color" content="#081321" />
+  <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml" />
+  <title>Multilig Planner — Multiligament Knee Reconstruction Planning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Multilig Planner home">
+        <img src="assets/logo-mark.svg" width="44" height="44" alt="" />
+        <span class="brand-copy"><strong>Multilig</strong><span>Planner</span></span>
+      </a>
+      <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation">
+        <a class="nav-link is-active" href="index.html" aria-current="page">Multiligament Knee Surgery</a>
+        <a class="nav-link" href="demo.html">Application Demo</a>
+        <span class="status-chip"><span></span> Download coming soon</span>
+      </nav>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+      <div class="content-wrap hero-grid">
+        <div class="hero-copy reveal">
+          <div class="eyebrow">Patient-specific reconstruction planning</div>
+          <h1>Plan the whole reconstruction before the first tunnel.</h1>
+          <p class="hero-lead">
+            Multilig Planner brings ligament selection, grafts, fixation, tunnel trajectories and surgical sequence into a single three-dimensional planning workspace for complex knee reconstruction.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="demo.html">Explore the application demo</a>
+            <a class="btn btn-quiet" href="#unmet-need">Why planning matters <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-note">
+            <span class="pulse" aria-hidden="true"></span>
+            In active development · Application available for download soon
+          </div>
+        </div>
+
+        <div class="hero-visual reveal" aria-label="Illustration of a multiligament knee reconstruction plan">
+          <div class="visual-toolbar">
+            <span>Sample plan</span>
+            <span class="case-tag">KD-IIIL</span>
+          </div>
+          <div class="knee-hero-stage">
+            <svg viewBox="0 0 620 600" role="img" aria-labelledby="hero-knee-title hero-knee-desc">
+              <title id="hero-knee-title">Multiligament reconstruction planning illustration</title>
+              <desc id="hero-knee-desc">A stylized distal femur and proximal tibia with ACL, PCL and lateral-sided tunnel trajectories.</desc>
+              <defs>
+                <linearGradient id="heroBone" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#e8f3ff" stop-opacity=".94"/>
+                  <stop offset=".55" stop-color="#91b8d9" stop-opacity=".72"/>
+                  <stop offset="1" stop-color="#37688f" stop-opacity=".45"/>
+                </linearGradient>
+                <linearGradient id="heroAcl" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#64d9ff"/><stop offset="1" stop-color="#2e81ff"/></linearGradient>
+                <linearGradient id="heroPcl" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd178"/><stop offset="1" stop-color="#ed8a3c"/></linearGradient>
+                <filter id="heroShadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="15" stdDeviation="18" flood-color="#020916" flood-opacity=".7"/></filter>
+                <filter id="heroGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <ellipse cx="310" cy="548" rx="210" ry="28" fill="#020a14" opacity=".46"/>
+              <g filter="url(#heroShadow)">
+                <path class="hero-bone" d="M204 38c-7 73-16 136-48 202-20 40-16 78 9 105 24 27 64 34 102 12 20-12 35-13 57 0 40 24 83 16 107-15 22-29 23-65 1-102-35-60-44-127-50-202z" fill="url(#heroBone)" stroke="#a7d2f2" stroke-width="3"/>
+                <path class="hero-bone" d="M172 392c-27 12-42 34-40 61 2 30 24 50 58 54l39 5 13 66h135l13-67 39-5c35-4 56-25 58-54 2-28-13-50-40-61-72-31-203-31-275 1z" fill="url(#heroBone)" stroke="#a7d2f2" stroke-width="3"/>
+                <path d="M165 374c75 26 217 26 292 0" fill="none" stroke="#7da9cc" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+              </g>
+
+              <g opacity=".97" filter="url(#heroGlow)">
+                <path d="M250 323 C267 365 326 392 346 449" fill="none" stroke="url(#heroAcl)" stroke-width="15" stroke-linecap="round"/>
+                <path d="M356 316 C338 357 287 396 273 452" fill="none" stroke="url(#heroPcl)" stroke-width="15" stroke-linecap="round"/>
+                <path d="M410 296 C464 326 473 393 431 468" fill="none" stroke="#b685ff" stroke-width="11" stroke-linecap="round"/>
+                <path d="M424 306 C489 343 502 402 468 472" fill="none" stroke="#ff6fa9" stroke-width="8" stroke-linecap="round"/>
+              </g>
+
+              <g class="hero-tunnel-lines" fill="none" stroke-linecap="round">
+                <path d="M250 323 L150 256" stroke="#64d9ff" stroke-width="9" stroke-dasharray="5 12"/>
+                <path d="M356 316 L432 247" stroke="#ffd178" stroke-width="9" stroke-dasharray="5 12"/>
+                <path d="M410 296 L519 247" stroke="#b685ff" stroke-width="8" stroke-dasharray="5 12"/>
+              </g>
+
+              <g class="trajectory-labels" font-family="Montserrat, sans-serif" font-size="15" font-weight="700">
+                <g transform="translate(70 221)"><rect width="94" height="38" rx="19" fill="#0d2439" stroke="#64d9ff"/><text x="47" y="25" text-anchor="middle" fill="#dff7ff">ACL 9.5</text></g>
+                <g transform="translate(420 207)"><rect width="96" height="38" rx="19" fill="#292116" stroke="#ffd178"/><text x="48" y="25" text-anchor="middle" fill="#fff1cf">PCL 10.0</text></g>
+                <g transform="translate(500 222)"><rect width="77" height="38" rx="19" fill="#211a35" stroke="#b685ff"/><text x="38.5" y="25" text-anchor="middle" fill="#eee1ff">FCL</text></g>
+              </g>
+
+              <g transform="translate(405 510)">
+                <circle r="31" fill="#10243a" stroke="#36d4a1" stroke-width="2"/>
+                <path d="M-13 0l9 10 19-22" fill="none" stroke="#54e1b1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                <text x="-48" y="52" fill="#9fc0db" font-family="Montserrat, sans-serif" font-size="13">No collision</text>
+              </g>
+            </svg>
+          </div>
+          <div class="visual-legend">
+            <span><i class="dot acl"></i>ACL</span>
+            <span><i class="dot pcl"></i>PCL</span>
+            <span><i class="dot plc"></i>PLC</span>
+            <span class="visual-readout">Minimum tunnel clearance <strong>4.2 mm</strong></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="signal-band" aria-label="Key features of multiligament knee injury">
+      <div class="content-wrap signal-grid">
+        <div class="signal-item reveal"><span class="signal-number">2+</span><span class="signal-copy"><strong>Ligament regions</strong> injured in a single knee</span></div>
+        <div class="signal-item reveal"><span class="signal-number">3D</span><span class="signal-copy"><strong>Patient-specific space</strong> for planning trajectories</span></div>
+        <div class="signal-item reveal"><span class="signal-number">1</span><span class="signal-copy"><strong>Integrated plan</strong> for tunnels, implants and sequence</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="content-wrap">
+        <div class="section-kicker">The injury</div>
+        <div class="section-heading split-heading reveal">
+          <h2>What is a multiligament knee injury?</h2>
+          <p>
+            A multiligament knee injury involves at least two of the knee's major ligament regions: the anterior cruciate ligament (ACL), posterior cruciate ligament (PCL), medial structures or posterolateral corner. Some occur with a frank knee dislocation; others reduce before evaluation and can be less obvious.
+          </p>
+        </div>
+
+        <div class="info-grid info-grid-three">
+          <article class="info-card reveal">
+            <div class="card-icon">01</div>
+            <h3>Rare, but consequential</h3>
+            <p>Published estimates place these injuries at roughly 0.02%–0.2% of knee injuries, although spontaneous reduction, variable definitions and missed diagnoses probably lead to undercounting.</p>
+          </article>
+          <article class="info-card reveal">
+            <div class="card-icon">02</div>
+            <h3>More than ligament tears</h3>
+            <p>Meniscal, cartilage, nerve and vascular injuries may accompany the ligament disruption. Initial evaluation therefore prioritizes limb perfusion and neurologic status before definitive reconstruction planning.</p>
+          </article>
+          <article class="info-card reveal">
+            <div class="card-icon">03</div>
+            <h3>Many mechanisms</h3>
+            <p>Injuries can follow high-energy trauma such as a motor-vehicle collision, lower-energy events in patients with elevated body mass, or high-demand athletic mechanisms.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tonal" id="why-surgery">
+      <div class="content-wrap two-column">
+        <div class="section-sticky reveal">
+          <div class="section-kicker">Why surgery is performed</div>
+          <h2>Restoring a stable, functional knee</h2>
+          <p class="section-intro">Treatment is individualized. Not every injured structure requires reconstruction, but persistent multiplanar instability can prevent safe function and expose the menisci, cartilage and reconstruction grafts to abnormal loading.</p>
+          <div class="clinical-note">
+            <strong>Important</strong>
+            <p>Urgent vascular or compartment management is separate from the timing of ligament reconstruction. Definitive treatment depends on the injury pattern, tissue quality, associated injuries, soft-tissue envelope and patient goals.</p>
+          </div>
+        </div>
+
+        <div class="goal-list">
+          <article class="goal-item reveal">
+            <span>01</span>
+            <div><h3>Re-establish stability</h3><p>Restore anterior-posterior, varus-valgus and rotational restraint so the knee can support everyday and athletic loading.</p></div>
+          </article>
+          <article class="goal-item reveal">
+            <span>02</span>
+            <div><h3>Recover useful motion</h3><p>Balance stable reconstruction with protection against stiffness and arthrofibrosis through appropriate timing and rehabilitation.</p></div>
+          </article>
+          <article class="goal-item reveal">
+            <span>03</span>
+            <div><h3>Protect the joint</h3><p>Address instability and associated meniscal or chondral pathology while minimizing avoidable injury to bone stock and fixation.</p></div>
+          </article>
+          <article class="goal-item reveal">
+            <span>04</span>
+            <div><h3>Support return to life and sport</h3><p>Create the conditions for a durable recovery while setting realistic expectations for work, recreation and competitive athletics.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="challenges">
+      <div class="content-wrap">
+        <div class="section-kicker">The planning problem</div>
+        <div class="section-heading reveal">
+          <h2>Why these reconstructions are difficult</h2>
+          <p>Every additional reconstruction creates another set of choices inside a limited volume of bone.</p>
+        </div>
+
+        <div class="challenge-layout">
+          <div class="challenge-visual reveal" aria-hidden="true">
+            <div class="bone-window">
+              <span class="bone-label">Distal femur · axial planning view</span>
+              <div class="bone-ring">
+                <span class="tunnel-orbit orbit-one"><i>ACL</i></span>
+                <span class="tunnel-orbit orbit-two"><i>PCL</i></span>
+                <span class="tunnel-orbit orbit-three"><i>FCL</i></span>
+                <span class="tunnel-orbit orbit-four"><i>POP</i></span>
+              </div>
+              <div class="risk-line"><span></span><strong>2.1 mm</strong><em>potential convergence</em></div>
+            </div>
+          </div>
+          <div class="challenge-list">
+            <article class="challenge-row reveal"><span>01</span><div><h3>Patient-specific injury patterns</h3><p>No two cases combine the same ligament tears, fractures, meniscal pathology, alignment, tissue quality or prior tunnels.</p></div></article>
+            <article class="challenge-row reveal"><span>02</span><div><h3>Tunnel convergence</h3><p>ACL, PCL, collateral and corner reconstructions can compete for the same femoral or tibial bone. A collision can shorten a socket, compromise fixation or damage another graft.</p></div></article>
+            <article class="challenge-row reveal"><span>03</span><div><h3>Graft and fixation choreography</h3><p>Graft choice, tunnel dimensions, passage order, fixation method and tensioning sequence must work together—not as isolated decisions.</p></div></article>
+            <article class="challenge-row reveal"><span>04</span><div><h3>Intraoperative translation</h3><p>Generic angle recommendations are useful, but the surgeon must translate them to an individual knee while preserving anatomic footprints and safe trajectories.</p></div></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section planner-section" id="unmet-need">
+      <div class="content-wrap">
+        <div class="planner-panel reveal">
+          <div class="planner-copy">
+            <div class="section-kicker">The unmet need</div>
+            <h2>One workspace for the entire reconstruction.</h2>
+            <p>
+              Multilig Planner is designed to replace fragmented, procedure-by-procedure planning with an integrated patient-specific model. The surgeon can evaluate how every planned tunnel, socket, graft and implant relates to the others before entering the operating room.
+            </p>
+            <a class="btn btn-primary" href="demo.html">Open the sample planning workspace</a>
+          </div>
+          <div class="capability-grid">
+            <article><span class="cap-icon">A</span><h3>Define the reconstruction</h3><p>Select ACL, PCL, PLC, MCL, ALL/LET and meniscal-root procedures within the same plan.</p></article>
+            <article><span class="cap-icon">B</span><h3>Template tunnels and sockets</h3><p>Adjust entry points, trajectories, diameters, lengths and fixation constructs in three dimensions.</p></article>
+            <article><span class="cap-icon">C</span><h3>Detect competing trajectories</h3><p>Visualize potential tunnel convergence and remaining bone clearance before drilling.</p></article>
+            <article><span class="cap-icon">D</span><h3>Coordinate the operation</h3><p>Organize grafts, implants, instruments, passage and fixation into a reproducible procedural sequence.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section evidence-section" id="evidence">
+      <div class="content-wrap evidence-grid">
+        <div>
+          <div class="section-kicker">Evidence base</div>
+          <h2>Selected references</h2>
+          <p>Clinical information on this page is educational and reflects contemporary peer-reviewed literature. It does not replace patient-specific evaluation or surgical judgment.</p>
+        </div>
+        <ol class="reference-list">
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/39237264/" target="_blank" rel="noopener">Multiligament knee injury: expert consensus on nomenclature, diagnosis, treatment and rehabilitation.</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/24777729/" target="_blank" rel="noopener">Epidemiology of multiligament knee reconstruction.</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/21540715/" target="_blank" rel="noopener">Outcomes of operative and nonoperative treatment of multiligament knee injuries.</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/27872126/" target="_blank" rel="noopener">Femoral tunnel relationships and guidelines to avoid convergence.</a></li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/39233798/" target="_blank" rel="noopener">Navigation in multiligament knee reconstruction: a proof-of-concept study.</a></li>
+          <li><a href="https://journals.sagepub.com/doi/10.1177/23259671211010409" target="_blank" rel="noopener">Incidence of associated lesions in multiligament knee injuries.</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="coming-soon">
+      <div class="content-wrap coming-soon-inner reveal">
+        <div>
+          <div class="eyebrow">Multilig Planner</div>
+          <h2>Application available for download soon.</h2>
+          <p>Development is focused on a reliable, surgeon-directed planning workflow for complex knee reconstruction.</p>
+        </div>
+        <a class="btn btn-outline-light" href="demo.html">View application demo</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="content-wrap footer-inner">
+      <div class="footer-brand"><img src="assets/logo-mark.svg" width="32" height="32" alt="" /><span><strong>Multilig</strong> Planner</span></div>
+      <p>Research and development software. Not validated for clinical care or intended to replace independent surgical judgment.</p>
+      <p>© <span id="year"></span> Multilig Planner</p>
+    </div>
+  </footer>
+
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
