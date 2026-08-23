@@ -591,7 +591,7 @@ describe("derived knee anatomic reference planes", () => {
     });
   });
 
-  it("keeps midline direction unasserted until laterality is verified", () => {
+  it("keeps generic unverified laterality on the explicit patient-right fallback", () => {
     const frame = deriveAnatomicReferenceFrame(buildSyntheticAnatomyMeshes(), {
       laterality: "right",
       lateralityVerified: false,
@@ -605,8 +605,63 @@ describe("derived knee anatomic reference planes", () => {
       medialLateralAssignment: "provisional_patient_right_is_lateral",
       lateralityUsed: "right",
     });
+    expect(frame.lateralityVerified).toBe(false);
     expect(measurement.midlineSignedMm).toBeNull();
     expect(measurement.midlineUnsignedMm).toBeGreaterThan(0);
     expect(measurement.provisional).toBe(true);
+  });
+
+  it("mirrors a resolved but not clinician-verified left DICOM side", () => {
+    const meshes = buildSyntheticAnatomyMeshes();
+    const right = deriveAnatomicReferenceFrame(meshes, {
+      laterality: "right",
+      lateralityVerified: false,
+      scaleVerified: false,
+      provisionalLateralitySource: "dicom_metadata",
+    });
+    const left = deriveAnatomicReferenceFrame(mirroredLeftMeshes(meshes), {
+      laterality: "left",
+      lateralityVerified: false,
+      scaleVerified: false,
+      provisionalLateralitySource: "dicom_metadata",
+    });
+    expect(right.evaluationState).toBe("evaluated");
+    expect(left.evaluationState).toBe("evaluated");
+    if (right.evaluationState !== "evaluated" || left.evaluationState !== "evaluated") return;
+    expect(right.lateralityVerified).toBe(false);
+    expect(left.lateralityVerified).toBe(false);
+    expect(right.jointLineDefinition.medialLateralAssignment).toBe("dicom_metadata_provisional");
+    expect(left.jointLineDefinition.medialLateralAssignment).toBe("dicom_metadata_provisional");
+    expect(dot(right.midline.normalPatientRas, [1, 0, 0])).toBeGreaterThan(0);
+    expect(dot(left.midline.normalPatientRas, [-1, 0, 0])).toBeGreaterThan(0);
+    const rightMeasurement = measureChannelStartPoint(channelAt(add(
+      right.midline.originPatientRasMm,
+      scale(right.midline.normalPatientRas, 10),
+    )), right);
+    const leftMeasurement = measureChannelStartPoint(channelAt(add(
+      left.midline.originPatientRasMm,
+      scale(left.midline.normalPatientRas, 10),
+    )), left);
+    expect(rightMeasurement.midlineSignedMm).toBeCloseTo(10, 6);
+    expect(leftMeasurement.midlineSignedMm).toBeCloseTo(10, 6);
+    expect(rightMeasurement.lateralityVerified).toBe(false);
+    expect(leftMeasurement.lateralityVerified).toBe(false);
+    expect(rightMeasurement.provisional).toBe(true);
+    expect(leftMeasurement.provisional).toBe(true);
+  });
+
+  it("uses patient-right only when no laterality was resolved", () => {
+    const frame = deriveAnatomicReferenceFrame(buildSyntheticAnatomyMeshes(), {
+      laterality: "unverified",
+      lateralityVerified: false,
+      scaleVerified: false,
+    });
+    expect(frame.evaluationState).toBe("evaluated");
+    if (frame.evaluationState !== "evaluated") return;
+    expect(frame.jointLineDefinition).toMatchObject({
+      medialLateralAssignment: "provisional_patient_right_is_lateral",
+      lateralityUsed: "right",
+    });
+    expect(frame.lateralityVerified).toBe(false);
   });
 });

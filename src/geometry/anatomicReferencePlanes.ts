@@ -76,7 +76,10 @@ export interface EvaluatedAnatomicReferenceFrame {
     medialPosteriorOffsetMm: number;
     minimumTriangleSine: 0.2;
     triangleSine: number;
-    medialLateralAssignment: "verified_laterality" | "provisional_patient_right_is_lateral";
+    medialLateralAssignment:
+      | "verified_laterality"
+      | "dicom_metadata_provisional"
+      | "provisional_patient_right_is_lateral";
     lateralityUsed: "left" | "right";
   };
   posteriorCondylar: AnatomicReferencePlane;
@@ -524,6 +527,8 @@ export function deriveAnatomicReferenceFrame(
     laterality: "left" | "right" | "unverified";
     lateralityVerified: boolean;
     scaleVerified: boolean;
+    /** Advisory DICOM metadata may orient a frame but never verifies it. */
+    provisionalLateralitySource?: "dicom_metadata";
   },
 ): AnatomicReferenceFrame {
   const femur = collectBoneVertices(meshes, "femur");
@@ -582,12 +587,16 @@ export function deriveAnatomicReferenceFrame(
     }
     const posteriorCondylarLineAxis = normalize3(posteriorCondylarLineVector, "posterior condylar line");
 
-    // A verified left knee reverses the patient-RAS X definition of lateral.
-    // Until side is verified, a visible preview uses the patient-right (+X)
-    // half as lateral and records that provisional assumption explicitly.
+    // A resolved DICOM side may orient a provisional frame before the
+    // clinician completes laterality verification. A generic PlanCase L/R
+    // value is not enough: without explicit metadata provenance the preview
+    // falls back to patient-right (+X), visibly and provisionally.
     const sideIsVerified = options.lateralityVerified && options.laterality !== "unverified";
-    const lateralityUsed: "left" | "right" = sideIsVerified && options.laterality === "left"
-      ? "left"
+    const hasProvisionalDicomSide = !sideIsVerified &&
+      options.provisionalLateralitySource === "dicom_metadata" &&
+      options.laterality !== "unverified";
+    const lateralityUsed: "left" | "right" = sideIsVerified || hasProvisionalDicomSide
+      ? options.laterality as "left" | "right"
       : "right";
     const lateralDirection = vec3(lateralityUsed === "right" ? 1 : -1, 0, 0);
     const medialDirection = scale3(lateralDirection, -1);
@@ -792,7 +801,9 @@ export function deriveAnatomicReferenceFrame(
         triangleSine: normalizedTriangleArea,
         medialLateralAssignment: sideIsVerified
           ? "verified_laterality"
-          : "provisional_patient_right_is_lateral",
+          : hasProvisionalDicomSide
+            ? "dicom_metadata_provisional"
+            : "provisional_patient_right_is_lateral",
         lateralityUsed,
       },
       posteriorCondylar: {
@@ -1005,11 +1016,13 @@ export function measureChannelStartPoint(
   }
 
   const midlineDistance = signedDistanceToPlane(resolved.point, frame.midline);
+  const medialLateralDirectionAvailable = frame.lateralityVerified ||
+    frame.jointLineDefinition.medialLateralAssignment === "dicom_metadata_provisional";
   return {
     ...base,
     evaluationState: "evaluated",
     jointLineSignedMm: signedDistanceToPlane(resolved.point, frame.jointLine),
-    midlineSignedMm: frame.lateralityVerified ? midlineDistance : null,
+    midlineSignedMm: medialLateralDirectionAvailable ? midlineDistance : null,
     midlineUnsignedMm: Math.abs(midlineDistance),
     posteriorCondylarSignedMm: signedDistanceToPlane(resolved.point, frame.posteriorCondylar),
     lateralityVerified: frame.lateralityVerified,

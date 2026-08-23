@@ -97,6 +97,59 @@ def fake_mat_root(root: Path) -> tuple[Path, Path]:
     return mat_root, registry
 
 
+class DicomLateralityHintTests(unittest.TestCase):
+    def test_direct_tags_resolve_with_high_confidence_without_retaining_text(self) -> None:
+        hint = bridge.resolve_dicom_laterality_metadata([
+            {
+                "ImageLaterality": "R",
+                "Laterality": "RIGHT",
+                "BodyPartExamined": "KNEE",
+                "SeriesDescription": "RIGHT KNEE PATIENT-SPECIFIC FREE TEXT",
+            },
+        ])
+        self.assertEqual(hint["laterality"], "right")
+        self.assertEqual(hint["status"], "resolved")
+        self.assertEqual(hint["confidence"], "high")
+        self.assertTrue(hint["requiresClinicianVerification"])
+        serialized = json.dumps(hint)
+        self.assertNotIn("PATIENT-SPECIFIC", serialized)
+        self.assertEqual(
+            {entry["source"] for entry in hint["evidence"]},
+            {"dicom_image_laterality", "dicom_laterality", "dicom_series_description"},
+        )
+
+    def test_description_token_is_a_low_confidence_seed(self) -> None:
+        hint = bridge.resolve_dicom_laterality_metadata([
+            {"BodyPartExamined": "KNEE", "SeriesDescription": "KNEE RT"},
+            {"BodyPartExamined": "KNEE", "SeriesDescription": "RIGHT KNEE"},
+        ])
+        self.assertEqual(hint, {
+            "laterality": "right",
+            "status": "resolved",
+            "confidence": "low",
+            "evidence": [{"source": "dicom_series_description", "laterality": "right"}],
+            "requiresClinicianVerification": True,
+        })
+
+    def test_any_cross_source_disagreement_is_a_visible_conflict(self) -> None:
+        hint = bridge.resolve_dicom_laterality_metadata([
+            {"ImageLaterality": "L", "SeriesDescription": "RIGHT KNEE"},
+        ])
+        self.assertIsNone(hint["laterality"])
+        self.assertEqual(hint["status"], "conflict")
+        self.assertEqual(hint["confidence"], "none")
+        self.assertEqual(
+            {(entry["source"], entry["laterality"]) for entry in hint["evidence"]},
+            {("dicom_image_laterality", "left"), ("dicom_series_description", "right")},
+        )
+
+        bilateral_description = bridge.resolve_dicom_laterality_metadata([
+            {"SeriesDescription": "LEFT AND RIGHT KNEES"},
+        ])
+        self.assertEqual(bilateral_description["status"], "conflict")
+        self.assertIsNone(bilateral_description["laterality"])
+
+
 class ArchiveSafetyTests(unittest.TestCase):
     def config(self, root: Path, **overrides: object) -> bridge.BridgeConfig:
         mat_root, registry = fake_mat_root(root)
@@ -783,6 +836,13 @@ class FakePipelineSeamTests(unittest.TestCase):
         self.assertFalse(gates["boneIdentitiesVerified"])
         self.assertTrue(gates["sourceLabelMapsImmutable"])
         self.assertEqual(event["result"]["validationState"], "research_only")
+        self.assertEqual(event["result"]["lateralityHint"], {
+            "laterality": None,
+            "status": "not_applicable",
+            "confidence": "none",
+            "evidence": [],
+            "requiresClinicianVerification": True,
+        })
         self.assertNotIn("assetId", event["result"]["source"])
         self.assertNotIn("url", event["result"]["source"])
         self.assertEqual(len(event["result"]["artifacts"]), 1)

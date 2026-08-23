@@ -14,6 +14,12 @@ import {
   type SurfaceProjection,
 } from "../geometry/surfaceTether";
 import type { ViewerMeshPayload } from "../viewer/types";
+import {
+  ANATOMY_DERIVED_SURFACE_SEED_WARNING,
+  anatomicChannelSurfaceSeed,
+  createAnatomicChannelSeedContext,
+  type AnatomicChannelSeedContext,
+} from "./anatomicChannelSurfaceSeed";
 import { classifyChannelEntryTether } from "./channelEntryTether";
 import { withTibialSuperiorEnvelopeWarnings } from "./channelHandleEdit";
 import { resolvedTrajectoryControlMode } from "./channelTrajectorySemantics";
@@ -144,6 +150,7 @@ function projectToForwardDeclaredBoneExit(
   requestedEndpoint: Vector3,
   bone: Bone,
   anatomyMeshes: readonly ViewerMeshPayload[],
+  selection: "nearest" | "farthest" = "nearest",
 ): ProjectedSurfacePoint | null {
   let best: { distanceAlongRayMm: number; projection: SurfaceProjection; stableKey: string } | null = null;
   for (const mesh of anatomyMeshes) {
@@ -208,7 +215,9 @@ function projectToForwardDeclaredBoneExit(
       const stableKey = `${mesh.id}:${faceIndex}`;
       if (
         best === null ||
-        distanceAlongRayMm < best.distanceAlongRayMm ||
+        (selection === "nearest"
+          ? distanceAlongRayMm < best.distanceAlongRayMm
+          : distanceAlongRayMm > best.distanceAlongRayMm) ||
         (distanceAlongRayMm === best.distanceAlongRayMm && stableKey.localeCompare(best.stableKey) < 0)
       ) {
         best = { distanceAlongRayMm, projection, stableKey };
@@ -495,6 +504,7 @@ function hasExplicitDepthSelection(channel: ChannelPlan): boolean {
 export function attachMissingForwardSurfaceStart(
   channel: ChannelPlan,
   anatomyMeshes: readonly ViewerMeshPayload[],
+  options: { forwardSurfaceSelection?: "nearest" | "farthest" } = {},
 ): ChannelPlan {
   const trajectoryControlMode = resolvedTrajectoryControlMode(channel);
   if (trajectoryControlMode === "exterior_rod") {
@@ -562,6 +572,7 @@ export function attachMissingForwardSurfaceStart(
     requestedStart,
     working.bone,
     anatomyMeshes,
+    options.forwardSurfaceSelection,
   );
   if (!startProjection) {
     const requiredSocketRunMm = working.fullThickness ? null : effectiveDepthMm(working);
@@ -584,6 +595,7 @@ export function attachMissingForwardSurfaceStart(
         candidateRequestedStart,
         candidateWorking.bone,
         anatomyMeshes,
+        options.forwardSurfaceSelection,
       );
       if (!candidateProjection) continue;
       const surfaceRunMm = Math.hypot(
@@ -667,32 +679,54 @@ function initializeChannel(
   channel: ChannelPlan,
   procedure: ProcedureIdentity | null,
   anatomyMeshes: readonly ViewerMeshPayload[],
+  anatomicSeedContext: AnatomicChannelSeedContext | null,
 ): ChannelPlan {
   if (channel.surfacePlacement?.state !== "pending_default") {
     // Safe migration/idempotent completion pass: retain every authored value
     // and add only a missing Start tether when Entry is already attached.
     return attachMissingForwardSurfaceStart(channel, anatomyMeshes);
   }
+  const anatomicSeed = anatomicSeedContext
+    ? anatomicChannelSurfaceSeed(anatomicSeedContext, channel, procedure)
+    : null;
+  const seededChannel: ChannelPlan = anatomicSeed
+    ? {
+        ...channel,
+        aperture: anatomicSeed.requestedPointPatientRasMm,
+        vector: anatomicSeed.preferredDirectionPatientRas,
+        centerline: centerlineWithDefaultDirection(
+          channel.centerline,
+          anatomicSeed.requestedPointPatientRasMm,
+          anatomicSeed.preferredDirectionPatientRas,
+          effectiveDepthMm(channel),
+        ),
+      }
+    : channel;
   const classification = classifyChannelEntryTether(channel, procedure);
   const apertureProjection = classification.kind === "intra_articular_tibial_plateau"
-    ? projectToTibialSuperiorEnvelope(channel.aperture, anatomyMeshes)
-    : projectToNearestDeclaredBone(channel.aperture, channel.bone, anatomyMeshes);
+    ? projectToTibialSuperiorEnvelope(seededChannel.aperture, anatomyMeshes)
+    : projectToNearestDeclaredBone(seededChannel.aperture, seededChannel.bone, anatomyMeshes);
   if (!apertureProjection) return channel;
 
   const apertureDelta: Vector3 = [
-    apertureProjection.point[0] - channel.aperture[0],
-    apertureProjection.point[1] - channel.aperture[1],
-    apertureProjection.point[2] - channel.aperture[2],
+    apertureProjection.point[0] - seededChannel.aperture[0],
+    apertureProjection.point[1] - seededChannel.aperture[1],
+    apertureProjection.point[2] - seededChannel.aperture[2],
   ];
   const translated: ChannelPlan = {
-    ...channel,
+    ...seededChannel,
     aperture: apertureProjection.point,
     apertureSurfaceAttachment: apertureProjection.attachment,
     endpointSurfaceAttachment: null,
-    warnings: classification.kind === "intra_articular_tibial_plateau"
-      ? withTibialSuperiorEnvelopeWarnings(channel.warnings, apertureProjection.attachment)
-      : channel.warnings,
-    centerline: translateCenterline(channel.centerline, apertureDelta),
+    warnings: (() => {
+      const surfaceWarnings = classification.kind === "intra_articular_tibial_plateau"
+        ? withTibialSuperiorEnvelopeWarnings(seededChannel.warnings, apertureProjection.attachment)
+        : seededChannel.warnings;
+      return anatomicSeed && !surfaceWarnings.includes(ANATOMY_DERIVED_SURFACE_SEED_WARNING)
+        ? [...surfaceWarnings, ANATOMY_DERIVED_SURFACE_SEED_WARNING]
+        : surfaceWarnings;
+    })(),
+    centerline: translateCenterline(seededChannel.centerline, apertureDelta),
     surfacePlacement: {
       state: "default_applied",
       method: classification.kind === "intra_articular_tibial_plateau"
@@ -737,7 +771,12 @@ function initializeChannel(
     };
   }
 
-  return attachMissingForwardSurfaceStart(translated, anatomyMeshes);
+  return attachMissingForwardSurfaceStart(translated, anatomyMeshes, {
+    // Anatomy-derived starts operate on the union of segmented pieces. The
+    // farthest collinear hit is the exterior cortex; choosing the first hit
+    // can stop on an internal overlap between decimated condylar components.
+    forwardSurfaceSelection: anatomicSeed ? "farthest" : "nearest",
+  });
 }
 
 /**
@@ -753,6 +792,7 @@ export function initializePendingChannelSurfacePlacements(
   options: { channelIds?: ReadonlySet<string> } = {},
 ): PlanCase {
   const procedureById = new Map(plan.procedures.map((procedure) => [procedure.id, procedure.structure]));
+  const anatomicSeedContext = createAnatomicChannelSeedContext(plan, patientAnatomyMeshes);
   let planChanged = false;
   const variants = plan.variants.map((variant) => {
     let variantChanged = false;
@@ -762,6 +802,7 @@ export function initializePendingChannelSurfacePlacements(
         channel,
         procedureById.get(channel.procedureId) ?? null,
         patientAnatomyMeshes,
+        anatomicSeedContext,
       );
       if (initialized !== channel) variantChanged = true;
       return initialized;

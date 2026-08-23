@@ -27,9 +27,33 @@ describe("segmentation plan patch", () => {
       boneIdentitiesVerified: false,
       sourceLabelMapsImmutable: true,
     });
+    expect(patch.suggestedLaterality).toBe("right");
+    expect(patch.segmentationRun.lateralityHint).toMatchObject({
+      laterality: "right",
+      status: "resolved",
+      confidence: "low",
+      requiresClinicianVerification: true,
+    });
     expect(patch.analysisEligible).toBe(false);
     expect(JSON.stringify(patch)).not.toContain("patient-name");
     expect(JSON.stringify(patch)).not.toContain("SHOULD_NOT_PERSIST");
+  });
+
+  it("does not seed a side when DICOM metadata conflicts", () => {
+    const raw = structuredClone(bridgeManifestFixture()) as any;
+    raw.lateralityHint = {
+      laterality: null,
+      status: "conflict",
+      confidence: "none",
+      evidence: [
+        { source: "dicom_image_laterality", laterality: "left" },
+        { source: "dicom_series_description", laterality: "right" },
+      ],
+      requiresClinicianVerification: true,
+    };
+    const patch = segmentationPlanPatch(raw);
+    expect(patch.suggestedLaterality).toBeNull();
+    expect(patch.review.laterality).toBe("unverified");
   });
 
   it("creates anatomy only for successful labels and keeps missing fibula explicit", () => {

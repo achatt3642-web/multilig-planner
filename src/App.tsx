@@ -1424,6 +1424,7 @@ function App() {
       })),
       imaging: {
         ...current.imaging,
+        lateralityHint: structuredClone(run.lateralityHint),
         sources: mergeById(current.imaging.sources, [patch.sourceToAdd]),
         derivedAssets: mergeById(current.imaging.derivedAssets ?? [], derivedAssets),
         segmentationRuns: mergeById(current.imaging.segmentationRuns ?? [], [{
@@ -1438,6 +1439,7 @@ function App() {
           artifactIds: derivedAssets.map((asset) => asset.id),
           warningCodes: [...new Set([...run.warningCodes, "PATIENT_CHANNEL_REGISTRATION_REQUIRED"])],
           notEvaluatedCodes: [...new Set([...run.notEvaluatedCodes, "patient_channel_registration"])],
+          lateralityHint: structuredClone(run.lateralityHint),
           generatedAt: run.generatedAt,
         }]),
         review: {
@@ -1448,8 +1450,9 @@ function App() {
         segmentationAdapterId: patch.segmentationAdapterId,
         segmentationValidationState: patch.segmentationValidationState,
       },
+      laterality: patch.suggestedLaterality ?? current.laterality,
       lateralityVerified: false,
-        scaleVerified: false,
+      scaleVerified: false,
       };
       return initializePendingChannelSurfacePlacements(importedPlan, meshes);
     }, "Imported immutable MAT nnUNetv2 segmentation assets, initialized available bone-surface defaults, and reset clinician review gates", {

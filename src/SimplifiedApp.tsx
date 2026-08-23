@@ -21,6 +21,7 @@ import {
 import { isGuidePinSocketGeometry, resolvedTrajectoryControlMode } from "./app/channelTrajectorySemantics";
 import { resolvedChannelGuidePinDiameterMm } from "./app/resolvedChannelGeometry";
 import { initializePendingChannelSurfacePlacements } from "./app/channelSurfaceInitialization";
+import { anatomicReferenceFrameOptionsForPlan } from "./app/anatomicChannelSurfaceSeed";
 import {
   autoConfigureSimplifiedProcedure,
   configuredSimplifiedSelection,
@@ -323,7 +324,7 @@ export function StartPointReadout({
   const hasCompleteMeasurement = measurement?.evaluationState === "evaluated" &&
     finiteReferenceDistance(measurement.jointLineSignedMm) &&
     finiteReferenceDistance(measurement.posteriorCondylarSignedMm) &&
-    (measurement.lateralityVerified
+    (measurement.midlineSignedMm !== null
       ? finiteReferenceDistance(measurement.midlineSignedMm)
       : finiteReferenceDistance(measurement.midlineUnsignedMm));
   const unavailableReason = !measurement
@@ -342,8 +343,8 @@ export function StartPointReadout({
     </div> : <>
       <div className="simple-reference-distance-list">
         <div><span>{signedReferenceDistance(measurement.jointLineSignedMm!, "superior", "inferior", "joint line")}</span></div>
-        <div><span>{measurement.lateralityVerified
-          ? signedReferenceDistance(measurement.midlineSignedMm!, "lateral", "medial", "midline")
+        <div><span>{measurement.midlineSignedMm !== null
+          ? signedReferenceDistance(measurement.midlineSignedMm, "lateral", "medial", "midline")
           : `${measurement.midlineUnsignedMm!.toFixed(1)} mm from midline`}</span></div>
         <div><span>{signedReferenceDistance(measurement.posteriorCondylarSignedMm!, "anterior", "posterior", "posterior condylar axis")}</span></div>
       </div>
@@ -626,14 +627,33 @@ export default function SimplifiedApp() {
   );
   const syntheticAnatomyMeshes = useMemo(() => buildSyntheticAnatomyMeshes(), []);
   const interactionAnatomyMeshes = patientAnatomyMeshes ?? syntheticAnatomyMeshes;
+  const planLaterality = plan.laterality;
+  const planLateralityVerified = plan.lateralityVerified;
+  const planScaleVerified = plan.scaleVerified;
+  const planLateralityHint = plan.imaging.lateralityHint;
+  const planSegmentationRuns = plan.imaging.segmentationRuns;
+  const anatomicFrameOptions = useMemo(
+    () => anatomicReferenceFrameOptionsForPlan({
+      laterality: planLaterality,
+      lateralityVerified: planLateralityVerified,
+      scaleVerified: planScaleVerified,
+      imaging: {
+        lateralityHint: planLateralityHint,
+        segmentationRuns: planSegmentationRuns,
+      },
+    }),
+    [
+      planLaterality,
+      planLateralityHint,
+      planLateralityVerified,
+      planScaleVerified,
+      planSegmentationRuns,
+    ],
+  );
   const anatomicReferenceFrame = useMemo(() => deriveAnatomicReferenceFrame(
     interactionAnatomyMeshes,
-    {
-      laterality: plan.laterality,
-      lateralityVerified: plan.lateralityVerified,
-      scaleVerified: plan.scaleVerified,
-    },
-  ), [interactionAnatomyMeshes, plan.laterality, plan.lateralityVerified, plan.scaleVerified]);
+    anatomicFrameOptions,
+  ), [anatomicFrameOptions, interactionAnatomyMeshes]);
   const selectedStartPointMeasurement = useMemo(() => selectedChannel
     ? measureChannelStartPoint(selectedChannel, anatomicReferenceFrame, interactionAnatomyMeshes)
     : null, [anatomicReferenceFrame, interactionAnatomyMeshes, selectedChannel]);
@@ -795,15 +815,29 @@ export default function SimplifiedApp() {
     bone: "femur" | "tibia",
   ) => {
     setDrafts((current) => ({ ...current, [selection.procedure]: selection }));
-    const configured = autoConfigureSimplifiedProcedure(plan, selection, interactionAnatomyMeshes);
-    if (!configured) return;
+    if (
+      validateSimplifiedSelection(selection).length > 0 ||
+      simplifiedTechniqueSelectionsEqual(
+        configuredSimplifiedSelection(plan, selection.procedure),
+        selection,
+      )
+    ) return;
     const hadGeometry = focusedChannels.length > 0;
     const selectedSemanticKey = selectedChannel &&
       procedureById[selectedChannel.procedureId] === selection.procedure &&
       selectedChannel.bone === bone
       ? selectedChannel.semanticKey ?? null
       : null;
-    commit(configured.plan, `Updated ${selection.procedure} plan geometry automatically`);
+    // Resolve the replacement against the newest committed snapshot. Building
+    // from the render-time `plan` could otherwise roll back a handle edit that
+    // committed immediately before this technique choice. The configuration
+    // helper scopes anatomy placement to only the replacement channel IDs, so
+    // unrelated authored procedures remain byte-for-byte unchanged.
+    commit((current) => autoConfigureSimplifiedProcedure(
+      current,
+      selection,
+      interactionAnatomyMeshes,
+    )?.plan ?? current, `Updated ${selection.procedure} plan geometry automatically`);
     setPendingConfiguredProcedure({ procedure: selection.procedure, bone, semanticKey: selectedSemanticKey });
     if (!hadGeometry) {
       setLayerVisibility((current) => ({
@@ -954,6 +988,7 @@ export default function SimplifiedApp() {
       })),
       imaging: {
         ...current.imaging,
+        lateralityHint: structuredClone(run.lateralityHint),
         sources: mergeById(current.imaging.sources, [patch.sourceToAdd]),
         derivedAssets: mergeById(current.imaging.derivedAssets, derivedAssets),
         segmentationRuns: mergeById(current.imaging.segmentationRuns, [{
@@ -968,6 +1003,7 @@ export default function SimplifiedApp() {
           artifactIds: derivedAssets.map((asset) => asset.id),
           warningCodes: [...new Set([...run.warningCodes, "PATIENT_CHANNEL_REGISTRATION_REQUIRED"])],
           notEvaluatedCodes: [...new Set([...run.notEvaluatedCodes, "patient_channel_registration"])],
+          lateralityHint: structuredClone(run.lateralityHint),
           generatedAt: run.generatedAt,
         }]),
         review: {
@@ -978,6 +1014,7 @@ export default function SimplifiedApp() {
         segmentationAdapterId: patch.segmentationAdapterId,
         segmentationValidationState: patch.segmentationValidationState,
       },
+      laterality: patch.suggestedLaterality ?? current.laterality,
       lateralityVerified: false,
       scaleVerified: false,
     }, meshes), "Imported MAT nnUNetv2 segmentation and placed planning geometry on its surfaces", { persistDeidentifiedSnapshot: true });
@@ -1096,6 +1133,16 @@ export default function SimplifiedApp() {
       }));
       void loadBundledDemoAnatomy().then((meshes) => {
         if (generation !== anatomyLoadGenerationRef.current) return;
+        setHistory((current) => {
+          const initialized = initializePendingChannelSurfacePlacements(current.present.snapshot, meshes);
+          if (stablePlanHash(initialized) === stablePlanHash(current.present.snapshot)) return current;
+          // Bone-derived defaults are part of the bundled opening state, not a
+          // user edit. Keep Undo empty unless the clinician has already acted
+          // while the surfaces were loading.
+          return current.present.sequence === 0
+            ? createPlanHistory(initialized)
+            : commitPlan(current, initialized, "Initialized bundled anatomy-derived surface defaults");
+        });
         setPatientAnatomyMeshes(meshes);
         setLayerVisibility((current) => ({ ...current, bones: true }));
         setStandardView((current) => ({ view: "focus", nonce: current.nonce + 1 }));

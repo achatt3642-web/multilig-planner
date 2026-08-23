@@ -732,6 +732,21 @@ export interface ImmutableImagingSourceRecord {
   boneIdentity: ImagingBoneIdentity;
 }
 
+export interface ImagingLateralityHint {
+  laterality: Laterality | null;
+  status: "resolved" | "conflict" | "absent" | "not_applicable";
+  confidence: "high" | "low" | "none";
+  evidence: Array<{
+    source:
+      | "dicom_image_laterality"
+      | "dicom_laterality"
+      | "dicom_body_part_examined"
+      | "dicom_series_description";
+    laterality: Laterality;
+  }>;
+  requiresClinicianVerification: true;
+}
+
 export interface ImagingReviewRecord {
   laterality: Laterality | "unverified";
   scaleVerified: boolean;
@@ -811,6 +826,8 @@ export interface SegmentationRunRecord {
   artifactIds: UUID[];
   warningCodes: string[];
   notEvaluatedCodes: string[];
+  /** Advisory import metadata only; never clinician verification. */
+  lateralityHint?: ImagingLateralityHint;
   generatedAt: ISODateTime;
 }
 
@@ -818,6 +835,8 @@ export interface ImagingCaseState {
   sources: ImmutableImagingSourceRecord[];
   derivedAssets: DerivedImagingAssetRecord[];
   segmentationRuns: SegmentationRunRecord[];
+  /** Current privacy-safe import hint; advisory until clinician verification. */
+  lateralityHint?: ImagingLateralityHint;
   review: ImagingReviewRecord;
   segmentationAdapterId: string;
   segmentationValidationState: "not_connected" | "research_only" | "institution_validated";

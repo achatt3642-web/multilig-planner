@@ -129,6 +129,18 @@
   "id": "demo-case-knee-001",
   "imaging": {
     "derivedAssets": [],
+    "lateralityHint": {
+      "confidence": "low",
+      "evidence": [
+        {
+          "laterality": "right",
+          "source": "dicom_series_description"
+        }
+      ],
+      "laterality": "right",
+      "requiresClinicianVerification": true,
+      "status": "resolved"
+    },
     "review": {
       "boneIdentitiesVerified": false,
       "corrections": [],
@@ -608,12 +620,10 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-plc",
           "surfacePlacement": {
-            "endpointMethod": "blind_socket_tip",
-            "meshIds": [
-              "demo-anatomy-femur"
-            ],
-            "method": "manual_surface_drag",
-            "state": "clinician_edited"
+            "endpointMethod": "not_available",
+            "meshIds": [],
+            "method": "preset_seed_unregistered",
+            "state": "pending_default"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "blind_socket_tip",
@@ -857,12 +867,10 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-plc",
           "surfacePlacement": {
-            "endpointMethod": "blind_socket_tip",
-            "meshIds": [
-              "demo-anatomy-femur"
-            ],
-            "method": "nearest_bone_surface",
-            "state": "default_applied"
+            "endpointMethod": "not_available",
+            "meshIds": [],
+            "method": "preset_seed_unregistered",
+            "state": "pending_default"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "blind_socket_tip",
@@ -1344,12 +1352,10 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-plc",
           "surfacePlacement": {
-            "endpointMethod": "nearest_surface_projection",
-            "meshIds": [
-              "demo-anatomy-tibia"
-            ],
-            "method": "manual_surface_drag",
-            "state": "clinician_edited"
+            "endpointMethod": "not_available",
+            "meshIds": [],
+            "method": "preset_seed_unregistered",
+            "state": "pending_default"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "outer_cortex_surface",

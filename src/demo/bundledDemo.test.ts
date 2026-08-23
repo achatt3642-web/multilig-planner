@@ -3,6 +3,9 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { CURRENT_PLAN_SCHEMA_VERSION } from "../domain/schema";
+import { createAnatomicChannelSeedContext } from "../app/anatomicChannelSurfaceSeed";
+import { initializePendingChannelSurfacePlacements } from "../app/channelSurfaceInitialization";
+import { resolveChannelStartPointPatientRas } from "../app/channelTrajectorySemantics";
 import {
   BUNDLED_DEMO_ASSETS,
   BUNDLED_DEMO_PLAN_ID,
@@ -40,10 +43,16 @@ describe("bundled de-identified knee demo", () => {
     expect(plan.imaging.sources).toEqual([]);
     expect(plan.imaging.derivedAssets).toEqual([]);
     expect(plan.imaging.segmentationRuns).toEqual([]);
+    expect(plan.imaging.lateralityHint).toMatchObject({
+      laterality: "right",
+      status: "resolved",
+      confidence: "low",
+      requiresClinicianVerification: true,
+    });
     expect(plan.variants[0].channels).toHaveLength(15);
     expect(usesBundledDemoAnatomy(plan)).toBe(true);
     expect(createHash("sha256").update(planBytes).digest("hex"))
-      .toBe("7a7060bc1056c8c04fa165ed9c564e1738678db291ff4db043b6bbb76eef3083");
+      .toBe("f2907dbe76ad5fc036b2cd7ee13fa2f2c6f51c8f34b6791743a356b5dbd93d4d");
     expect(createHash("sha256").update(workspaceBytes).digest("hex"))
       .toBe("6a96ba58dbfbf477c6f882e375e3b05af10e9d4bd8da630cf986747d4afe9b3f");
 
@@ -125,6 +134,39 @@ describe("bundled de-identified knee demo", () => {
       { id: "demo-anatomy-femur", bone: "femur", vertices: 15_770, faces: 31_536, opacity: 0.22 },
       { id: "demo-anatomy-tibia", bone: "tibia", vertices: 23_350, faces: 46_520, opacity: 0.22 },
     ]);
+  });
+
+  it("derives bundled PLC starts on the right-knee lateral side when its surfaces load", async () => {
+    const fetcher: BundledDemoFetch = async (url) => {
+      const assetPath = url.replace(/^\/demo-base\//, "").split("?")[0] ?? "";
+      const bytes = await readAsset(assetPath);
+      return { ok: true, status: 200, arrayBuffer: async () => arrayBuffer(bytes) };
+    };
+    const meshes = await loadBundledDemoAnatomy({ fetcher, baseUrl: "/demo-base/" });
+    const plan = initializePendingChannelSurfacePlacements(createBundledDemoPlan(), meshes);
+    const context = createAnatomicChannelSeedContext(plan, meshes);
+    expect(context).not.toBeNull();
+    if (!context) return;
+    const procedureIds = new Set(plan.procedures
+      .filter((procedure) => procedure.structure === "PLC_FCL")
+      .map((procedure) => procedure.id));
+    const lateralOffset = (point: readonly number[]): number => {
+      const origin = context.frame.midline.originPatientRasMm;
+      const axis = context.frame.midline.normalPatientRas;
+      return (point[0] - origin[0]) * axis[0] +
+        (point[1] - origin[1]) * axis[1] +
+        (point[2] - origin[2]) * axis[2];
+    };
+    const plcChannels = plan.variants[0].channels.filter((channel) =>
+      procedureIds.has(channel.procedureId) && channel.bone !== "fibula");
+    expect(plcChannels).toHaveLength(3);
+    for (const channel of plcChannels) {
+      const start = resolveChannelStartPointPatientRas(channel);
+      expect(channel.surfacePlacement?.state, channel.label).toBe("default_applied");
+      expect(lateralOffset(channel.aperture), `${channel.label} surface seed`).toBeGreaterThan(0);
+      expect(start, `${channel.label} Start`).not.toBeNull();
+      expect(lateralOffset(start!.pointPatientRasMm), `${channel.label} Start`).toBeGreaterThan(0);
+    }
   });
 
   it("rejects a same-length modified surface before parsing", async () => {

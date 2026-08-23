@@ -73,6 +73,13 @@ describe("MAT nnUNet v2 runtime contracts", () => {
       expect.objectContaining({ fold: 0, sha256: "6".repeat(64), byteLength: 12_345 }),
     ]);
     expect(parsed.algorithm.configurationArtifacts.map((artifact) => artifact.name).sort()).toEqual(["dataset.json", "plans.json"]);
+    expect(parsed.lateralityHint).toEqual({
+      laterality: "right",
+      status: "resolved",
+      confidence: "low",
+      evidence: [{ source: "dicom_series_description", laterality: "right" }],
+      requiresClinicianVerification: true,
+    });
 
     const mismatchedAssetId = structuredClone(manifest) as any;
     mismatchedAssetId.artifacts[1].assetId = `asset-sha256-${"0".repeat(64)}`;
@@ -96,6 +103,33 @@ describe("MAT nnUNet v2 runtime contracts", () => {
     const preverified = structuredClone(bridgeManifestFixture()) as any;
     preverified.reviewGates.scaleVerified = true;
     expect(() => parseMatNnunetSegmentationManifest(preverified)).toThrow(/unverified/i);
+
+    const trustedHint = structuredClone(bridgeManifestFixture()) as any;
+    trustedHint.lateralityHint.requiresClinicianVerification = false;
+    expect(() => parseMatNnunetSegmentationManifest(trustedHint)).toThrow(/clinician verification/i);
+  });
+
+  it("rejects contradictory or overconfident DICOM laterality hints", () => {
+    const contradiction = structuredClone(bridgeManifestFixture()) as any;
+    contradiction.lateralityHint.evidence.push({ source: "dicom_laterality", laterality: "left" });
+    expect(() => parseMatNnunetSegmentationManifest(contradiction)).toThrow(/unanimous evidence/i);
+
+    const overconfident = structuredClone(bridgeManifestFixture()) as any;
+    overconfident.lateralityHint.confidence = "high";
+    expect(() => parseMatNnunetSegmentationManifest(overconfident)).toThrow(/confidence/i);
+
+    const explicitConflict = structuredClone(bridgeManifestFixture()) as any;
+    explicitConflict.lateralityHint = {
+      laterality: null,
+      status: "conflict",
+      confidence: "none",
+      evidence: [
+        { source: "dicom_image_laterality", laterality: "left" },
+        { source: "dicom_series_description", laterality: "right" },
+      ],
+      requiresClinicianVerification: true,
+    };
+    expect(parseMatNnunetSegmentationManifest(explicitConflict).lateralityHint.status).toBe("conflict");
   });
 
   it("normalizes queued, running, completed, and failed job responses", () => {

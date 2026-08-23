@@ -1,6 +1,7 @@
 import type {
   AnatomyObject,
   CoordinateFrame,
+  ImagingLateralityHint,
   ImagingReviewRecord,
   ImmutableImagingSourceRecord,
 } from "../domain/types";
@@ -47,6 +48,7 @@ export interface SegmentationRunSummary {
   labelStatus: Record<MatNnunetBoneLabel, MatNnunetLabelStatus>;
   warningCodes: MatNnunetWarningCode[];
   notEvaluatedCodes: MatNnunetNotEvaluatedCode[];
+  lateralityHint: ImagingLateralityHint;
   clinicianReviewRequired: true;
 }
 
@@ -67,6 +69,8 @@ export interface SegmentationPlanPatch {
   warningCodes: MatNnunetWarningCode[];
   analysisEligible: false;
   notEvaluatedReasons: string[];
+  /** Seeds orientation-dependent placement but never closes the review gate. */
+  suggestedLaterality: "left" | "right" | null;
 }
 
 const REQUIRED_WARNINGS: readonly MatNnunetWarningCode[] = [
@@ -271,6 +275,7 @@ export function segmentationPlanPatch(value: unknown): SegmentationPlanPatch {
       labelStatus,
       warningCodes,
       notEvaluatedCodes: manifest.notEvaluatedCodes,
+      lateralityHint: structuredClone(manifest.lateralityHint),
       clinicianReviewRequired: true,
     },
     artifacts,
@@ -288,5 +293,8 @@ export function segmentationPlanPatch(value: unknown): SegmentationPlanPatch {
       ...manifest.notEvaluatedCodes,
       ...unavailableRequiredBones.map((item) => `${item.bone}_${item.status}`),
     ],
+    suggestedLaterality: manifest.lateralityHint.status === "resolved"
+      ? manifest.lateralityHint.laterality
+      : null,
   };
 }

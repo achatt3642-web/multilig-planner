@@ -47,7 +47,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any, BinaryIO, Callable, Iterable, Iterator, Mapping, Protocol, Sequence
 
 
-BRIDGE_VERSION = "1.0.0"
+BRIDGE_VERSION = "1.1.0"
 API_VERSION = "1.0.0"
 ADAPTER_ID = "mat-planner-knee-bone-masker-nnunetv2"
 VALIDATION_STATE = "research_only"
@@ -84,6 +84,15 @@ ALLOWED_BROWSER_ORIGINS = frozenset({
     "http://localhost:4174",
 })
 SAFE_API_ASSET_KINDS = frozenset({"femur_viewer_mesh", "tibia_viewer_mesh", "patella_viewer_mesh"})
+
+DICOM_LATERALITY_TAGS: tuple[tuple[str, str, str], ...] = (
+    ("ImageLaterality", "dicom_image_laterality", "direct"),
+    ("Laterality", "dicom_laterality", "direct"),
+    ("BodyPartExamined", "dicom_body_part_examined", "description"),
+    ("SeriesDescription", "dicom_series_description", "description"),
+)
+_DESCRIPTION_LEFT = re.compile(r"(?<![A-Z])(LEFT|LT|L)(?![A-Z])", re.IGNORECASE)
+_DESCRIPTION_RIGHT = re.compile(r"(?<![A-Z])(RIGHT|RT|R)(?![A-Z])", re.IGNORECASE)
 
 LPS_TO_RAS: list[float] = [
     -1.0, 0.0, 0.0, 0.0,
@@ -1226,6 +1235,138 @@ def _model_evidence_from_spec(spec: Any) -> ModelEvidence:
     )
 
 
+def _empty_laterality_hint(status: str) -> dict[str, Any]:
+    return {
+        "laterality": None,
+        "status": status,
+        "confidence": "none",
+        "evidence": [],
+        "requiresClinicianVerification": True,
+    }
+
+
+def _direct_laterality(value: Any) -> str | None:
+    normalized = str(value or "").strip().upper()
+    if normalized in {"L", "LEFT"}:
+        return "left"
+    if normalized in {"R", "RIGHT"}:
+        return "right"
+    return None
+
+
+def _description_laterality(value: Any) -> str | None:
+    """Return only a side token; never return or retain the source text."""
+    normalized = str(value or "").strip().upper()
+    if not normalized:
+        return None
+    has_left = bool(_DESCRIPTION_LEFT.search(normalized))
+    has_right = bool(_DESCRIPTION_RIGHT.search(normalized))
+    if has_left and has_right:
+        return "conflict"
+    if not has_left and not has_right:
+        return None
+    return "left" if has_left else "right"
+
+
+def resolve_dicom_laterality_metadata(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
+    """Resolve a privacy-safe, unverified side hint from selected-series tags.
+
+    Standard DICOM laterality attributes take precedence over descriptive
+    tokens. Any disagreement, including a disagreement between a direct tag and
+    description, is surfaced as a conflict rather than silently selecting a
+    side. The returned evidence contains only tag kinds and normalized sides;
+    raw header values and free-form descriptions never enter the public result.
+    """
+    direct: set[tuple[str, str]] = set()
+    descriptions: set[tuple[str, str]] = set()
+    for row in rows:
+        for keyword, source, evidence_class in DICOM_LATERALITY_TAGS:
+            value = row.get(keyword)
+            side = _direct_laterality(value) if evidence_class == "direct" else _description_laterality(value)
+            if side is None:
+                continue
+            target = direct if evidence_class == "direct" else descriptions
+            if side == "conflict":
+                target.update(((source, "left"), (source, "right")))
+            else:
+                target.add((source, side))
+
+    all_evidence = sorted(
+        direct | descriptions,
+        key=lambda item: (
+            next(index for index, (_keyword, source, _kind) in enumerate(DICOM_LATERALITY_TAGS) if source == item[0]),
+            item[1],
+        ),
+    )
+    evidence = [{"source": source, "laterality": side} for source, side in all_evidence]
+    direct_sides = {side for _source, side in direct}
+    description_sides = {side for _source, side in descriptions}
+    all_sides = direct_sides | description_sides
+    if len(all_sides) > 1:
+        return {
+            **_empty_laterality_hint("conflict"),
+            "evidence": evidence,
+        }
+    if direct_sides:
+        return {
+            "laterality": next(iter(direct_sides)),
+            "status": "resolved",
+            "confidence": "high",
+            "evidence": evidence,
+            "requiresClinicianVerification": True,
+        }
+    if description_sides:
+        return {
+            "laterality": next(iter(description_sides)),
+            "status": "resolved",
+            "confidence": "low",
+            "evidence": evidence,
+            "requiresClinicianVerification": True,
+        }
+    return _empty_laterality_hint("absent")
+
+
+def dicom_laterality_hint(files: Iterable[Path]) -> dict[str, Any]:
+    """Read only four non-identifying laterality-related fields."""
+    try:
+        import pydicom
+    except ImportError:
+        return _empty_laterality_hint("absent")
+    rows: list[dict[str, Any]] = []
+    keywords = [keyword for keyword, _source, _kind in DICOM_LATERALITY_TAGS]
+    for path in files:
+        try:
+            dataset = pydicom.dcmread(
+                str(path),
+                stop_before_pixels=True,
+                specific_tags=keywords,
+                force=False,
+            )
+        except Exception:
+            continue
+        rows.append({keyword: getattr(dataset, keyword, None) for keyword in keywords})
+    return resolve_dicom_laterality_metadata(rows)
+
+
+def _selected_series_laterality_hint(config: BridgeConfig, input_path: Path, result: Any) -> dict[str, Any]:
+    fingerprint = result.selected_series
+    if str(getattr(fingerprint, "source_kind", "")) != "dicom_series":
+        return _empty_laterality_hint("not_applicable")
+    _add_mat_import_path(config)
+    try:
+        from knee_bone_masker.io_utils import discover_dicom_series
+        selected_series_id = str(getattr(fingerprint, "series_id", "") or "")
+        candidates = list(discover_dicom_series(input_path))
+        candidate = next((item for item in candidates if str(item.series_id) == selected_series_id), None)
+        if candidate is None:
+            return _empty_laterality_hint("absent")
+        return dicom_laterality_hint(Path(path) for path in candidate.files)
+    except Exception:
+        # Laterality metadata is advisory. A missing/unsupported header reader
+        # must not turn a successful segmentation into a failed job.
+        return _empty_laterality_hint("absent")
+
+
 def _selected_input_geometry(config: BridgeConfig, input_path: Path, result: Any) -> Mapping[str, Any]:
     _add_mat_import_path(config)
     try:
@@ -1317,6 +1458,7 @@ class MatPipelineRunner:
             "axesCode": str(getattr(fingerprint, "axes_code", "") or ""),
             "size": [int(value) for value in (getattr(fingerprint, "size", None) or ())],
             "spacingMm": [float(value) for value in (getattr(fingerprint, "spacing", None) or ())],
+            "lateralityHint": _selected_series_laterality_hint(self.config, input_path, result),
         }
         return RunnerOutcome(
             standardized_mask_path=Path(result.output_mask_path),
@@ -1786,6 +1928,58 @@ def _selected_model_provenance(model: ModelEvidence) -> dict[str, Any]:
     }
 
 
+def _sanitize_laterality_hint(value: Mapping[str, Any]) -> dict[str, Any]:
+    """Enforce the small non-PHI public laterality contract."""
+    status = str(value.get("status", "absent"))
+    if status not in {"resolved", "conflict", "absent", "not_applicable"}:
+        status = "absent"
+    laterality = value.get("laterality")
+    if laterality not in {"left", "right"}:
+        laterality = None
+    confidence = str(value.get("confidence", "none"))
+    if confidence not in {"high", "low", "none"}:
+        confidence = "none"
+    allowed_sources = {source for _keyword, source, _kind in DICOM_LATERALITY_TAGS}
+    evidence: list[dict[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    raw_evidence = value.get("evidence", [])
+    if isinstance(raw_evidence, Sequence) and not isinstance(raw_evidence, (str, bytes)):
+        for item in raw_evidence:
+            if not isinstance(item, Mapping):
+                continue
+            source = str(item.get("source", ""))
+            side = str(item.get("laterality", ""))
+            key = (source, side)
+            if source not in allowed_sources or side not in {"left", "right"} or key in seen:
+                continue
+            seen.add(key)
+            evidence.append({"source": source, "laterality": side})
+    evidence.sort(key=lambda item: (
+        next(index for index, (_keyword, source, _kind) in enumerate(DICOM_LATERALITY_TAGS) if source == item["source"]),
+        item["laterality"],
+    ))
+    if status != "resolved":
+        laterality = None
+        confidence = "none"
+    elif laterality is None:
+        status = "conflict" if len({item["laterality"] for item in evidence}) > 1 else "absent"
+        confidence = "none"
+    elif confidence == "high" and not any(
+        item["source"] in {"dicom_image_laterality", "dicom_laterality"}
+        for item in evidence
+    ):
+        confidence = "low"
+    if status == "resolved" and confidence == "none":
+        confidence = "low"
+    return {
+        "laterality": laterality,
+        "status": status,
+        "confidence": confidence,
+        "evidence": evidence,
+        "requiresClinicianVerification": True,
+    }
+
+
 def build_result_manifest(
     config: BridgeConfig,
     run_id: str,
@@ -1802,7 +1996,20 @@ def build_result_manifest(
     model = _selected_model_provenance(outcome.selected_model)
     if canonical_json_bytes(model) != canonical_json_bytes(outcome.model_artifact_provenance):
         raise BridgeError("MODEL_ARTIFACT_CHANGED", "The selected model artifacts changed after inference.")
-    warnings = tuple(dict.fromkeys((*processed.warning_codes, *extra_warning_codes)))
+    raw_laterality_hint = outcome.selected_series.get("lateralityHint")
+    if not isinstance(raw_laterality_hint, Mapping):
+        raw_laterality_hint = _empty_laterality_hint(
+            "not_applicable" if source.kind == "nifti" else "absent"
+        )
+    laterality_hint = _sanitize_laterality_hint(raw_laterality_hint)
+    hint_warning_codes: tuple[str, ...] = ()
+    if laterality_hint["status"] == "resolved":
+        hint_warning_codes = ("DICOM_LATERALITY_HINT_REQUIRES_VERIFICATION",)
+    elif laterality_hint["status"] == "conflict":
+        hint_warning_codes = ("DICOM_LATERALITY_CONFLICT",)
+    elif source.kind != "nifti":
+        hint_warning_codes = ("DICOM_LATERALITY_ABSENT",)
+    warnings = tuple(dict.fromkeys((*processed.warning_codes, *extra_warning_codes, *hint_warning_codes)))
     bone_status = {str(item["bone"]): str(item["status"]) for item in processed.bones}
     public_artifacts: list[dict[str, Any]] = []
     seen_asset_ids: set[str] = set()
@@ -1820,6 +2027,7 @@ def build_result_manifest(
         "researchUseOnly": True,
         "generatedAt": utc_now(),
         "source": source.public(),
+        "lateralityHint": laterality_hint,
         "algorithm": {
             "name": "MAT Planner knee_bone_masker.BoneMaskPipeline",
             "algorithmSourceSha256": algorithm_source_sha256,

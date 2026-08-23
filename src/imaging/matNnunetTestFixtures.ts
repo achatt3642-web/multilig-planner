@@ -70,6 +70,13 @@ export function validManifest(): MatNnunetSegmentationManifest {
       byteLength: 26_384_811,
       immutable: true,
     },
+    lateralityHint: {
+      laterality: "right",
+      status: "resolved",
+      confidence: "low",
+      evidence: [{ source: "dicom_series_description", laterality: "right" }],
+      requiresClinicianVerification: true,
+    },
     algorithm: {
       name: "nnUNetv2",
       modelId: "Dataset501_KneeBones",
@@ -302,6 +309,13 @@ export function bridgeManifestFixture(): any {
       fileCount: 1,
       immutable: true,
       assetId: assetId("a"),
+    },
+    lateralityHint: {
+      laterality: "right",
+      status: "resolved",
+      confidence: "low",
+      evidence: [{ source: "dicom_series_description", laterality: "right" }],
+      requiresClinicianVerification: true,
     },
     algorithm: {
       name: "MAT Planner knee_bone_masker.BoneMaskPipeline",

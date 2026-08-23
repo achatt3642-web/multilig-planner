@@ -18,6 +18,13 @@ export type MatNnunetFrameKind = "dicom_patient" | "voxel" | "label_map" | "mesh
 export type MatNnunetSourceConvention = "RAS" | "LPS" | "IJK" | "MODEL_LOCAL" | "VIEWER_WORLD";
 export type MatNnunetArtifactKind = "immutable_labelmap" | "surface_mesh";
 export type MatNnunetImageOrientation = "SAGITTAL" | "CORONAL" | "AXIAL" | "UNKNOWN";
+export type MatNnunetLateralityHintStatus = "resolved" | "conflict" | "absent" | "not_applicable";
+export type MatNnunetLateralityHintConfidence = "high" | "low" | "none";
+export type MatNnunetLateralityEvidenceSource =
+  | "dicom_image_laterality"
+  | "dicom_laterality"
+  | "dicom_body_part_examined"
+  | "dicom_series_description";
 export type MatNnunetArtifactMediaType =
   | "application/x-nifti"
   | "application/vnd.nifti"
@@ -102,6 +109,21 @@ export interface MatNnunetMeshQualityManifest {
   reviewStatus: "unreviewed";
 }
 
+/**
+ * Privacy-safe advisory metadata. Raw DICOM values and free-form descriptions
+ * are never exposed. A resolved side is still not clinician verification.
+ */
+export interface MatNnunetLateralityHint {
+  laterality: "left" | "right" | null;
+  status: MatNnunetLateralityHintStatus;
+  confidence: MatNnunetLateralityHintConfidence;
+  evidence: Array<{
+    source: MatNnunetLateralityEvidenceSource;
+    laterality: "left" | "right";
+  }>;
+  requiresClinicianVerification: true;
+}
+
 export type MatNnunetNotEvaluatedCode =
   | "fibula_segmentation"
   | "posterior_danger_anatomy"
@@ -142,6 +164,7 @@ export interface MatNnunetSegmentationManifest {
     byteLength: number;
     immutable: true;
   };
+  lateralityHint: MatNnunetLateralityHint;
   algorithm: {
     name: "nnUNetv2";
     modelId: string;
@@ -210,6 +233,14 @@ const FRAME_KINDS = new Set<MatNnunetFrameKind>(["dicom_patient", "voxel", "labe
 const SOURCE_CONVENTIONS = new Set<MatNnunetSourceConvention>(["RAS", "LPS", "IJK", "MODEL_LOCAL", "VIEWER_WORLD"]);
 const ARTIFACT_KINDS = new Set<MatNnunetArtifactKind>(["immutable_labelmap", "surface_mesh"]);
 const IMAGE_ORIENTATIONS = new Set<MatNnunetImageOrientation>(["SAGITTAL", "CORONAL", "AXIAL", "UNKNOWN"]);
+const LATERALITY_HINT_STATUSES = new Set<MatNnunetLateralityHintStatus>(["resolved", "conflict", "absent", "not_applicable"]);
+const LATERALITY_HINT_CONFIDENCES = new Set<MatNnunetLateralityHintConfidence>(["high", "low", "none"]);
+const LATERALITY_EVIDENCE_SOURCES = new Set<MatNnunetLateralityEvidenceSource>([
+  "dicom_image_laterality",
+  "dicom_laterality",
+  "dicom_body_part_examined",
+  "dicom_series_description",
+]);
 const MEDIA_TYPES = new Set<MatNnunetArtifactMediaType>([
   "application/x-nifti",
   "application/vnd.nifti",
@@ -385,6 +416,85 @@ function parseWarningCodes(value: unknown, context: string): MatNnunetWarningCod
   });
   if (new Set(codes).size !== codes.length) throw new Error(`${context} must not contain duplicates`);
   return codes;
+}
+
+function parseLateralityHint(
+  value: unknown,
+  sourceKind: MatNnunetSourceKind,
+): MatNnunetLateralityHint {
+  if (value === undefined) {
+    return {
+      laterality: null,
+      status: sourceKind === "nifti" ? "not_applicable" : "absent",
+      confidence: "none",
+      evidence: [],
+      requiresClinicianVerification: true,
+    };
+  }
+  const item = record(value, "segmentation result.lateralityHint");
+  if (item.requiresClinicianVerification !== true) {
+    throw new Error("segmentation result.lateralityHint cannot claim clinician verification");
+  }
+  const status = enumValue(item.status, LATERALITY_HINT_STATUSES, "segmentation result.lateralityHint.status");
+  const confidence = enumValue(
+    item.confidence,
+    LATERALITY_HINT_CONFIDENCES,
+    "segmentation result.lateralityHint.confidence",
+  );
+  const laterality = item.laterality === null
+    ? null
+    : enumValue(item.laterality, new Set(["left", "right"] as const), "segmentation result.lateralityHint.laterality");
+  const evidence = arrayValue(item.evidence, "segmentation result.lateralityHint.evidence").map((entry, index) => {
+    const evidenceItem = record(entry, `segmentation result.lateralityHint.evidence[${index}]`);
+    return {
+      source: enumValue(
+        evidenceItem.source,
+        LATERALITY_EVIDENCE_SOURCES,
+        `segmentation result.lateralityHint.evidence[${index}].source`,
+      ),
+      laterality: enumValue(
+        evidenceItem.laterality,
+        new Set(["left", "right"] as const),
+        `segmentation result.lateralityHint.evidence[${index}].laterality`,
+      ),
+    };
+  });
+  const evidenceKeys = evidence.map((entry) => `${entry.source}:${entry.laterality}`);
+  if (new Set(evidenceKeys).size !== evidenceKeys.length) {
+    throw new Error("segmentation result.lateralityHint.evidence must not contain duplicates");
+  }
+  const evidenceSides = new Set(evidence.map((entry) => entry.laterality));
+  const hasDirectEvidence = evidence.some((entry) =>
+    entry.source === "dicom_image_laterality" || entry.source === "dicom_laterality"
+  );
+  if (status === "resolved") {
+    if (sourceKind === "nifti" || laterality === null || evidence.length === 0 || evidenceSides.size !== 1 || !evidenceSides.has(laterality)) {
+      throw new Error("A resolved DICOM laterality hint must have unanimous evidence for one side");
+    }
+    if ((confidence === "high") !== hasDirectEvidence || confidence === "none") {
+      throw new Error("DICOM laterality hint confidence does not match its evidence source");
+    }
+  } else {
+    if (laterality !== null || confidence !== "none") {
+      throw new Error("An unresolved DICOM laterality hint cannot select a side or confidence");
+    }
+    if (status === "conflict" && evidenceSides.size < 2) {
+      throw new Error("A DICOM laterality conflict requires evidence for both sides");
+    }
+    if ((status === "absent" || status === "not_applicable") && evidence.length > 0) {
+      throw new Error("An absent or inapplicable laterality hint cannot contain evidence");
+    }
+    if ((sourceKind === "nifti") !== (status === "not_applicable")) {
+      throw new Error("Laterality metadata is only inapplicable for a NIfTI source");
+    }
+  }
+  return {
+    laterality,
+    status,
+    confidence,
+    evidence,
+    requiresClinicianVerification: true,
+  };
 }
 
 function parseMeshQuality(value: unknown, context: string): MatNnunetMeshQualityManifest {
@@ -1066,6 +1176,7 @@ export function parseMatNnunetSegmentationManifest(value: unknown): MatNnunetSeg
     registrySha256: sha256(algorithm.registrySha256, "segmentation result.algorithm.registrySha256"),
     algorithmSourceSha256: sha256(algorithm.algorithmSourceSha256, "segmentation result.algorithm.algorithmSourceSha256"),
   };
+  const sourceKind = enumValue(source.kind, SOURCE_KINDS, "segmentation result.source.kind");
 
   return {
     schemaVersion: MAT_NNUNET_RESULT_SCHEMA,
@@ -1076,11 +1187,12 @@ export function parseMatNnunetSegmentationManifest(value: unknown): MatNnunetSeg
     researchUseOnly: true,
     generatedAt,
     source: {
-      kind: enumValue(source.kind, SOURCE_KINDS, "segmentation result.source.kind"),
+      kind: sourceKind,
       sha256: sha256(source.sha256, "segmentation result.source.sha256"),
       byteLength: positiveInteger(source.byteLength, "segmentation result.source.byteLength"),
       immutable: true,
     },
+    lateralityHint: parseLateralityHint(item.lateralityHint, sourceKind),
     algorithm: parsedAlgorithm,
     coordinateFrames,
     geometry: {

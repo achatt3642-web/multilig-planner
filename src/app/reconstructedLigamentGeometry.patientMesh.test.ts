@@ -7,6 +7,11 @@ import {
 } from "../geometry/surfaceClearance";
 import type { ViewerMeshPayload } from "../viewer/types";
 import { createSyntheticDemoCase } from "./caseFactory";
+import {
+  anatomicChannelSurfaceSeed,
+  createAnatomicChannelSeedContext,
+} from "./anatomicChannelSurfaceSeed";
+import { initializePendingChannelSurfacePlacements } from "./channelSurfaceInitialization";
 import { buildReconstructedLigamentPayloads } from "./reconstructedLigamentGeometry";
 
 const femurPath = process.env.MULTILIG_FEMUR_MESH;
@@ -126,6 +131,111 @@ function pointStaysWithinDisplayOverlap(
 }
 
 describe("current de-identified MRI graft-volume regression", () => {
+  patientIt("seeds medial, lateral, and cruciate femoral locations on the correct MRI-mask side", () => {
+    const femur = loadMesh(femurPath!, "patient-femur", "femur");
+    const tibia = loadMesh(tibiaPath!, "patient-tibia", "tibia");
+    const plan = {
+      ...createSyntheticDemoCase(),
+      laterality: "right" as const,
+      lateralityVerified: true,
+    };
+    const context = createAnatomicChannelSeedContext(plan, [femur, tibia]);
+    expect(context).not.toBeNull();
+    if (!context) return;
+    const lateralAxis = context.frame.midline.normalPatientRas;
+    const midlineOrigin = context.frame.midline.originPatientRasMm;
+    const template = plan.variants[0].channels.find((channel) => channel.bone === "femur")!;
+    const lateralOffset = (point: Vector3): number => dot(
+      subtract(point, midlineOrigin),
+      lateralAxis,
+    );
+    const seedFor = (procedure: ProcedureIdentity) => {
+      const channel: ChannelPlan = {
+        ...structuredClone(template),
+        id: `patient-seed-${procedure}`,
+        semanticKey: "femur-single-1",
+        label: `${procedure} femur seed`,
+        aperture: [0, 0, 0],
+        vector: [0, 0, 1],
+        surfacePlacement: {
+          state: "pending_default",
+          method: "preset_seed_unregistered",
+          meshIds: [],
+          endpointMethod: "not_available",
+        },
+      };
+      const seed = anatomicChannelSurfaceSeed(context, channel, procedure);
+      expect(seed, procedure).not.toBeNull();
+      return seed!;
+    };
+
+    const acl = seedFor("ACL");
+    const pcl = seedFor("PCL");
+    const plc = seedFor("PLC_FCL");
+    const all = seedFor("ALL");
+    const letSeed = seedFor("LET");
+    const mcl = seedFor("MCL_POL_PMC");
+    expect(lateralOffset(acl.requestedPointPatientRasMm)).toBeGreaterThan(0);
+    expect(lateralOffset(pcl.requestedPointPatientRasMm)).toBeLessThan(0);
+    expect(lateralOffset(plc.requestedPointPatientRasMm)).toBeGreaterThan(0);
+    expect(lateralOffset(all.requestedPointPatientRasMm)).toBeGreaterThan(0);
+    expect(lateralOffset(letSeed.requestedPointPatientRasMm)).toBeGreaterThan(0);
+    expect(lateralOffset(mcl.requestedPointPatientRasMm)).toBeLessThan(0);
+    expect(dot(acl.preferredDirectionPatientRas, lateralAxis)).toBeGreaterThan(0.99);
+    expect(dot(pcl.preferredDirectionPatientRas, lateralAxis)).toBeLessThan(-0.99);
+  }, 30_000);
+
+  patientIt("keeps a new PLC tibial LaPrade Start on the lateral side of the MRI mask", () => {
+    const femur = loadMesh(femurPath!, "patient-femur", "femur");
+    const tibia = loadMesh(tibiaPath!, "patient-tibia", "tibia");
+    const base = createSyntheticDemoCase();
+    const plcProcedure = structuredClone(base.procedures[0]);
+    plcProcedure.id = "patient-plc-procedure";
+    plcProcedure.structure = "PLC_FCL";
+    plcProcedure.constructs = [];
+    const template = structuredClone(base.variants[0].channels.find((channel) => channel.bone === "tibia")!);
+    const plcTibia: ChannelPlan = {
+      ...template,
+      id: "patient-plc-tibia",
+      procedureId: plcProcedure.id,
+      semanticKey: "tibia-laprade_full_tunnel",
+      label: "PLC tibial LaPrade-style full tunnel",
+      bone: "tibia",
+      geometryType: "round_full_tunnel",
+      trajectoryControlMode: "outer_cortex_surface",
+      aperture: [0, 0, 0],
+      vector: [0, 0, 1],
+      fullThickness: true,
+      depthMm: 45,
+      apertureSurfaceAttachment: null,
+      endpointSurfaceAttachment: null,
+      surfacePlacement: {
+        state: "pending_default",
+        method: "preset_seed_unregistered",
+        meshIds: [],
+        endpointMethod: "not_available",
+      },
+    };
+    const plan = {
+      ...base,
+      laterality: "right" as const,
+      lateralityVerified: true,
+      procedures: [plcProcedure],
+      variants: [{ ...base.variants[0], channels: [plcTibia] }],
+    };
+    const initialized = initializePendingChannelSurfacePlacements(plan, [femur, tibia])
+      .variants[0].channels[0];
+    const frame = createAnatomicChannelSeedContext(plan, [femur, tibia])!.frame;
+    const lateralOffset = (point: Vector3): number => dot(
+      subtract(point, frame.midline.originPatientRasMm),
+      frame.midline.normalPatientRas,
+    );
+
+    expect(lateralOffset(initialized.aperture)).toBeGreaterThan(0);
+    expect(initialized.endpointSurfaceAttachment).not.toBeNull();
+    expect(lateralOffset(initialized.endpointSurfaceAttachment!.attachedPointPatientRasMm)).toBeGreaterThan(0);
+  }, 30_000);
+
   patientIt("keeps MCL and ALL taut, cylindrical, and within the display-mask overlap tolerance", () => {
     const femur = loadMesh(femurPath!, "patient-femur", "femur");
     const tibia = loadMesh(tibiaPath!, "patient-tibia", "tibia");

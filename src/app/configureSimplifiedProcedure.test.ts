@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ChannelPlan, Vector3 } from "../domain/types";
 import type { ViewerMeshPayload } from "../viewer/types";
-import { buildViewerScene } from "./channelGeometry";
+import { buildSyntheticAnatomyMeshes, buildViewerScene } from "./channelGeometry";
 import { createSyntheticDemoCase } from "./caseFactory";
 import {
   autoConfigureSimplifiedProcedure,
@@ -121,6 +121,36 @@ describe("scoped simplified procedure configuration", () => {
     const updated = autoConfigureSimplifiedProcedure(configured!.plan, changed, anatomyMeshes);
     expect(updated).not.toBeNull();
     expect(procedureChannels(updated!.plan, "MCL_POL_PMC").find((channel) => channel.bone === "femur")?.depthMm).toBe(24);
+  });
+
+  it("routes new PLC femoral channels to the anatomy-derived lateral side and mirrors with laterality", () => {
+    const anatomyMeshes = buildSyntheticAnatomyMeshes();
+    const plcSelection = selection("PLC_FCL", {
+      femur: bone({ preparation: "socket_with_guide_pin", count: 2 }),
+      tibia: bone({ preparation: "none" }),
+    });
+    const configureSide = (laterality: "left" | "right") => {
+      const plan = createSyntheticDemoCase();
+      plan.laterality = laterality;
+      plan.lateralityVerified = true;
+      return procedureChannels(
+        configureSimplifiedProcedure(plan, plcSelection, anatomyMeshes).plan,
+        "PLC_FCL",
+      );
+    };
+
+    const right = configureSide("right");
+    const left = configureSide("left");
+    expect(right).toHaveLength(2);
+    expect(left).toHaveLength(2);
+    right.forEach((channel) => expect(
+      channel.aperture[0],
+      `${channel.label} should seed on the right-knee lateral surface`,
+    ).toBeGreaterThan(0));
+    left.forEach((channel) => expect(
+      channel.aperture[0],
+      `${channel.label} should mirror onto the left-knee lateral surface`,
+    ).toBeLessThan(0));
   });
 
   it("configuring PLC preserves authored MCL channels and its derived graft bit-for-bit", () => {

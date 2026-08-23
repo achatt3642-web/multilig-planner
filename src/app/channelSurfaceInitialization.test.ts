@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import type { ChannelPlan, PlanCase, Vector3 } from "../domain/types";
 import type { ViewerMeshPayload } from "../viewer/types";
 import { createSyntheticDemoCase } from "./caseFactory";
+import { buildSyntheticAnatomyMeshes } from "./channelGeometry";
+import { deriveAnatomicReferenceFrame } from "../geometry/anatomicReferencePlanes";
+import { ANATOMY_DERIVED_SURFACE_SEED_WARNING } from "./anatomicChannelSurfaceSeed";
 import {
   attachMissingForwardSurfaceStart,
   GENERIC_ANCHOR_TRAJECTORY_WARNING,
@@ -126,7 +129,252 @@ function configuredChannel(
   };
 }
 
+function subtract(left: Vector3, right: Vector3): Vector3 {
+  return [left[0] - right[0], left[1] - right[1], left[2] - right[2]];
+}
+
+function dot(left: Vector3, right: Vector3): number {
+  return left[0] * right[0] + left[1] * right[1] + left[2] * right[2];
+}
+
+function mirroredLeftMeshes(meshes: ViewerMeshPayload[]): ViewerMeshPayload[] {
+  return meshes.map((mesh) => ({
+    ...mesh,
+    id: `${mesh.id}-left`,
+    vertices: mesh.vertices.map((point) => [-point[0], point[1], point[2]]),
+    faces: mesh.faces.map((face) => [...face].reverse()),
+  }));
+}
+
+function anatomySeedPlan(
+  laterality: "left" | "right",
+  specifications: Array<{
+    id: string;
+    procedure: "ACL" | "PCL" | "PLC_FCL" | "MCL_POL_PMC" | "ALL" | "LET";
+    bone: "femur" | "tibia" | "fibula";
+    semanticKey: string;
+    label: string;
+    trajectoryControlMode?: ChannelPlan["trajectoryControlMode"];
+  }>,
+): PlanCase {
+  const base = createSyntheticDemoCase();
+  const procedures = specifications.map((specification, index) => ({
+    ...structuredClone(base.procedures[index % base.procedures.length]),
+    id: `anatomic-procedure-${index}`,
+    structure: specification.procedure,
+    constructs: [],
+  }));
+  const channels = specifications.map((specification, index) => {
+    const channel = pending(demoChannel("acl-femoral"));
+    return {
+      ...channel,
+      id: specification.id,
+      semanticKey: specification.semanticKey,
+      label: specification.label,
+      procedureId: procedures[index].id,
+      bone: specification.bone,
+      geometryType: specification.trajectoryControlMode === "exterior_rod"
+        ? "anchor_pilot" as const
+        : "retrograde_socket" as const,
+      trajectoryControlMode: specification.trajectoryControlMode ?? "outer_cortex_surface",
+      aperture: [0, 0, 0] as Vector3,
+      vector: [0, 0, 1] as Vector3,
+      centerline: {
+        kind: "rigid" as const,
+        aperturePatientRasMm: [0, 0, 0] as Vector3,
+        directionPatientRas: [0, 0, 1] as Vector3,
+      },
+      fullThickness: false,
+      depthMm: 18,
+    };
+  });
+  return {
+    ...base,
+    laterality,
+    lateralityVerified: true,
+    procedures,
+    variants: [{ ...base.variants[0], channels }],
+  };
+}
+
+function lateralOffset(point: Vector3, meshes: ViewerMeshPayload[], laterality: "left" | "right"): number {
+  const frame = deriveAnatomicReferenceFrame(meshes, {
+    laterality,
+    lateralityVerified: true,
+    scaleVerified: true,
+  });
+  if (frame.evaluationState !== "evaluated") throw new Error(frame.reason);
+  return dot(
+    subtract(point, frame.midline.originPatientRasMm),
+    frame.midline.normalPatientRas,
+  );
+}
+
+function withResolvedDicomLateralityHint(
+  plan: PlanCase,
+  laterality: "left" | "right",
+): PlanCase {
+  const hash = "a".repeat(64);
+  return {
+    ...plan,
+    laterality,
+    lateralityVerified: false,
+    imaging: {
+      ...plan.imaging,
+      segmentationRuns: [{
+        id: `dicom-run-${laterality}`,
+        adapterId: "test-adapter",
+        adapterVersion: "1",
+        validationState: "research_only",
+        researchUseOnly: true,
+        sourceId: "test-source",
+        algorithm: {
+          name: "test",
+          modelId: "test",
+          modelVersion: null,
+          modelSha256: hash,
+          pipelineName: "test",
+          modelDataset: "test",
+          modelTrainer: "test",
+          modelPlans: "test",
+          modelConfiguration: "test",
+          modelFolds: [0],
+          checkpointName: "test",
+          checkpoints: [{ fold: 0, checkpointName: "test", sha256: hash, byteLength: 1 }],
+          configurationArtifacts: [
+            { name: "plans.json", sha256: hash, byteLength: 1 },
+            { name: "dataset.json", sha256: hash, byteLength: 1 },
+          ],
+          nnunetv2Version: null,
+          matPlannerRevision: "test",
+          registrySha256: hash,
+          algorithmSourceSha256: hash,
+        },
+        labelStatus: { femur: "segmented", tibia: "segmented", fibula: "segmented" },
+        artifactIds: [],
+        warningCodes: [],
+        notEvaluatedCodes: [],
+        lateralityHint: {
+          laterality,
+          status: "resolved",
+          confidence: "high",
+          evidence: [{ source: "dicom_image_laterality", laterality }],
+          requiresClinicianVerification: true,
+        },
+        generatedAt: "2026-08-23T12:00:00.000Z",
+      }],
+    },
+  };
+}
+
 describe("pending channel surface initialization", () => {
+  it.each(["right", "left"] as const)(
+    "seeds lateral structures laterally and MCL medially on a mirrored %s knee",
+    (laterality) => {
+      const rightMeshes = buildSyntheticAnatomyMeshes();
+      const meshes = laterality === "right" ? rightMeshes : mirroredLeftMeshes(rightMeshes);
+      const plan = anatomySeedPlan(laterality, [
+        { id: "plc", procedure: "PLC_FCL", bone: "femur", semanticKey: "femur-anchor-1", label: "PLC femur anchor", trajectoryControlMode: "exterior_rod" },
+        { id: "plc-tibia", procedure: "PLC_FCL", bone: "tibia", semanticKey: "tibia-laprade_full_tunnel", label: "PLC tibial LaPrade-style full tunnel" },
+        { id: "all", procedure: "ALL", bone: "tibia", semanticKey: "tibia-anchor-1", label: "ALL tibia anchor", trajectoryControlMode: "exterior_rod" },
+        { id: "let", procedure: "LET", bone: "femur", semanticKey: "femur-anchor-1", label: "LET femur anchor", trajectoryControlMode: "exterior_rod" },
+        { id: "mcl", procedure: "MCL_POL_PMC", bone: "femur", semanticKey: "femur-anchor-1", label: "MCL femur anchor", trajectoryControlMode: "exterior_rod" },
+      ]);
+      const initialized = initializePendingChannelSurfacePlacements(plan, meshes);
+      const byId = new Map(initialized.variants[0].channels.map((channel) => [channel.id, channel]));
+
+      expect(lateralOffset(byId.get("plc")!.aperture, meshes, laterality)).toBeGreaterThan(5);
+      expect(lateralOffset(byId.get("plc-tibia")!.aperture, meshes, laterality)).toBeGreaterThan(5);
+      expect(lateralOffset(
+        byId.get("plc-tibia")!.endpointSurfaceAttachment!.attachedPointPatientRasMm,
+        meshes,
+        laterality,
+      )).toBeGreaterThan(5);
+      expect(lateralOffset(byId.get("all")!.aperture, meshes, laterality)).toBeGreaterThan(5);
+      expect(lateralOffset(byId.get("let")!.aperture, meshes, laterality)).toBeGreaterThan(5);
+      expect(lateralOffset(byId.get("mcl")!.aperture, meshes, laterality)).toBeLessThan(-5);
+      for (const channel of byId.values()) {
+        expect(channel.surfacePlacement?.state).toBe("default_applied");
+        expect(channel.warnings).toContain(ANATOMY_DERIVED_SURFACE_SEED_WARNING);
+      }
+    },
+  );
+
+  it("mirrors ACL and PCL notch-wall entries and their outer-cortex Starts", () => {
+    const rightMeshes = buildSyntheticAnatomyMeshes();
+    const leftMeshes = mirroredLeftMeshes(rightMeshes);
+    const specifications = [
+      { id: "acl", procedure: "ACL" as const, bone: "femur" as const, semanticKey: "femur-single-1", label: "ACL femur socket" },
+      { id: "pcl", procedure: "PCL" as const, bone: "femur" as const, semanticKey: "femur-single-1", label: "PCL femur socket" },
+    ];
+    const right = initializePendingChannelSurfacePlacements(
+      anatomySeedPlan("right", specifications),
+      rightMeshes,
+    ).variants[0].channels;
+    const left = initializePendingChannelSurfacePlacements(
+      anatomySeedPlan("left", specifications),
+      leftMeshes,
+    ).variants[0].channels;
+    const rightAcl = right.find((channel) => channel.id === "acl")!;
+    const rightPcl = right.find((channel) => channel.id === "pcl")!;
+    const leftAcl = left.find((channel) => channel.id === "acl")!;
+    const leftPcl = left.find((channel) => channel.id === "pcl")!;
+
+    const rightAclEntry = lateralOffset(rightAcl.aperture, rightMeshes, "right");
+    const rightAclStart = lateralOffset(
+      rightAcl.endpointSurfaceAttachment!.attachedPointPatientRasMm,
+      rightMeshes,
+      "right",
+    );
+    const rightPclEntry = lateralOffset(rightPcl.aperture, rightMeshes, "right");
+    const rightPclStart = lateralOffset(
+      rightPcl.endpointSurfaceAttachment!.attachedPointPatientRasMm,
+      rightMeshes,
+      "right",
+    );
+    expect(rightAclEntry).toBeGreaterThan(0);
+    expect(rightAclStart).toBeGreaterThan(rightAclEntry + 5);
+    expect(rightPclEntry).toBeLessThan(0);
+    expect(rightPclStart).toBeLessThan(rightPclEntry - 5);
+
+    expect(leftAcl.aperture[0]).toBeCloseTo(-rightAcl.aperture[0], 6);
+    expect(leftAcl.aperture[1]).toBeCloseTo(rightAcl.aperture[1], 6);
+    expect(leftAcl.aperture[2]).toBeCloseTo(rightAcl.aperture[2], 6);
+    expect(leftPcl.aperture[0]).toBeCloseTo(-rightPcl.aperture[0], 6);
+    expect(leftPcl.aperture[1]).toBeCloseTo(rightPcl.aperture[1], 6);
+    expect(leftPcl.aperture[2]).toBeCloseTo(rightPcl.aperture[2], 6);
+    expect(lateralOffset(leftAcl.aperture, leftMeshes, "left")).toBeGreaterThan(0);
+    expect(lateralOffset(leftPcl.aperture, leftMeshes, "left")).toBeLessThan(0);
+  });
+
+  it("uses a matching resolved DICOM hint for an unverified mirrored left-knee seed", () => {
+    const rightMeshes = buildSyntheticAnatomyMeshes();
+    const leftMeshes = mirroredLeftMeshes(rightMeshes);
+    const specifications = [{
+      id: "plc",
+      procedure: "PLC_FCL" as const,
+      bone: "femur" as const,
+      semanticKey: "femur-anchor-1",
+      label: "PLC femur anchor",
+      trajectoryControlMode: "exterior_rod" as const,
+    }];
+    const right = initializePendingChannelSurfacePlacements(
+      withResolvedDicomLateralityHint(anatomySeedPlan("right", specifications), "right"),
+      rightMeshes,
+    ).variants[0].channels[0];
+    const left = initializePendingChannelSurfacePlacements(
+      withResolvedDicomLateralityHint(anatomySeedPlan("left", specifications), "left"),
+      leftMeshes,
+    ).variants[0].channels[0];
+
+    expect(right.aperture[0]).toBeGreaterThan(0);
+    expect(left.aperture[0]).toBeLessThan(0);
+    expect(left.aperture[0]).toBeCloseTo(-right.aperture[0], 6);
+    expect(left.aperture[1]).toBeCloseTo(right.aperture[1], 6);
+    expect(left.aperture[2]).toBeCloseTo(right.aperture[2], 6);
+    expect(left.warnings).toContain(ANATOMY_DERIVED_SURFACE_SEED_WARNING);
+  });
+
   it("places an intra-articular tibial aperture on the maximum-Z envelope across tibia meshes", () => {
     const channel = configuredChannel("acl-tibial", [2, 3, 5], [0, 0, -1], 9);
     const result = initializePendingChannelSurfacePlacements(
