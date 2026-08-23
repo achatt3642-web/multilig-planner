@@ -2,6 +2,7 @@ import type { PlanCase, ProcedureIdentity } from "../domain/types";
 import type { ViewerPlanningScene } from "../viewer/types";
 import {
   SIMPLIFIED_PROCEDURES,
+  decodeSimplifiedTechniqueSelection,
   type SimplifiedProcedureIdentity,
   type SimplifiedTechniqueSelection,
 } from "./simplifiedTechniqueFlow";
@@ -10,7 +11,7 @@ export const SIMPLIFIED_WORKSPACE_KEY = "multilig-planner:simplified-workspace:v
 
 export interface SimplifiedWorkspaceDefaults {
   format: "multilig-simplified-workspace";
-  version: 1;
+  version: 2;
   planId: string;
   savedAt: string;
   highlightedProcedures: SimplifiedProcedureIdentity[];
@@ -36,9 +37,9 @@ function sanitizeDrafts(value: unknown): SimplifiedWorkspaceDefaults["drafts"] {
   const drafts: SimplifiedWorkspaceDefaults["drafts"] = {};
   for (const [key, candidate] of Object.entries(value)) {
     if (!isProcedure(key) || !candidate || typeof candidate !== "object") continue;
-    const selection = candidate as Partial<SimplifiedTechniqueSelection>;
-    if (selection.procedure !== key) continue;
-    drafts[key] = structuredClone(selection as SimplifiedTechniqueSelection);
+    const selection = decodeSimplifiedTechniqueSelection(candidate);
+    if (!selection || selection.procedure !== key) continue;
+    drafts[key] = structuredClone(selection);
   }
   return drafts;
 }
@@ -63,7 +64,7 @@ export function createSimplifiedWorkspaceDefaults(
   );
   return {
     format: "multilig-simplified-workspace",
-    version: 1,
+    version: 2,
     planId: plan.id,
     savedAt,
     highlightedProcedures,
@@ -98,10 +99,10 @@ export function loadSimplifiedWorkspaceDefaults(
   const json = storage.getItem(SIMPLIFIED_WORKSPACE_KEY);
   if (!json) return null;
   try {
-    const parsed = JSON.parse(json) as Partial<SimplifiedWorkspaceDefaults>;
+    const parsed = JSON.parse(json) as Partial<Omit<SimplifiedWorkspaceDefaults, "version">> & { version?: number };
     if (
       parsed.format !== "multilig-simplified-workspace" ||
-      parsed.version !== 1 ||
+      (parsed.version !== 1 && parsed.version !== 2) ||
       parsed.planId !== plan.id ||
       !Array.isArray(parsed.highlightedProcedures) ||
       !parsed.layerVisibility ||

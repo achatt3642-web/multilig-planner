@@ -35,6 +35,8 @@ import {
   createEmptySimplifiedSelection,
   flowStepsFor,
   readSimplifiedSelection,
+  selectedRootLocations,
+  toggleRootLocation,
   validateSimplifiedSelection,
   validateSimplifiedStep,
   type PreparationChoice,
@@ -272,7 +274,7 @@ function preparationOptions(
     { value: "full_tunnel", label: "Full tunnel" },
   ];
   if (procedure === "MEDIAL_ROOT" || procedure === "LATERAL_ROOT") return [
-    { value: "suture_anchor_location", label: "Suture anchor location", detail: "Point only; no tunnel" },
+    { value: "suture_anchor_location", label: "Suture anchor location" },
     { value: "socket_with_guide_pin", label: "Socket + guide pin" },
     { value: "full_tunnel", label: "Full tunnel" },
   ];
@@ -418,7 +420,7 @@ export function TechniquePanel({
   ) || (
     draft.procedure === "MCL_POL_PMC" && choice.preparation === "anchor"
   );
-  const pointOnly = choice.preparation === "onlay_fixation_point" || choice.preparation === "suture_anchor_location";
+  const pointOnly = choice.preparation === "onlay_fixation_point";
   const needsInitialAnchorDimensions = choice.preparation === "anchor" && adjustableSiteChannels.length === 0;
 
   return <aside className="right-panel simple-right" aria-label={`${label} plan`}>
@@ -444,9 +446,15 @@ export function TechniquePanel({
     <div className="simple-technique-scroll">
       {(draft.procedure === "MEDIAL_ROOT" || draft.procedure === "LATERAL_ROOT") ? <section className="simple-prompt-section">
         <h3>Root location</h3>
-        <div className="simple-choice-grid two">
-          <ChoiceButton active={draft.rootLocation === "anterior"} onClick={() => onDraft({ ...draft, rootLocation: "anterior" }, step.bone)}>Anterior</ChoiceButton>
-          <ChoiceButton active={draft.rootLocation === "posterior"} onClick={() => onDraft({ ...draft, rootLocation: "posterior" }, step.bone)}>Posterior</ChoiceButton>
+        <div className="simple-choice-grid two" role="group" aria-label="Root locations">
+          <ChoiceButton
+            active={selectedRootLocations(draft.rootLocation).includes("anterior")}
+            onClick={() => onDraft({ ...draft, rootLocation: toggleRootLocation(draft.rootLocation, "anterior") }, step.bone)}
+          >Anterior</ChoiceButton>
+          <ChoiceButton
+            active={selectedRootLocations(draft.rootLocation).includes("posterior")}
+            onClick={() => onDraft({ ...draft, rootLocation: toggleRootLocation(draft.rootLocation, "posterior") }, step.bone)}
+          >Posterior</ChoiceButton>
         </div>
       </section> : null}
 
@@ -516,7 +524,7 @@ export function TechniquePanel({
               ><span>{channel.label}</span><i aria-hidden="true" /></button>
               <ChannelDimensionControl
                 channelLabel={channel.label}
-                dimension="Diameter"
+                dimension={channel.geometryType === "rigid_pin" ? "Pin diameter" : "Diameter"}
                 value={channelDiameter(channel) ?? 1}
                 min={1}
                 max={15}
@@ -544,7 +552,9 @@ export function TechniquePanel({
                 onFocus={() => onSelectChannel(channel.id)}
                 onChange={(value) => onNumericChannel(channel.id, "pinDiameterMm", value)}
               /> : null}
-              <p>{channel.geometryType === "anchor_pilot"
+              <p>{channel.geometryType === "rigid_pin"
+                ? "Drag the Start point on the bone surface and the exterior Trajectory handle to change the guide-pin axis."
+                : channel.geometryType === "anchor_pilot"
                 ? "Drag the Start point on the bone surface and the exterior Trajectory handle to change the anchor axis."
                 : resolvedTrajectoryControlMode(channel) === "blind_socket_tip"
                   ? "Drag Entry on the ipsilateral cortex and the inner Start to steer the coaxial socket and guide pin."

@@ -421,7 +421,13 @@ function buildRigidPin(builder: GeometryBuilder, recipe: RigidPinRecipe): void {
   const parts = tract ? [tract] : [];
   const overshoot = overshootPart(builder, recipe.id, recipe.tract, recipe.diameterMm, recipe.tipOvershootMm);
   if (overshoot) parts.push(overshoot);
-  builder.addLayer("pin", "pinTractAndOvershoot", "Rigid guide pin and overshoot", "boneRemoval", parts);
+  builder.addLayer(
+    "pin",
+    "pinTractAndOvershoot",
+    overshoot ? "Rigid guide pin and overshoot" : "Rigid guide pin",
+    "boneRemoval",
+    parts,
+  );
 }
 
 function buildFullTunnel(builder: GeometryBuilder, recipe: FullTunnelRecipe): void {
@@ -431,7 +437,13 @@ function buildFullTunnel(builder: GeometryBuilder, recipe: FullTunnelRecipe): vo
   const parts = tract ? [tract] : [];
   const overshoot = overshootPart(builder, `${recipe.id}:guide-pin`, recipe.tunnel, recipe.pinDiameterMm ?? null, recipe.tipOvershootMm ?? null);
   if (overshoot) parts.push(overshoot);
-  builder.addLayer("guide-pin", "pinTractAndOvershoot", "Guide pin tract and predicted overshoot", "boneRemoval", parts);
+  builder.addLayer(
+    "guide-pin",
+    "pinTractAndOvershoot",
+    overshoot ? "Guide pin tract and predicted overshoot" : "Guide pin tract",
+    "boneRemoval",
+    parts,
+  );
 }
 
 function buildFlexiblePin(builder: GeometryBuilder, recipe: FlexiblePinRecipe): void {

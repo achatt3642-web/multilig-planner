@@ -40,6 +40,51 @@ describe("saved simplified workspace defaults", () => {
     expect(storage.values.has(SIMPLIFIED_WORKSPACE_KEY)).toBe(true);
   });
 
+  it("round-trips a draft with both meniscal root locations selected", () => {
+    const plan = createSyntheticDemoCase();
+    const storage = memoryStorage();
+    const medialRoot = createEmptySimplifiedSelection("MEDIAL_ROOT");
+    medialRoot.rootLocation = "both";
+    medialRoot.tibia!.preparation = "suture_anchor_location";
+
+    saveSimplifiedWorkspaceDefaults(storage, plan, {
+      highlightedProcedures: ["MEDIAL_ROOT"],
+      focusedProcedure: "MEDIAL_ROOT",
+      selectedChannelId: null,
+      hiddenGraftVisibilityKeys: [],
+      drafts: { MEDIAL_ROOT: medialRoot },
+      stepIndex: 0,
+      layerVisibility: { ...DEFAULT_LAYER_VISIBILITY },
+      globalOpacity: 1,
+    });
+
+    expect(loadSimplifiedWorkspaceDefaults(storage, plan)?.drafts.MEDIAL_ROOT).toEqual(medialRoot);
+  });
+
+  it("continues to load version-1 workspace drafts with one legacy root location", () => {
+    const plan = createSyntheticDemoCase();
+    const storage = memoryStorage();
+    const posteriorRoot = createEmptySimplifiedSelection("LATERAL_ROOT");
+    posteriorRoot.rootLocation = "posterior";
+    posteriorRoot.tibia!.preparation = "full_tunnel";
+    storage.setItem(SIMPLIFIED_WORKSPACE_KEY, JSON.stringify({
+      format: "multilig-simplified-workspace",
+      version: 1,
+      planId: plan.id,
+      savedAt: "2026-01-01T00:00:00.000Z",
+      highlightedProcedures: ["LATERAL_ROOT"],
+      focusedProcedure: "LATERAL_ROOT",
+      selectedChannelId: null,
+      hiddenGraftVisibilityKeys: [],
+      drafts: { LATERAL_ROOT: posteriorRoot },
+      stepIndex: 0,
+      layerVisibility: { ...DEFAULT_LAYER_VISIBILITY },
+      globalOpacity: 1,
+    }));
+
+    expect(loadSimplifiedWorkspaceDefaults(storage, plan)?.drafts.LATERAL_ROOT).toEqual(posteriorRoot);
+  });
+
   it("drops stale channels and invalid procedure values without touching the plan", () => {
     const plan = createSyntheticDemoCase();
     const source = structuredClone(plan);

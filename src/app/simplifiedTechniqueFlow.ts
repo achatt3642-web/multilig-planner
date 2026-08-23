@@ -15,6 +15,8 @@ import { activeVariant } from "./planOperations";
 
 export type SimplifiedProcedureIdentity = Exclude<ProcedureIdentity, "CUSTOM">;
 export type BundleChoice = "single_bundle" | "double_bundle";
+export type RootLocation = "anterior" | "posterior";
+export type RootLocationChoice = RootLocation | "both";
 export type PreparationChoice =
   | "socket_with_guide_pin"
   | "full_tunnel"
@@ -35,7 +37,7 @@ export interface SimplifiedBoneChoice {
 
 export interface SimplifiedTechniqueSelection {
   procedure: SimplifiedProcedureIdentity;
-  rootLocation: "anterior" | "posterior" | null;
+  rootLocation: RootLocationChoice | null;
   femur: SimplifiedBoneChoice | null;
   tibia: SimplifiedBoneChoice | null;
 }
@@ -56,7 +58,25 @@ export const SIMPLIFIED_PROCEDURES: readonly { id: SimplifiedProcedureIdentity; 
   { id: "PLC_FCL", label: "PLC" },
 ] as const;
 
-export const SIMPLIFIED_TECHNIQUE_NOTE_PREFIX = "multilig:simplified-technique:v1:";
+export const LEGACY_SIMPLIFIED_TECHNIQUE_NOTE_PREFIX = "multilig:simplified-technique:v1:";
+export const SIMPLIFIED_TECHNIQUE_NOTE_PREFIX = "multilig:simplified-technique:v2:";
+
+export function selectedRootLocations(choice: RootLocationChoice | null): RootLocation[] {
+  if (choice === "both") return ["anterior", "posterior"];
+  return choice ? [choice] : [];
+}
+
+export function toggleRootLocation(
+  current: RootLocationChoice | null,
+  location: RootLocation,
+): RootLocationChoice | null {
+  const selected = new Set(selectedRootLocations(current));
+  if (selected.has(location)) selected.delete(location);
+  else selected.add(location);
+  if (selected.size === 0) return null;
+  if (selected.size === 2) return "both";
+  return selected.has("anterior") ? "anterior" : "posterior";
+}
 
 const emptyBone = (): SimplifiedBoneChoice => ({
   bundle: null,
@@ -138,7 +158,7 @@ export function validateSimplifiedStep(
     step.bone === "tibia" &&
     ["MEDIAL_ROOT", "LATERAL_ROOT"].includes(selection.procedure) &&
     !selection.rootLocation
-  ) errors.unshift("Choose anterior or posterior root.");
+  ) errors.unshift("Choose anterior, posterior, or both root locations.");
   return errors;
 }
 
@@ -155,6 +175,8 @@ const genericRange = (
 export const DEFAULT_GENERIC_SOCKET_GUIDE_PIN_DIAMETER_MM = 3.5;
 export const GENERIC_SOCKET_GUIDE_PIN_WARNING =
   "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension.";
+export const GENERIC_ROOT_ANCHOR_GUIDE_PIN_WARNING =
+  "The displayed 3.5 mm suture-anchor guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension.";
 
 interface SeedOptions {
   label: string;
@@ -172,12 +194,15 @@ interface SeedOptions {
 }
 
 function channelSeed(options: SeedOptions): TechniqueChannelSeed {
-  const pointOnly = options.preparation === "onlay_fixation_point" || options.preparation === "suture_anchor_location";
+  const pointOnly = options.preparation === "onlay_fixation_point";
+  const guidePinOnly = options.preparation === "suture_anchor_location";
   const fullTunnel = options.preparation === "full_tunnel" || options.preparation === "laprade_full_tunnel";
   const anchor = options.preparation === "anchor";
   const socket = options.preparation === "socket_with_guide_pin" || options.preparation === "posterior_socket_with_guide_pin";
   const geometryType: ChannelPlan["geometryType"] = pointOnly
     ? "onlay_no_large_tunnel"
+    : guidePinOnly
+      ? "rigid_pin"
     : fullTunnel
       ? "round_full_tunnel"
       : anchor
@@ -202,7 +227,7 @@ function channelSeed(options: SeedOptions): TechniqueChannelSeed {
     fullThickness: fullTunnel,
     preparationMode: pointOnly ? "none" : "cut",
     trajectoryControlMode: options.trajectoryControlMode
-      ?? (pointOnly ? "none" : anchor ? "exterior_rod" : "outer_cortex_surface"),
+      ?? (pointOnly ? "none" : anchor || guidePinOnly ? "exterior_rod" : "outer_cortex_surface"),
     ...(diameterMm !== undefined && depthMm !== undefined ? {
       initialPlanningValues: {
         diameterMm,
@@ -220,6 +245,7 @@ function channelSeed(options: SeedOptions): TechniqueChannelSeed {
     warnings: [
       ...(options.warnings ?? []),
       ...(socket ? [GENERIC_SOCKET_GUIDE_PIN_WARNING] : []),
+      ...(guidePinOnly ? [GENERIC_ROOT_ANCHOR_GUIDE_PIN_WARNING] : []),
       ...(pointOnly ? ["Point-only fixation location; no bone tunnel or socket has been created."] : []),
     ],
   };
@@ -314,24 +340,27 @@ function anchorOrSocketSeeds(
 function rootSeeds(selection: SimplifiedTechniqueSelection): TechniqueChannelSeed[] {
   const choice = selection.tibia!;
   if (!choice.preparation || !selection.rootLocation) return [];
+  const preparation = choice.preparation;
   const side = selection.procedure === "MEDIAL_ROOT" ? "Medial" : "Lateral";
   const preparationLabel = choice.preparation === "suture_anchor_location"
     ? "suture anchor location"
     : choice.preparation === "full_tunnel"
       ? "full tunnel"
       : "socket";
-  return [channelSeed({
-    key: `${selection.rootLocation}-${choice.preparation}`,
-    label: `${side} ${selection.rootLocation} root ${preparationLabel}`,
+  return selectedRootLocations(selection.rootLocation).map((rootLocation) => channelSeed({
+    key: `${rootLocation}-${preparation}`,
+    label: `${side} ${rootLocation} root ${preparationLabel}`,
     bone: "tibia",
-    preparation: choice.preparation,
-    diameterRange: choice.preparation === "socket_with_guide_pin" ? [5, 7] : [2.4, 4.5],
-    depthRange: choice.preparation === "socket_with_guide_pin" ? [5, 15] : [20, 45],
-    ...(choice.preparation === "suture_anchor_location" ? {} : {
-      visualDiameterMm: choice.preparation === "socket_with_guide_pin" ? 6 : 3.5,
-      visualDepthMm: choice.preparation === "socket_with_guide_pin" ? 10 : 35,
-    }),
-  })];
+    preparation,
+    diameterRange: preparation === "socket_with_guide_pin" ? [5, 7] : [2.4, 4.5],
+    depthRange: preparation === "socket_with_guide_pin" ? [5, 15] : [20, 45],
+    visualDiameterMm: preparation === "socket_with_guide_pin" ? 6 : 3.5,
+    visualDepthMm: preparation === "socket_with_guide_pin"
+      ? 10
+      : preparation === "suture_anchor_location"
+        ? 20
+        : 35,
+  }));
 }
 
 function plcTibialSeeds(choice: SimplifiedBoneChoice): TechniqueChannelSeed[] {
@@ -397,38 +426,93 @@ export function buildSimplifiedTechniquePreset(selection: SimplifiedTechniqueSel
   };
 }
 
+const BUNDLE_CHOICES = new Set<BundleChoice>(["single_bundle", "double_bundle"]);
+const PREPARATION_CHOICES = new Set<PreparationChoice>([
+  "socket_with_guide_pin",
+  "full_tunnel",
+  "anchor",
+  "onlay_fixation_point",
+  "suture_anchor_location",
+  "none",
+  "laprade_full_tunnel",
+  "posterior_socket_with_guide_pin",
+]);
+
+function finiteOrNull(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function decodeBoneChoice(value: unknown): SimplifiedBoneChoice | null {
+  if (!value || typeof value !== "object") return null;
+  const candidate = value as Partial<SimplifiedBoneChoice>;
+  return {
+    bundle: typeof candidate.bundle === "string" && BUNDLE_CHOICES.has(candidate.bundle as BundleChoice)
+      ? candidate.bundle as BundleChoice
+      : null,
+    preparation: typeof candidate.preparation === "string" && PREPARATION_CHOICES.has(candidate.preparation as PreparationChoice)
+      ? candidate.preparation as PreparationChoice
+      : null,
+    count: finiteOrNull(candidate.count),
+    diameterMm: finiteOrNull(candidate.diameterMm),
+    depthMm: finiteOrNull(candidate.depthMm),
+  };
+}
+
+/** Runtime-safe decoder used by plan notes and persisted workspace drafts. */
+export function decodeSimplifiedTechniqueSelection(value: unknown): SimplifiedTechniqueSelection | null {
+  if (!value || typeof value !== "object") return null;
+  const candidate = value as Partial<SimplifiedTechniqueSelection>;
+  const procedure = SIMPLIFIED_PROCEDURES.find((item) => item.id === candidate.procedure)?.id;
+  if (!procedure) return null;
+  const rootLocation = candidate.rootLocation === "anterior" ||
+    candidate.rootLocation === "posterior" ||
+    candidate.rootLocation === "both"
+    ? candidate.rootLocation
+    : null;
+  return {
+    procedure,
+    rootLocation,
+    femur: decodeBoneChoice(candidate.femur),
+    tibia: decodeBoneChoice(candidate.tibia),
+  };
+}
+
 export function readSimplifiedSelection(
   procedure: ProcedureInstance | null | undefined,
 ): SimplifiedTechniqueSelection | null {
-  if (!procedure?.notes?.startsWith(SIMPLIFIED_TECHNIQUE_NOTE_PREFIX)) return null;
+  const prefix = procedure?.notes?.startsWith(SIMPLIFIED_TECHNIQUE_NOTE_PREFIX)
+    ? SIMPLIFIED_TECHNIQUE_NOTE_PREFIX
+    : procedure?.notes?.startsWith(LEGACY_SIMPLIFIED_TECHNIQUE_NOTE_PREFIX)
+      ? LEGACY_SIMPLIFIED_TECHNIQUE_NOTE_PREFIX
+      : null;
+  if (!procedure?.notes || !prefix) return null;
   try {
-    const value = JSON.parse(procedure.notes.slice(SIMPLIFIED_TECHNIQUE_NOTE_PREFIX.length)) as SimplifiedTechniqueSelection;
-    if (!SIMPLIFIED_PROCEDURES.some((item) => item.id === value.procedure)) return null;
-    return value;
+    return decodeSimplifiedTechniqueSelection(JSON.parse(procedure.notes.slice(prefix.length)));
   } catch {
     return null;
   }
 }
 
 function sequenceFor(channels: readonly ChannelPlan[], startOrder: number): SequenceStep[] {
-  const steps: SequenceStep[] = channels.flatMap((channel) => [
-    {
+  const steps: SequenceStep[] = channels.flatMap((channel) => {
+    const pin: SequenceStep = {
       id: crypto.randomUUID(),
       channelId: channel.id,
-      kind: "pin" as const,
+      kind: "pin",
       label: `Place ${channel.label}`,
       order: 0,
       completed: false,
-    },
-    {
+    };
+    if (channel.geometryType === "rigid_pin") return [pin];
+    return [pin, {
       id: crypto.randomUUID(),
       channelId: channel.id,
-      kind: "ream" as const,
+      kind: "ream",
       label: channel.noLargeTunnel ? `Mark ${channel.label}` : `Prepare ${channel.label}`,
       order: 0,
       completed: false,
-    },
-  ]);
+    }];
+  });
   return steps.map((step, index) => ({ ...step, order: startOrder + index }));
 }
 
@@ -437,7 +521,8 @@ interface SemanticChannel {
   seed: TechniqueChannelSeed | null;
   boneOrdinal: number;
   bundleRole: "AM" | "PL" | "AL" | "PM" | "single" | null;
-  preparation: "point" | "anchor" | "socket" | "full_tunnel" | "other";
+  rootLocation: RootLocation | null;
+  preparation: "point" | "pin" | "anchor" | "socket" | "full_tunnel" | "other";
 }
 
 function bundleRoleFor(seed: TechniqueChannelSeed | null, channel: ChannelPlan): SemanticChannel["bundleRole"] {
@@ -450,6 +535,7 @@ function bundleRoleFor(seed: TechniqueChannelSeed | null, channel: ChannelPlan):
 
 function preparationFor(channel: ChannelPlan): SemanticChannel["preparation"] {
   if (channel.noLargeTunnel || channel.geometryType === "onlay_no_large_tunnel") return "point";
+  if (channel.geometryType === "rigid_pin" || channel.geometryType === "flexible_pin") return "pin";
   if (channel.geometryType === "anchor_pilot") return "anchor";
   if (channel.geometryType === "round_full_tunnel") return "full_tunnel";
   if ([
@@ -459,6 +545,16 @@ function preparationFor(channel: ChannelPlan): SemanticChannel["preparation"] {
     "stepped_button_tunnel",
   ].includes(channel.geometryType)) return "socket";
   return "other";
+}
+
+function rootLocationFor(
+  seed: TechniqueChannelSeed | null,
+  channel: ChannelPlan,
+): SemanticChannel["rootLocation"] {
+  const value = `${seed?.key ?? channel.semanticKey ?? ""} ${seed?.label ?? channel.label}`;
+  if (/(?:^|[\s-])anterior(?:$|[\s-])/i.test(value)) return "anterior";
+  if (/(?:^|[\s-])posterior(?:$|[\s-])/i.test(value)) return "posterior";
+  return null;
 }
 
 function orderedProcedureChannels(
@@ -514,6 +610,7 @@ function semanticChannelsForProcedure(
       seed,
       boneOrdinal,
       bundleRole: bundleRoleFor(seed, channel),
+      rootLocation: rootLocationFor(seed, channel),
       preparation: preparationFor(channel),
     };
   });
@@ -533,6 +630,7 @@ function semanticChannelsForInstantiated(
       seed,
       boneOrdinal,
       bundleRole: bundleRoleFor(seed, channel),
+      rootLocation: rootLocationFor(seed, channel),
       preparation: preparationFor(channel),
     };
   });
@@ -540,9 +638,13 @@ function semanticChannelsForInstantiated(
 
 function semanticMatchScore(next: SemanticChannel, prior: SemanticChannel): number {
   if (next.channel.bone !== prior.channel.bone) return Number.NEGATIVE_INFINITY;
+  if (next.rootLocation && prior.rootLocation && next.rootLocation !== prior.rootLocation) {
+    return Number.NEGATIVE_INFINITY;
+  }
   let score = 1;
   if (next.seed?.key && next.seed.key === (prior.seed?.key ?? prior.channel.semanticKey)) score += 1_000;
   if (next.bundleRole && next.bundleRole === prior.bundleRole) score += 300;
+  if (next.rootLocation && next.rootLocation === prior.rootLocation) score += 500;
   if (next.preparation === prior.preparation) score += 120;
   if (next.channel.geometryType === prior.channel.geometryType) score += 60;
   if (next.boneOrdinal === prior.boneOrdinal) score += 200;
@@ -569,10 +671,11 @@ function withPreservedClinicalGeometry(
   const nextChannel = next.channel;
   const priorChannel = prior.channel;
   const isPoint = next.preparation === "point";
+  const compatiblePinDimensions = next.preparation !== "pin" || prior.preparation === "pin";
   const compatibleCrossSection = !isPoint && nextChannel.crossSection.kind === priorChannel.crossSection.kind;
-  const preserveDiameter = compatibleCrossSection &&
+  const preserveDiameter = compatibleCrossSection && compatiblePinDimensions &&
     !explicitSeedValueChanged(next, prior, "diameterMm");
-  const preserveDepth = !isPoint && priorChannel.depthMm !== null &&
+  const preserveDepth = !isPoint && compatiblePinDimensions && priorChannel.depthMm !== null &&
     !explicitSeedValueChanged(next, prior, "depthMm");
   const sameGeometryType = nextChannel.geometryType === priorChannel.geometryType;
 

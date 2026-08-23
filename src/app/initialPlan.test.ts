@@ -26,7 +26,22 @@ afterEach(() => {
 describe("initial plan selection", () => {
   it("opens the bundled knee plan on a fresh browser origin", () => {
     installStorage(null);
-    expect(loadInitialPlan().id).toBe(BUNDLED_DEMO_PLAN_ID);
+    const plan = loadInitialPlan();
+    expect(plan.id).toBe(BUNDLED_DEMO_PLAN_ID);
+    const lateralRootProcedureIds = new Set(plan.procedures
+      .filter((procedure) => procedure.structure === "LATERAL_ROOT")
+      .map((procedure) => procedure.id));
+    expect(plan.variants.flatMap((variant) => variant.channels)
+      .filter((channel) => lateralRootProcedureIds.has(channel.procedureId)))
+      .toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          geometryType: "rigid_pin",
+          diameterMm: 3.5,
+          depthMm: 20,
+          trajectoryControlMode: "exterior_rod",
+          noLargeTunnel: false,
+        }),
+      ]));
   });
 
   it("recovers from corrupt browser storage with the bundled knee plan", () => {

@@ -10,6 +10,7 @@ import {
   flowStepsFor,
   readSimplifiedSelection,
   replaceSimplifiedProcedure,
+  toggleRootLocation,
   validateSimplifiedSelection,
   type SimplifiedBoneChoice,
   type SimplifiedTechniqueSelection,
@@ -55,6 +56,17 @@ describe("simplified sequential technique flow", () => {
     expect(flowStepsFor("LET").map((step) => step.bone)).toEqual(["femur"]);
     expect(flowStepsFor("MEDIAL_ROOT").map((step) => step.bone)).toEqual(["tibia"]);
     expect(flowStepsFor("LATERAL_ROOT").map((step) => step.bone)).toEqual(["tibia"]);
+  });
+
+  it("toggles anterior and posterior root locations independently", () => {
+    expect(toggleRootLocation(null, "anterior")).toBe("anterior");
+    expect(toggleRootLocation(null, "posterior")).toBe("posterior");
+    expect(toggleRootLocation("anterior", "posterior")).toBe("both");
+    expect(toggleRootLocation("posterior", "anterior")).toBe("both");
+    expect(toggleRootLocation("both", "anterior")).toBe("posterior");
+    expect(toggleRootLocation("both", "posterior")).toBe("anterior");
+    expect(toggleRootLocation("anterior", "anterior")).toBeNull();
+    expect(toggleRootLocation("posterior", "posterior")).toBeNull();
   });
 
   it("builds every ACL single/double bundle combination with the exact preparation type", () => {
@@ -127,7 +139,7 @@ describe("simplified sequential technique flow", () => {
       }));
       expect(root.channelSeeds).toHaveLength(1);
       expect(root.channelSeeds[0].label).toContain(rootLocation);
-      expect(root.channelSeeds[0].geometryType).toBe("onlay_no_large_tunnel");
+      expect(root.channelSeeds[0].geometryType).toBe("rigid_pin");
     }
 
     const plc = buildSimplifiedTechniquePreset(configured("PLC_FCL", {
@@ -138,6 +150,129 @@ describe("simplified sequential technique flow", () => {
     expect(plc.channelSeeds.filter((seed) => seed.bone === "femur")).toHaveLength(2);
     expect(plc.channelSeeds.filter((seed) => seed.bone === "tibia")[0].geometryType).toBe("antegrade_blind_socket");
     expect(plc.channelSeeds.some((seed) => seed.bone === "fibula")).toBe(false);
+  });
+
+  it("creates distinct anterior and posterior root channels for every tibial preparation", () => {
+    for (const [preparation, expectedGeometryType] of [
+      ["suture_anchor_location", "rigid_pin"],
+      ["socket_with_guide_pin", "antegrade_blind_socket"],
+      ["full_tunnel", "round_full_tunnel"],
+    ] as const) {
+      const selection = configured("MEDIAL_ROOT", {
+        rootLocation: "both",
+        tibia: bone({ preparation }),
+      });
+      expect(validateSimplifiedSelection(selection)).toEqual([]);
+
+      const preset = buildSimplifiedTechniquePreset(selection);
+      expect(preset.channelSeeds).toHaveLength(2);
+      expect(preset.channelSeeds.map((seed) => seed.key)).toEqual([
+        `anterior-${preparation}`,
+        `posterior-${preparation}`,
+      ]);
+      expect(preset.channelSeeds.map((seed) => seed.geometryType)).toEqual([
+        expectedGeometryType,
+        expectedGeometryType,
+      ]);
+      expect(preset.channelSeeds[0].label).toContain("anterior");
+      expect(preset.channelSeeds[1].label).toContain("posterior");
+
+      const plan = replaceSimplifiedProcedure(createSyntheticDemoCase(), selection);
+      const procedure = plan.procedures.at(-1)!;
+      const channels = activeVariant(plan).channels.filter((channel) =>
+        channel.procedureId === procedure.id,
+      );
+      expect(channels.map((channel) => channel.semanticKey)).toEqual([
+        `anterior-${preparation}`,
+        `posterior-${preparation}`,
+      ]);
+      expect(new Set(channels.map((channel) => channel.id)).size).toBe(2);
+      expect(new Set(procedure.constructs.flatMap((construct) => construct.channelIds))).toEqual(
+        new Set(channels.map((channel) => channel.id)),
+      );
+      expect(readSimplifiedSelection(procedure)).toEqual(selection);
+    }
+  });
+
+  it("renders a root suture-anchor guide pin without a socket or tunnel volume", () => {
+    const selection = configured("LATERAL_ROOT", {
+      rootLocation: "both",
+      tibia: bone({ preparation: "suture_anchor_location" }),
+    });
+    const anatomy = buildSyntheticAnatomyMeshes();
+    const plan = initializePendingChannelSurfacePlacements(
+      replaceSimplifiedProcedure(createSyntheticDemoCase(), selection),
+      anatomy,
+    );
+    const procedure = plan.procedures.at(-1)!;
+    const channels = activeVariant(plan).channels.filter((channel) =>
+      channel.procedureId === procedure.id,
+    );
+    expect(channels).toHaveLength(2);
+    expect(channels.every((channel) => channel.geometryType === "rigid_pin")).toBe(true);
+
+    const viewer = buildViewerScene({
+      revision: 1,
+      channels,
+      procedureById: { [procedure.id]: "LATERAL_ROOT" },
+      visibleProcedureIdentities: new Set(["LATERAL_ROOT"]),
+      selectedChannelId: channels[0].id,
+      anatomyMeshes: anatomy,
+    });
+
+    for (const channel of channels) {
+      const generated = viewer.geometry.get(channel.id)!;
+      expect(generated.recipeType).toBe("rigidPin");
+      expect(generated.layers.some((layer) => layer.type === "pinTractAndOvershoot")).toBe(true);
+      expect(generated.layers.some((layer) => layer.type === "boneRemovalOrCompaction")).toBe(false);
+      expect(viewer.scene.meshes.some((mesh) =>
+        mesh.channelId === channel.id && mesh.layer === "pins",
+      )).toBe(true);
+      expect(viewer.scene.meshes.some((mesh) =>
+        mesh.channelId === channel.id && mesh.layer === "boneRemoval",
+      )).toBe(false);
+    }
+
+    expect(viewer.scene.handles.find((handle) =>
+      handle.channelId === channels[0].id && handle.kind === "aperture",
+    )).toMatchObject({
+      semanticRole: "start",
+      label: `Start point - ${channels[0].label}`,
+    });
+    expect(viewer.scene.handles.find((handle) =>
+      handle.channelId === channels[0].id && handle.kind === "endpoint",
+    )).toMatchObject({
+      semanticRole: "trajectory",
+      label: `Trajectory - ${channels[0].label}`,
+      trajectoryPivotPatientRas: channels[0].aperture,
+    });
+    expect(viewer.scene.labels?.some((label) =>
+      label.channelId === channels[0].id && label.id.endsWith("-tunnel-label"),
+    ) ?? false).toBe(false);
+  });
+
+  it("uses guide-pin dimensions when a root socket is changed to suture-anchor preparation", () => {
+    const socketSelection = configured("MEDIAL_ROOT", {
+      rootLocation: "both",
+      tibia: bone({ preparation: "socket_with_guide_pin" }),
+    });
+    const socketPlan = replaceSimplifiedProcedure(createSyntheticDemoCase(), socketSelection);
+    const pinSelection = configured("MEDIAL_ROOT", {
+      rootLocation: "both",
+      tibia: bone({ preparation: "suture_anchor_location" }),
+    });
+    const pinPlan = replaceSimplifiedProcedure(socketPlan, pinSelection);
+    const pinProcedure = pinPlan.procedures.at(-1)!;
+    const pins = activeVariant(pinPlan).channels.filter((channel) =>
+      channel.procedureId === pinProcedure.id,
+    );
+
+    expect(pins).toHaveLength(2);
+    expect(pins.every((channel) =>
+      channel.geometryType === "rigid_pin" &&
+      channel.diameterMm === 3.5 &&
+      channel.depthMm === 20,
+    )).toBe(true);
   });
 
   it("uses a bone-surface Start and a separate Trajectory handle for every collateral anchor plan", () => {

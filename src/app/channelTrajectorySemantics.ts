@@ -54,6 +54,9 @@ export function defaultTrajectoryControlMode(channel: ChannelPlan): TrajectoryCo
 export function resolvedTrajectoryControlMode(channel: ChannelPlan): TrajectoryControlMode {
   if (channel.geometryType === "anchor_pilot") return "exterior_rod";
   if (channel.noLargeTunnel || channel.geometryType === "onlay_no_large_tunnel") return "none";
+  if (channel.geometryType === "rigid_pin" && channel.trajectoryControlMode === "exterior_rod") {
+    return "exterior_rod";
+  }
   if (channel.trajectoryControlMode === "blind_socket_tip" && isGuidePinSocketGeometry(channel)) {
     return "blind_socket_tip";
   }
@@ -69,14 +72,15 @@ export function blindSocketTipPatientRas(channel: ChannelPlan): Vector3 | null {
 }
 
 /**
- * Anchor vectors point inward from the bony Start point. The exterior endpoint
- * of the coaxial manipulation rod is a trajectory control, not a Start point.
+ * Exterior-controlled channel vectors point inward from the bony Start point.
+ * The exterior endpoint of the coaxial manipulation rod is a trajectory
+ * control, not a Start point.
  */
 export function anchorTrajectoryRodEnd(
   channel: ChannelPlan,
   lengthMm = ANCHOR_TRAJECTORY_ROD_LENGTH_MM,
 ): Vector3 | null {
-  if (channel.geometryType !== "anchor_pilot" || !channel.aperture.every(Number.isFinite)) return null;
+  if (resolvedTrajectoryControlMode(channel) !== "exterior_rod" || !channel.aperture.every(Number.isFinite)) return null;
   const magnitude = Math.hypot(channel.vector[0], channel.vector[1], channel.vector[2]);
   if (!Number.isFinite(magnitude) || magnitude <= 1e-9 || !Number.isFinite(lengthMm) || lengthMm <= 0) {
     return null;
@@ -90,9 +94,10 @@ export function anchorTrajectoryRodEnd(
 
 /**
  * Resolve the exact patient-RAS coordinate used by Viewer v2 for its handle
- * labelled `Start point - …`. Anchor starts resolve from the persisted bony
- * aperture attachment; their exterior trajectory control is deliberately not
- * a Start point. Channels without a rendered Start fail closed.
+ * labelled `Start point - …`. Exterior-controlled anchor and guide-pin starts
+ * resolve from the persisted bony aperture attachment; their exterior
+ * trajectory control is deliberately not a Start point. Channels without a
+ * rendered Start fail closed.
  */
 export function resolveChannelStartPointPatientRas(
   channel: ChannelPlan,

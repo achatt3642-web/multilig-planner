@@ -582,6 +582,48 @@ describe("surface-constrained channel handle commits", () => {
     });
   });
 
+  it("uses a root guide pin's exterior handle to rotate the pin without moving its bony Start", () => {
+    const channel = demoChannel("pcl-tibial");
+    channel.geometryType = "rigid_pin";
+    channel.trajectoryControlMode = "exterior_rod";
+    channel.fullThickness = false;
+    channel.aperture = [4, 5, 6];
+    channel.vector = [1, 0, 0];
+    channel.depthMm = 20;
+    channel.diameterMm = 3.5;
+    channel.crossSection = { kind: "circle", diameterMm: 3.5 };
+    channel.centerline = {
+      kind: "rigid",
+      aperturePatientRasMm: channel.aperture,
+      directionPatientRas: channel.vector,
+    };
+    channel.apertureSurfaceAttachment = surfaceAttachment("tibia", "tibia-start", channel.aperture);
+    channel.endpointSurfaceAttachment = null;
+    const apertureAttachment = channel.apertureSurfaceAttachment;
+
+    const edited = applySurfaceConstrainedHandleCommit(
+      channel,
+      "MEDIAL_ROOT",
+      commit(channel, "endpoint", [4, 5, 34]),
+      [],
+    );
+
+    expect(edited.aperture).toEqual([4, 5, 6]);
+    expect(edited.apertureSurfaceAttachment).toBe(apertureAttachment);
+    expect(edited.endpointSurfaceAttachment).toBeNull();
+    expect(edited.vector[0]).toBeCloseTo(0, 10);
+    expect(edited.vector[1]).toBeCloseTo(0, 10);
+    expect(edited.vector[2]).toBeCloseTo(-1, 10);
+    expect(edited.depthMm).toBe(20);
+    expect(edited.diameterMm).toBe(3.5);
+    expect(channelToGeometry(edited).recipeType).toBe("rigidPin");
+    expect(edited.surfacePlacement).toMatchObject({
+      method: "manual_trajectory_drag",
+      endpointMethod: "preserved_depth",
+      meshIds: ["tibia-start"],
+    });
+  });
+
   it("uses a blind socket's deep Start to rotate a fixed-depth coaxial pin without a cortex tether", () => {
     const channel = demoChannel("acl-femoral");
     channel.geometryType = "antegrade_blind_socket";

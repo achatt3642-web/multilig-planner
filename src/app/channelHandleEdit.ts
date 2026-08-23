@@ -326,11 +326,11 @@ function withPreservedSocketDepthTrajectory(
   };
 }
 
-function withAnchorTrajectoryRod(
+function withExteriorTrajectoryRod(
   channel: ChannelPlan,
   rodEnd: Vector3,
 ): ChannelPlan {
-  // The Viewer Trajectory handle is outside bone, while the analytic anchor
+  // The Viewer Trajectory handle is outside bone, while the analytic channel
   // vector runs inward from the surface Start. Keep the directions opposed.
   const inwardDelta: Vector3 = [
     channel.aperture[0] - rodEnd[0],
@@ -402,10 +402,10 @@ function withBlindSocketTipTrajectory(
  * inputs. Intra-articular tibial entries use the user-defined maximum-Z
  * superior envelope; other surface handles use the exact nearest triangle on
  * the declared bone. The endpoint event represents the outer-cortex Start for
- * ordinary sockets and full tunnels. For an anchor pilot it represents MAT's
- * free-space rod end, so the inward socket trajectory is the exact opposite
- * direction and depth remains independent. Unresolved surface projections
- * never fall back to a mid-air point.
+ * ordinary sockets and full tunnels. For an exterior-controlled anchor or
+ * guide pin it represents MAT's free-space rod end, so the inward trajectory
+ * is the exact opposite direction and depth remains independent. Unresolved
+ * surface projections never fall back to a mid-air point.
  */
 export function applySurfaceConstrainedHandleCommit(
   channel: ChannelPlan,
@@ -428,7 +428,7 @@ export function applySurfaceConstrainedHandleCommit(
   const trajectoryControlMode = resolvedTrajectoryControlMode(channel);
 
   if (change.kind === "endpoint" && trajectoryControlMode === "exterior_rod") {
-    return withAnchorTrajectoryRod(channel, requestedPoint);
+    return withExteriorTrajectoryRod(channel, requestedPoint);
   }
   if (change.kind === "endpoint" && trajectoryControlMode === "blind_socket_tip") {
     return withBlindSocketTipTrajectory(channel, requestedPoint);

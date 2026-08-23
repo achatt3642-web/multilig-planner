@@ -24,6 +24,8 @@ export const UNREGISTERED_DEFAULT_TRAJECTORY_WARNING =
   "The unregistered preset trajectory did not traverse the loaded bone from its surface Entry, so the generic display seed was redirected toward the centroid of that same display mesh to create an on-surface Start. This is not a surgical recommendation; clinician repositioning and verification are required.";
 export const GENERIC_ANCHOR_TRAJECTORY_WARNING =
   "The generic anchor socket trajectory is initially directed from its surface Start toward the centroid of the same display mesh. This only keeps the visual template intraosseous; it is not an anatomic target or surgical recommendation.";
+export const GENERIC_GUIDE_PIN_TRAJECTORY_WARNING =
+  "The generic guide-pin trajectory is initially directed from its surface Start toward the centroid of the same display mesh. This only keeps the visual template intraosseous; it is not an anatomic target or surgical recommendation.";
 export const GENERIC_IPSILATERAL_SOCKET_TRAJECTORY_WARNING =
   "The generic ipsilateral socket and coaxial guide-pin trajectory is initially directed from its surface Entry toward the centroid of the same display mesh. The deep Start is the analytic socket tip, not a contralateral cortex target or surgical recommendation.";
 
@@ -496,9 +498,10 @@ export function attachMissingForwardSurfaceStart(
 ): ChannelPlan {
   const trajectoryControlMode = resolvedTrajectoryControlMode(channel);
   if (trajectoryControlMode === "exterior_rod") {
-    // MAT-style anchors use a free-space exterior trajectory rod. A historic
-    // opposite-cortex Start tether would invert that interaction, so remove it
-    // once the surface Start is available and derive the rod from vector only.
+    // MAT-style anchors and guide-pin-only root preparations use a free-space
+    // exterior trajectory rod. A historic opposite-cortex Start tether would
+    // invert that interaction, so remove it once the surface Start is available
+    // and derive the rod from vector only.
     if (!channel.apertureSurfaceAttachment) return channel;
     if (
       channel.endpointSurfaceAttachment === null &&
@@ -724,7 +727,9 @@ function initializeChannel(
       warnings: (() => {
         const warning = trajectoryControlMode === "blind_socket_tip"
           ? GENERIC_IPSILATERAL_SOCKET_TRAJECTORY_WARNING
-          : GENERIC_ANCHOR_TRAJECTORY_WARNING;
+          : translated.geometryType === "rigid_pin"
+            ? GENERIC_GUIDE_PIN_TRAJECTORY_WARNING
+            : GENERIC_ANCHOR_TRAJECTORY_WARNING;
         return translated.warnings.includes(warning)
           ? translated.warnings
           : [...translated.warnings, warning];

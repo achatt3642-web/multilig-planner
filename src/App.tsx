@@ -59,7 +59,10 @@ import {
 import {
   DEFAULT_GENERIC_SOCKET_GUIDE_PIN_DIAMETER_MM,
   GENERIC_SOCKET_GUIDE_PIN_WARNING,
+  LEGACY_SIMPLIFIED_TECHNIQUE_NOTE_PREFIX,
+  SIMPLIFIED_TECHNIQUE_NOTE_PREFIX,
 } from "./app/simplifiedTechniqueFlow";
+import { migrateLegacyRootSutureAnchorPins } from "./app/legacyRootSutureAnchorPinMigration";
 import { publicAssetPath } from "./publicAssetPath";
 import { requireClinicianSelectedDimensions } from "./app/channelAnalysis";
 import { createSyntheticDemoCase } from "./app/caseFactory";
@@ -371,7 +374,8 @@ export function deidentifiedLocalSnapshot(plan: PlanCase): PlanCase {
   }));
   safe.procedures = safe.procedures.map((procedure) => ({
     ...procedure,
-    notes: procedure.notes?.startsWith("multilig:simplified-technique:v1:")
+    notes: procedure.notes?.startsWith(SIMPLIFIED_TECHNIQUE_NOTE_PREFIX) ||
+      procedure.notes?.startsWith(LEGACY_SIMPLIFIED_TECHNIQUE_NOTE_PREFIX)
       ? procedure.notes
       : procedure.notes
         ? "[redacted from de-identified local snapshot]"
@@ -542,13 +546,15 @@ export function normalizeLoadedPlan(plan: PlanCase): PlanCase {
       segmentationRuns: plan.imaging.segmentationRuns ?? [],
     },
   };
-  return restoreLegacyAnchorVisualTemplates(removePinTipOvershootFromPlan(normalizedPlan));
+  return migrateLegacyRootSutureAnchorPins(
+    restoreLegacyAnchorVisualTemplates(removePinTipOvershootFromPlan(normalizedPlan)),
+  );
 }
 
 export function loadInitialPlan(): PlanCase {
   try {
     const saved = loadPlanLocally<PlanCase>(LOCAL_PLAN_KEY);
-    if (!saved) return createBundledDemoPlan();
+    if (!saved) return normalizeLoadedPlan(createBundledDemoPlan());
     const initial = normalizeLoadedPlan(saved);
     if (usesBundledDemoAnatomy(initial)) return initial;
     return initial.imaging.segmentationRuns.length
@@ -558,7 +564,7 @@ export function loadInitialPlan(): PlanCase {
     // Corrupt, incompatible, or unavailable browser storage must never prevent a
     // planning workspace from opening. The bundled fixture is de-identified,
     // geometry-only, unreviewed, and explicitly research/demo use only.
-    return createBundledDemoPlan();
+    return normalizeLoadedPlan(createBundledDemoPlan());
   }
 }
 

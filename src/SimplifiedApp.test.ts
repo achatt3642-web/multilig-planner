@@ -169,6 +169,24 @@ describe("simplified plan panel", () => {
     expect(rootPlan).not.toContain(">Femur</button>");
   });
 
+  it("shows anterior and posterior as simultaneous root-location toggles", () => {
+    const rootPlan = panelMarkup(configured("MEDIAL_ROOT", {
+      rootLocation: "both",
+      tibia: bone({ preparation: "suture_anchor_location" }),
+    }), 0);
+
+    expect(rootPlan).toContain('role="group"');
+    expect(rootPlan).toContain('aria-label="Root locations"');
+    expect(rootPlan).toContain('aria-pressed="true">Anterior</button>');
+    expect(rootPlan).toContain('aria-pressed="true">Posterior</button>');
+    expect(rootPlan).toContain('aria-label="Select Medial anterior root suture anchor location"');
+    expect(rootPlan).toContain('aria-label="Select Medial posterior root suture anchor location"');
+    expect(rootPlan).not.toContain("Point only; no tunnel");
+    expect(rootPlan).not.toContain("without a drilled volume");
+    expect(rootPlan).not.toContain("Movable fixation point · no drilled volume");
+    expect(rootPlan).not.toContain("simple-point-geometry");
+  });
+
   it("keeps a Start-point readout pinned to the active bone when no channel is selected", () => {
     const acl = configured("ACL", {
       femur: bone({ bundle: "single_bundle", preparation: "socket_with_guide_pin" }),
