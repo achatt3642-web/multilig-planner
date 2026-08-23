@@ -85,15 +85,13 @@
 }
 
 .site-brand-link {
-  min-width: max-content;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 11px;
-  color: var(--site-text);
+  justify-content: center;
   text-decoration: none;
-  font-size: 15px;
-  font-weight: 760;
-  letter-spacing: 0.01em;
 }
 
 .site-brand-link img {
@@ -534,6 +532,71 @@
 .site-footer { padding-block: 24px; color: #929daf; background: #070b15; }
 .site-footer-inner { display: flex; justify-content: space-between; gap: 20px; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; }
 
+.site-article {
+  width: min(780px, calc(100% - 48px));
+  margin-inline: auto;
+  padding-block: 88px 104px;
+}
+
+.site-article-introduction {
+  margin-bottom: 84px;
+}
+
+.site-article-introduction h1 {
+  margin: 0 0 26px;
+  color: #fff;
+  font-size: clamp(2.55rem, 5vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+
+.site-article-lead {
+  margin: 0;
+  color: #b6c0d1;
+  font-size: clamp(1.08rem, 2vw, 1.28rem);
+  line-height: 1.75;
+}
+
+.site-article section {
+  margin-bottom: 76px;
+}
+
+.site-article section h2 {
+  margin: 0 0 20px;
+  color: #f8faff;
+  font-size: clamp(1.65rem, 3vw, 2.15rem);
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+}
+
+.site-article section p {
+  margin: 0 0 20px;
+  color: var(--site-muted);
+  font-size: 16px;
+  line-height: 1.82;
+}
+
+.site-text-link {
+  color: var(--site-cyan-bright);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+.site-text-link:hover { color: #fff; }
+
+.site-text-link:focus-visible {
+  outline: 2px solid var(--site-cyan-bright);
+  outline-offset: 4px;
+}
+
+.site-article .site-availability {
+  display: block;
+  margin-top: 28px;
+  color: #8f9bad;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
 .site-demo-body { min-width: 0; }
 
 .site-demo-shell {
@@ -600,8 +663,18 @@
 @media (max-width: 720px) {
   .site-content { width: min(100% - 32px, var(--site-width)); }
   .site-header-inner { width: calc(100% - 28px); }
-  .site-brand-link { font-size: 14px; }
   .site-brand-link img { width: 36px; height: 36px; }
+
+  .site-article {
+    width: calc(100% - 36px);
+    padding-block: 62px 76px;
+  }
+
+  .site-article-introduction { margin-bottom: 64px; }
+  .site-article-introduction h1 { font-size: clamp(2.55rem, 13vw, 3.65rem); }
+  .site-article-lead { font-size: 1.04rem; }
+  .site-article section { margin-bottom: 56px; }
+  .site-article section p { font-size: 15px; }
 
   .site-hero,
   .site-hero-layout { min-height: 0; }

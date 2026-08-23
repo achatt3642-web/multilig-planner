@@ -21,11 +21,6 @@ export function SiteHeader({ active }: { active: SiteSection }) {
   return (
     <header className="site-global-header">
       <div className="site-header-inner">
-        <a className="site-brand-link" href="./" aria-label="Multilig Planner home">
-          <img src={publicAssetPath("multilig-planner-logo.png")} alt="" aria-hidden="true" />
-          <span>Multilig Planner</span>
-        </a>
-
         <button
           ref={menuButtonRef}
           className="site-menu-button"
@@ -62,6 +57,10 @@ export function SiteHeader({ active }: { active: SiteSection }) {
             Demo
           </a>
         </nav>
+
+        <a className="site-brand-link" href="./" aria-label="Multilig Planner home">
+          <img src={publicAssetPath("multilig-planner-logo.png")} alt="" aria-hidden="true" />
+        </a>
       </div>
     </header>
   );

@@ -21,15 +21,31 @@ describe("public site pages", () => {
     const markup = renderToStaticMarkup(createElement(LandingPage));
 
     expect(markup).toContain("What is a multiligament knee injury?");
-    expect(markup).toContain("Why surgery is performed");
+    expect(markup).toContain("How common is it?");
+    expect(markup).toContain("Why might surgery be performed?");
     expect(markup).toContain("Goals of surgery");
-    expect(markup).toContain("Surgical challenges");
-    expect(markup).toContain("The unmet need");
+    expect(markup).toContain("Challenges in surgical planning");
+    expect(markup).toContain("How Multilig Planner may help");
     expect(markup).toContain("Application will be available for download soon.");
     expect(markup.match(/available for download soon/gi)).toHaveLength(1);
     expect(markup).not.toMatch(/public download|download package|download \.zip|href="[^"]*download/i);
     expect(markup).toContain("not validated for clinical care");
     expect(markup).toContain("does not decide which operation should be performed");
+  });
+
+  it("uses a restrained article layout with one small header logo", () => {
+    const markup = renderToStaticMarkup(createElement(LandingPage));
+
+    expect(markup.match(/<img[^>]+src="[^"]*multilig-planner-logo\.png"/g)).toHaveLength(1);
+    expect(markup.match(/<h1(?:\s|>)/g)).toHaveLength(1);
+    expect(markup).toContain('href="#main-content"');
+    expect(markup).toContain('id="main-content"');
+    expect(markup).not.toContain("site-hero-visual");
+    expect(markup).not.toContain("site-goal-grid");
+    expect(markup).not.toContain("site-context-note");
+    expect(markup).not.toContain("site-reference-list");
+    expect(markup).not.toContain("<sup>");
+    expect(markup).not.toContain("#reference-");
   });
 
   it("keeps the informational and demo pages as separate Vite entries", async () => {
