@@ -1178,7 +1178,7 @@ export default function SimplifiedApp() {
       </div>
     </header>
 
-    <main className="simple-workspace">
+    <main id="planner-workspace" className="simple-workspace" tabIndex={-1}>
       <aside className="left-panel simple-left" aria-label="Renderings">
         <div className="panel-heading"><span>Renderings</span></div>
         <div className="simple-left-body">

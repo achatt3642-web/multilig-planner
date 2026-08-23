@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -b && vite build",
-    "build:pages": "MULTILIG_PUBLIC_BASE=./ npm run build",
+    "build:pages": "MULTILIG_PUBLIC_BASE=./ npm run build && node scripts/check_pages_artifact.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:segmentation": "./scripts/run_mat_nnunet_bridge.sh test",
