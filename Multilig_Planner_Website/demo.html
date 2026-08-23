@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Interactive browser demonstration of the Multilig Planner reconstruction planning workspace." />
+  <meta name="theme-color" content="#081321" />
+  <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml" />
+  <title>Multilig Planner — Application Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/demo.css" />
+</head>
+<body class="demo-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Multilig Planner home">
+        <img src="assets/logo-mark.svg" width="44" height="44" alt="" />
+        <span class="brand-copy"><strong>Multilig</strong><span>Planner</span></span>
+      </a>
+      <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation">
+        <a class="nav-link" href="index.html">Multiligament Knee Surgery</a>
+        <a class="nav-link is-active" href="demo.html" aria-current="page">Application Demo</a>
+        <span class="status-chip"><span></span> Download coming soon</span>
+      </nav>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="main" class="demo-main">
+    <div class="content-wrap demo-heading reveal">
+      <div>
+        <div class="eyebrow">Interactive sample case</div>
+        <h1>Reconstruction planning workspace</h1>
+        <p>Explore how procedure selection and tunnel orientation interact inside a single knee. This browser demonstration contains illustrative anatomy and simulated measurements.</p>
+      </div>
+      <div class="demo-disclaimer"><strong>Demo only</strong><span>No patient data · Not clinical output</span></div>
+    </div>
+
+    <section class="workspace-wrap reveal" aria-label="Multilig Planner application demonstration">
+      <div class="app-window">
+        <div class="app-titlebar">
+          <div class="app-identity">
+            <img src="assets/logo-mark.svg" width="34" height="34" alt="" />
+            <div><strong>Multilig Planner</strong><span>Multiligament Reconstruction Workspace</span></div>
+          </div>
+          <div class="case-identity"><span class="live-dot"></span> SAMPLE-MLKI-001 · LEFT KNEE</div>
+          <span class="app-badge">Browser demo</span>
+        </div>
+
+        <div class="app-steps" role="tablist" aria-label="Planning stages">
+          <button class="app-step is-active" type="button" data-stage="procedures" role="tab" aria-selected="true"><span>1</span> Procedures</button>
+          <button class="app-step" type="button" data-stage="tunnels" role="tab" aria-selected="false"><span>2</span> Tunnels &amp; fixation</button>
+          <button class="app-step" type="button" data-stage="sequence" role="tab" aria-selected="false"><span>3</span> Sequence</button>
+        </div>
+
+        <div class="workspace-grid">
+          <aside class="app-panel app-panel-left" aria-label="Plan controls">
+            <div class="panel-stage" data-panel="procedures">
+              <div class="panel-head"><div><span class="panel-kicker">Step 1</span><h2>Procedure plan</h2></div><button class="text-btn" id="reset-plan" type="button">Reset</button></div>
+              <p class="panel-help">Select the structures included in this sample reconstruction.</p>
+              <div class="procedure-list">
+                <label class="procedure-card is-selected" data-procedure="acl"><input type="checkbox" checked /><span class="procedure-color acl"></span><span><strong>ACL reconstruction</strong><small>Femoral socket · tibial tunnel</small></span><em>9.5 mm</em></label>
+                <label class="procedure-card is-selected" data-procedure="pcl"><input type="checkbox" checked /><span class="procedure-color pcl"></span><span><strong>PCL reconstruction</strong><small>Femoral socket · tibial tunnel</small></span><em>10.0 mm</em></label>
+                <label class="procedure-card is-selected" data-procedure="fcl"><input type="checkbox" checked /><span class="procedure-color fcl"></span><span><strong>FCL reconstruction</strong><small>Femoral tunnel · fibular tunnel</small></span><em>6.0 mm</em></label>
+                <label class="procedure-card is-selected" data-procedure="pop"><input type="checkbox" checked /><span class="procedure-color pop"></span><span><strong>Popliteus/PFL</strong><small>Femoral tunnel · tibial tunnel</small></span><em>6.0 mm</em></label>
+                <label class="procedure-card" data-procedure="mcl"><input type="checkbox" /><span class="procedure-color mcl"></span><span><strong>sMCL reconstruction</strong><small>Femoral socket · tibial fixation</small></span><em>7.0 mm</em></label>
+                <label class="procedure-card" data-procedure="root"><input type="checkbox" /><span class="procedure-color root"></span><span><strong>Medial root repair</strong><small>Transtibial socket</small></span><em>4.5 mm</em></label>
+              </div>
+              <div class="compact-field"><label for="graft-source">Graft strategy</label><select id="graft-source"><option>Mixed autograft / allograft</option><option>Allograft</option><option>Autograft dominant</option></select></div>
+            </div>
+
+            <div class="panel-stage is-hidden" data-panel="tunnels">
+              <div class="panel-head"><div><span class="panel-kicker">Step 2</span><h2>Tunnel orientation</h2></div></div>
+              <p class="panel-help">Adjust the sample lateral femoral trajectories and re-run the convergence check.</p>
+              <div class="control-group">
+                <div class="range-head"><label for="fcl-angle">FCL anterior angle</label><output id="fcl-angle-output">18°</output></div>
+                <input id="fcl-angle" type="range" min="0" max="45" value="18" step="1" />
+                <div class="range-scale"><span>0°</span><span>Recommended zone</span><span>45°</span></div>
+              </div>
+              <div class="control-group">
+                <div class="range-head"><label for="pop-angle">Popliteus anterior angle</label><output id="pop-angle-output">22°</output></div>
+                <input id="pop-angle" type="range" min="0" max="45" value="22" step="1" />
+                <div class="range-scale"><span>0°</span><span>Recommended zone</span><span>45°</span></div>
+              </div>
+              <div class="field-grid">
+                <div class="compact-field"><label for="acl-diameter">ACL diameter</label><select id="acl-diameter"><option>9.0 mm</option><option selected>9.5 mm</option><option>10.0 mm</option></select></div>
+                <div class="compact-field"><label for="pcl-diameter">PCL diameter</label><select id="pcl-diameter"><option>9.5 mm</option><option selected>10.0 mm</option><option>10.5 mm</option></select></div>
+              </div>
+              <div class="toggle-row"><span><strong>Collision envelopes</strong><small>Show minimum clearance volumes</small></span><label class="switch"><input type="checkbox" id="collision-envelopes" checked /><span></span></label></div>
+              <button class="app-primary-btn" id="run-check" type="button">Run convergence check</button>
+            </div>
+
+            <div class="panel-stage is-hidden" data-panel="sequence">
+              <div class="panel-head"><div><span class="panel-kicker">Step 3</span><h2>Operative sequence</h2></div><span class="saved-state">Draft</span></div>
+              <p class="panel-help">A coordinated sequence derived from the selected procedures and provisional fixation strategy.</p>
+              <ol class="sequence-list" id="sequence-list"></ol>
+              <button class="app-primary-btn" id="update-sequence" type="button">Refresh sequence</button>
+            </div>
+          </aside>
+
+          <section class="viewer-panel" aria-label="Three-dimensional knee planning view">
+            <div class="viewer-toolbar">
+              <div class="view-buttons" role="group" aria-label="Camera view">
+                <button class="view-btn is-active" type="button" data-view="oblique">Oblique</button>
+                <button class="view-btn" type="button" data-view="ap">AP</button>
+                <button class="view-btn" type="button" data-view="lateral">Lateral</button>
+              </div>
+              <div class="viewer-tools"><button type="button" id="zoom-out" aria-label="Zoom out">−</button><button type="button" id="zoom-in" aria-label="Zoom in">+</button><button type="button" id="reset-view">Reset view</button></div>
+            </div>
+
+            <div class="viewer-canvas" id="viewer-canvas">
+              <div class="orientation-cube" aria-hidden="true"><span>A</span><i>L</i><b>S</b></div>
+              <div class="knee-scene" id="knee-scene">
+                <svg viewBox="0 0 720 720" role="img" aria-labelledby="demo-knee-title demo-knee-desc">
+                  <title id="demo-knee-title">Sample multiligament reconstruction plan</title>
+                  <desc id="demo-knee-desc">A stylized knee with interactive ligament and tunnel overlays for an ACL, PCL and posterolateral corner reconstruction.</desc>
+                  <defs>
+                    <linearGradient id="dBone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eff8ff" stop-opacity=".94"/><stop offset=".54" stop-color="#91b7d5" stop-opacity=".75"/><stop offset="1" stop-color="#365c7b" stop-opacity=".42"/></linearGradient>
+                    <filter id="dShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="16" stdDeviation="17" flood-color="#000a13" flood-opacity=".72"/></filter>
+                    <filter id="dGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                  </defs>
+                  <ellipse cx="360" cy="656" rx="235" ry="28" fill="#01070d" opacity=".5"/>
+                  <g id="bones" filter="url(#dShadow)">
+                    <path d="M227 25c-5 78-14 160-55 236-22 41-19 82 8 111 28 31 74 37 116 11 24-15 40-15 66 0 42 26 90 20 118-13 26-30 27-70 5-108-41-72-53-156-58-237z" fill="url(#dBone)" stroke="#acd7f4" stroke-width="3.5"/>
+                    <path d="M185 425c-36 16-53 44-48 76 5 32 31 54 69 57l54 5 12 117h176l12-117 54-5c39-3 65-25 69-57 5-32-12-60-48-76-89-39-261-39-350 0z" fill="url(#dBone)" stroke="#acd7f4" stroke-width="3.5"/>
+                    <path d="M159 404c95 31 307 31 402 0" fill="none" stroke="#7197b4" stroke-width="5" opacity=".66"/>
+                    <path d="M511 473c31 6 54 26 56 53 2 28-22 47-57 46" fill="none" stroke="#9fc7e5" stroke-width="21" stroke-linecap="round" opacity=".8"/>
+                  </g>
+
+                  <g class="collision-envelope" id="envelopes" opacity=".18">
+                    <circle cx="485" cy="302" r="50" fill="#ff596d"/>
+                    <circle cx="514" cy="312" r="43" fill="#ff596d"/>
+                  </g>
+
+                  <g class="tunnel-group tunnel-acl" data-tunnel="acl" filter="url(#dGlow)">
+                    <path d="M285 361 L166 280" stroke="#58d9ff" stroke-width="14" stroke-dasharray="6 13" stroke-linecap="round"/>
+                    <path d="M285 361 C305 407 367 441 385 518" fill="none" stroke="#58d9ff" stroke-width="18" stroke-linecap="round"/>
+                    <circle cx="285" cy="361" r="12" fill="#c9f7ff" stroke="#38bde8" stroke-width="4"/>
+                    <circle cx="385" cy="518" r="12" fill="#c9f7ff" stroke="#38bde8" stroke-width="4"/>
+                  </g>
+                  <g class="tunnel-group tunnel-pcl" data-tunnel="pcl" filter="url(#dGlow)">
+                    <path d="M410 352 L509 266" stroke="#ffbd62" stroke-width="14" stroke-dasharray="6 13" stroke-linecap="round"/>
+                    <path d="M410 352 C385 405 323 449 307 531" fill="none" stroke="#ffbd62" stroke-width="18" stroke-linecap="round"/>
+                    <circle cx="410" cy="352" r="12" fill="#fff0cf" stroke="#f29a32" stroke-width="4"/>
+                    <circle cx="307" cy="531" r="12" fill="#fff0cf" stroke="#f29a32" stroke-width="4"/>
+                  </g>
+                  <g class="tunnel-group tunnel-fcl" data-tunnel="fcl" filter="url(#dGlow)">
+                    <path id="fcl-trajectory" d="M483 305 L617 266" fill="none" stroke="#ae85ff" stroke-width="13" stroke-dasharray="6 12" stroke-linecap="round"/>
+                    <path d="M483 305 C541 344 558 439 514 532" fill="none" stroke="#ae85ff" stroke-width="13" stroke-linecap="round"/>
+                    <circle cx="483" cy="305" r="10" fill="#eadcff" stroke="#8b5be6" stroke-width="4"/>
+                    <circle cx="514" cy="532" r="10" fill="#eadcff" stroke="#8b5be6" stroke-width="4"/>
+                  </g>
+                  <g class="tunnel-group tunnel-pop" data-tunnel="pop" filter="url(#dGlow)">
+                    <path id="pop-trajectory" d="M509 324 L643 309" fill="none" stroke="#ff6da6" stroke-width="11" stroke-dasharray="6 12" stroke-linecap="round"/>
+                    <path d="M509 324 C583 371 602 456 550 551" fill="none" stroke="#ff6da6" stroke-width="11" stroke-linecap="round"/>
+                    <circle cx="509" cy="324" r="9" fill="#ffe0ec" stroke="#e94985" stroke-width="4"/>
+                  </g>
+                  <g class="tunnel-group tunnel-mcl is-hidden" data-tunnel="mcl" filter="url(#dGlow)">
+                    <path d="M229 319 L111 273" fill="none" stroke="#45dfa8" stroke-width="11" stroke-dasharray="6 12" stroke-linecap="round"/>
+                    <path d="M229 319 C153 373 134 479 202 552" fill="none" stroke="#45dfa8" stroke-width="12" stroke-linecap="round"/>
+                  </g>
+                  <g class="tunnel-group tunnel-root is-hidden" data-tunnel="root" filter="url(#dGlow)">
+                    <path d="M274 465 L205 594" fill="none" stroke="#f5df55" stroke-width="9" stroke-dasharray="5 11" stroke-linecap="round"/>
+                    <circle cx="274" cy="465" r="9" fill="#fffad2" stroke="#d5b800" stroke-width="4"/>
+                  </g>
+
+                  <g class="viewer-labels" font-family="Roboto Mono, monospace" font-size="14" font-weight="600">
+                    <g transform="translate(84 245)" data-label="acl"><rect width="99" height="34" rx="8" fill="#092438" stroke="#58d9ff"/><text x="49.5" y="22" fill="#dff9ff" text-anchor="middle">ACL · 9.5</text></g>
+                    <g transform="translate(500 228)" data-label="pcl"><rect width="102" height="34" rx="8" fill="#2c2115" stroke="#ffbd62"/><text x="51" y="22" fill="#fff0d5" text-anchor="middle">PCL · 10.0</text></g>
+                    <g transform="translate(595 226)" data-label="fcl"><rect width="73" height="34" rx="8" fill="#241b36" stroke="#ae85ff"/><text x="36.5" y="22" fill="#f1e8ff" text-anchor="middle">FCL</text></g>
+                  </g>
+                </svg>
+              </div>
+              <div class="viewer-hint"><span class="mouse-icon"></span>Drag to rotate · Scroll or use +/− to zoom</div>
+              <div class="viewer-scale"><span></span>20 mm</div>
+            </div>
+
+            <div class="structure-legend" id="structure-legend">
+              <span data-legend="acl"><i class="acl"></i>ACL</span><span data-legend="pcl"><i class="pcl"></i>PCL</span><span data-legend="fcl"><i class="fcl"></i>FCL</span><span data-legend="pop"><i class="pop"></i>Popliteus/PFL</span><span data-legend="mcl" class="is-hidden"><i class="mcl"></i>sMCL</span><span data-legend="root" class="is-hidden"><i class="root"></i>Root</span>
+            </div>
+          </section>
+
+          <aside class="app-panel app-panel-right" aria-label="Planning checks and metrics">
+            <div class="right-panel-head"><span>Plan checks</span><span class="check-count" id="check-count">5 / 6</span></div>
+            <div class="check-summary is-warning" id="check-summary">
+              <div class="summary-icon" id="summary-icon">!</div>
+              <div><strong id="summary-title">Potential convergence</strong><span id="summary-copy">FCL trajectory approaches the ACL femoral socket.</span></div>
+            </div>
+
+            <div class="metric-section">
+              <h3>Femoral clearance</h3>
+              <div class="metric-row"><span>ACL ↔ FCL</span><strong id="acl-fcl-clearance" class="warning-value">1.8 mm</strong></div>
+              <div class="metric-bar"><span id="acl-fcl-bar" style="width:27%"></span></div>
+              <div class="metric-row"><span>ACL ↔ Popliteus</span><strong id="acl-pop-clearance">3.6 mm</strong></div>
+              <div class="metric-bar good"><span id="acl-pop-bar" style="width:54%"></span></div>
+              <div class="metric-row"><span>PCL ↔ medial cortex</span><strong>8.4 mm</strong></div>
+              <div class="metric-bar good"><span style="width:84%"></span></div>
+            </div>
+
+            <div class="metric-section">
+              <h3>Tunnel inventory</h3>
+              <div class="inventory-row"><span>Femur</span><strong id="femur-count">4 tunnels</strong></div>
+              <div class="inventory-row"><span>Tibia</span><strong id="tibia-count">3 tunnels</strong></div>
+              <div class="inventory-row"><span>Fibula</span><strong id="fibula-count">1 tunnel</strong></div>
+              <div class="inventory-row"><span>Planned grafts</span><strong id="graft-count">4</strong></div>
+            </div>
+
+            <div class="metric-section check-list">
+              <h3>Automated checks</h3>
+              <div><span class="check ok">✓</span><span>Articular surface clearance</span></div>
+              <div><span class="check ok">✓</span><span>Notch violation</span></div>
+              <div id="convergence-check"><span class="check warn">!</span><span>Intertunnel convergence</span></div>
+              <div><span class="check ok">✓</span><span>Posterior cortex clearance</span></div>
+              <div><span class="check ok">✓</span><span>Minimum socket length</span></div>
+              <div><span class="check ok">✓</span><span>Fixation compatibility</span></div>
+            </div>
+          </aside>
+        </div>
+        <div class="app-statusbar"><span><i></i>Sample plan loaded</span><span>Coordinate system: LPS · Units: mm</span><span>Development build</span></div>
+      </div>
+    </section>
+
+    <section class="demo-explanation content-wrap">
+      <div class="demo-explanation-copy reveal">
+        <div class="section-kicker">What this demonstrates</div>
+        <h2>One change updates the whole plan.</h2>
+        <p>In a finished Multilig Planner workflow, procedure selection, patient anatomy, tunnels, fixation and the planned operative sequence remain connected. The demonstration uses simplified sample geometry but illustrates the intended interaction model.</p>
+      </div>
+      <div class="demo-feature-list reveal">
+        <div><span>01</span><p><strong>Choose the reconstruction</strong> and display only the anatomy, grafts and tunnels relevant to the case.</p></div>
+        <div><span>02</span><p><strong>Adjust trajectories</strong> while monitoring bone clearance and competing tunnels in the same 3D model.</p></div>
+        <div><span>03</span><p><strong>Coordinate execution</strong> through a consolidated graft, implant, instrument and fixation sequence.</p></div>
+      </div>
+    </section>
+
+    <section class="coming-soon compact-coming-soon">
+      <div class="content-wrap coming-soon-inner reveal">
+        <div><div class="eyebrow">In development</div><h2>Multilig Planner will be available for download soon.</h2></div>
+        <a class="btn btn-outline-light" href="index.html">Learn about multiligament surgery</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="content-wrap footer-inner">
+      <div class="footer-brand"><img src="assets/logo-mark.svg" width="32" height="32" alt="" /><span><strong>Multilig</strong> Planner</span></div>
+      <p>Research and development software. Not validated for clinical care or intended to replace independent surgical judgment.</p>
+      <p>© <span id="year"></span> Multilig Planner</p>
+    </div>
+  </footer>
+
+  <script src="assets/app.js" defer></script>
+  <script src="assets/demo.js" defer></script>
+</body>
+</html>
