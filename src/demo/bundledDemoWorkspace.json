@@ -1,0 +1,119 @@
+{
+  "drafts": {
+    "ACL": {
+      "femur": {
+        "bundle": "single_bundle",
+        "count": null,
+        "depthMm": null,
+        "diameterMm": null,
+        "preparation": "socket_with_guide_pin"
+      },
+      "procedure": "ACL",
+      "rootLocation": null,
+      "tibia": {
+        "bundle": "single_bundle",
+        "count": null,
+        "depthMm": null,
+        "diameterMm": null,
+        "preparation": "socket_with_guide_pin"
+      }
+    },
+    "ALL": {
+      "femur": {
+        "bundle": null,
+        "count": null,
+        "depthMm": 22,
+        "diameterMm": 2.6,
+        "preparation": "anchor"
+      },
+      "procedure": "ALL",
+      "rootLocation": null,
+      "tibia": {
+        "bundle": null,
+        "count": null,
+        "depthMm": 22,
+        "diameterMm": 2.6,
+        "preparation": "anchor"
+      }
+    },
+    "MCL_POL_PMC": {
+      "femur": {
+        "bundle": null,
+        "count": 1,
+        "depthMm": 22,
+        "diameterMm": 2.6,
+        "preparation": "anchor"
+      },
+      "procedure": "MCL_POL_PMC",
+      "rootLocation": null,
+      "tibia": {
+        "bundle": null,
+        "count": 1,
+        "depthMm": 22,
+        "diameterMm": 2.6,
+        "preparation": "anchor"
+      }
+    },
+    "MEDIAL_ROOT": {
+      "femur": null,
+      "procedure": "MEDIAL_ROOT",
+      "rootLocation": "posterior",
+      "tibia": {
+        "bundle": null,
+        "count": null,
+        "depthMm": null,
+        "diameterMm": null,
+        "preparation": "socket_with_guide_pin"
+      }
+    },
+    "PCL": {
+      "femur": {
+        "bundle": "double_bundle",
+        "count": null,
+        "depthMm": null,
+        "diameterMm": null,
+        "preparation": "socket_with_guide_pin"
+      },
+      "procedure": "PCL",
+      "rootLocation": null,
+      "tibia": {
+        "bundle": "single_bundle",
+        "count": null,
+        "depthMm": null,
+        "diameterMm": null,
+        "preparation": "socket_with_guide_pin"
+      }
+    }
+  },
+  "focusedProcedure": "ACL",
+  "format": "multilig-simplified-workspace",
+  "globalOpacity": 1,
+  "hiddenGraftVisibilityKeys": [],
+  "highlightedProcedures": [
+    "ACL",
+    "PCL",
+    "MCL_POL_PMC",
+    "ALL",
+    "MEDIAL_ROOT"
+  ],
+  "layerVisibility": {
+    "access": false,
+    "boneRemoval": true,
+    "bones": true,
+    "deployment": false,
+    "ghost": true,
+    "grafts": true,
+    "hardware": true,
+    "landmarks": false,
+    "measurements": true,
+    "mri": false,
+    "pins": true,
+    "previous": false,
+    "safety": false
+  },
+  "planId": "demo-case-knee-001",
+  "savedAt": "2026-01-01T00:00:00.000Z",
+  "selectedChannelId": "demo-channel-acl-tibia",
+  "stepIndex": 1,
+  "version": 1
+}

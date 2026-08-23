@@ -1,0 +1,4817 @@
+{
+  "activeVariantId": "demo-variant-a",
+  "analysisSettings": {
+    "informationalClearanceThresholdMm": 2,
+    "thresholdSource": "clinician_selected"
+  },
+  "anatomy": [
+    {
+      "coordinateFrameId": "patient-ras",
+      "id": "demo-anatomy-object-femur",
+      "kind": "femur",
+      "label": "Femur",
+      "meshAssetId": "demo-anatomy-femur",
+      "quality": {
+        "manifold": true,
+        "minimumEdgeLengthMm": null,
+        "triangleCount": 31536,
+        "warnings": [
+          "Computed mesh quality has not been clinician verified."
+        ],
+        "watertight": true
+      },
+      "reviewStatus": "unreviewed",
+      "segmentationProvenance": {
+        "algorithmName": "nnUNetv2",
+        "correctionAssetIds": [],
+        "immutableSource": true,
+        "method": "imported",
+        "notes": "Bundled de-identified MRI-derived research demo surface; clinician review remains required.",
+        "sourceAssetIds": [
+          "demo-anatomy-femur"
+        ],
+        "sourceKind": "surface_mesh"
+      },
+      "visible": true
+    },
+    {
+      "coordinateFrameId": "patient-ras",
+      "id": "demo-anatomy-object-tibia",
+      "kind": "tibia",
+      "label": "Tibia",
+      "meshAssetId": "demo-anatomy-tibia",
+      "quality": {
+        "manifold": true,
+        "minimumEdgeLengthMm": null,
+        "triangleCount": 46520,
+        "warnings": [
+          "Computed mesh quality has not been clinician verified.",
+          "Display mesh has 178 boundary edges and is not watertight."
+        ],
+        "watertight": false
+      },
+      "reviewStatus": "unreviewed",
+      "segmentationProvenance": {
+        "algorithmName": "nnUNetv2",
+        "correctionAssetIds": [],
+        "immutableSource": true,
+        "method": "imported",
+        "notes": "Bundled de-identified MRI-derived research demo surface; clinician review remains required.",
+        "sourceAssetIds": [
+          "demo-anatomy-tibia"
+        ],
+        "sourceKind": "surface_mesh"
+      },
+      "visible": true
+    }
+  ],
+  "audit": [],
+  "catalogVersion": "1.0.0",
+  "coordinateFrames": [
+    {
+      "id": "patient-ras",
+      "kind": "dicom_patient",
+      "name": "De-identified demo patient RAS",
+      "scaleVerified": false,
+      "source": "bundled_deidentified_mri_derived_surface_demo",
+      "sourceConvention": "RAS",
+      "transformToPatientRas": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "units": "mm"
+    },
+    {
+      "id": "viewer-world",
+      "kind": "viewer_world",
+      "name": "MAT Viewer v2 world",
+      "scaleVerified": true,
+      "source": "MAT Viewer v2 contract",
+      "sourceConvention": "VIEWER_WORLD",
+      "transformToPatientRas": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "units": "mm"
+    }
+  ],
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "deidentifiedLabel": "De-identified knee demo",
+  "geometryGeneratorVersion": "1.2.0",
+  "id": "demo-case-knee-001",
+  "imaging": {
+    "derivedAssets": [],
+    "review": {
+      "boneIdentitiesVerified": false,
+      "corrections": [],
+      "laterality": "unverified",
+      "meshQuality": {
+        "demo-anatomy-femur": {
+          "components": null,
+          "manifold": true,
+          "normalsVerified": false,
+          "reviewedAt": null,
+          "reviewer": null,
+          "selfIntersections": null
+        },
+        "demo-anatomy-tibia": {
+          "components": null,
+          "manifold": true,
+          "normalsVerified": false,
+          "reviewedAt": null,
+          "reviewer": null,
+          "selfIntersections": null
+        }
+      },
+      "orientationVerified": false,
+      "scaleVerified": false,
+      "sourceLabelMapsImmutable": true
+    },
+    "segmentationAdapterId": "bundled-deidentified-surface-demo",
+    "segmentationRuns": [],
+    "segmentationValidationState": "research_only",
+    "sources": []
+  },
+  "intentionalRelationships": [],
+  "laterality": "right",
+  "lateralityVerified": false,
+  "procedures": [
+    {
+      "constructs": [
+        {
+          "channelIds": [
+            "demo-channel-plc-fcl-femoral",
+            "demo-channel-plc-popliteus-femoral",
+            "demo-channel-plc-fibular",
+            "demo-channel-plc-tibial"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-plc",
+          "name": "PLC_FCL construct",
+          "procedureId": "demo-procedure-plc",
+          "relationshipIds": []
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "footprints": [],
+      "id": "demo-procedure-plc",
+      "presetVersion": 1,
+      "structure": "PLC_FCL",
+      "techniqueName": "Anatomic two-graft / LaPrade-style",
+      "techniquePresetId": "plc-anatomic-two-graft"
+    },
+    {
+      "constructs": [
+        {
+          "channelIds": [
+            "demo-channel-lateral-root-tibia-anchor"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-lateral-root-tibia-anchor",
+          "name": "Lateral anterior root suture anchor location",
+          "procedureId": "demo-procedure-lateral-root",
+          "relationshipIds": []
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "footprints": [],
+      "id": "demo-procedure-lateral-root",
+      "notes": "multilig:simplified-technique:v1:{\"procedure\":\"LATERAL_ROOT\",\"rootLocation\":\"anterior\",\"femur\":null,\"tibia\":{\"bundle\":null,\"preparation\":\"suture_anchor_location\",\"count\":null,\"diameterMm\":null,\"depthMm\":null}}",
+      "presetVersion": 1,
+      "structure": "LATERAL_ROOT",
+      "techniqueName": "Lateral root reconstruction plan",
+      "techniquePresetId": "simplified-lateral-root"
+    },
+    {
+      "constructs": [
+        {
+          "channelIds": [
+            "demo-channel-acl-femur"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-acl-femur",
+          "name": "ACL femur socket",
+          "procedureId": "demo-procedure-acl",
+          "relationshipIds": []
+        },
+        {
+          "channelIds": [
+            "demo-channel-acl-tibia"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-acl-tibia",
+          "name": "ACL tibia socket",
+          "procedureId": "demo-procedure-acl",
+          "relationshipIds": []
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "footprints": [],
+      "id": "demo-procedure-acl",
+      "notes": "multilig:simplified-technique:v1:{\"procedure\":\"ACL\",\"rootLocation\":null,\"femur\":{\"bundle\":\"single_bundle\",\"preparation\":\"socket_with_guide_pin\",\"count\":null,\"diameterMm\":null,\"depthMm\":null},\"tibia\":{\"bundle\":\"single_bundle\",\"preparation\":\"socket_with_guide_pin\",\"count\":null,\"diameterMm\":null,\"depthMm\":null}}",
+      "presetVersion": 1,
+      "structure": "ACL",
+      "techniqueName": "ACL reconstruction plan",
+      "techniquePresetId": "simplified-acl"
+    },
+    {
+      "constructs": [
+        {
+          "channelIds": [
+            "demo-channel-all-femur"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-all-femur",
+          "name": "ALL femur anchor",
+          "procedureId": "demo-procedure-all",
+          "relationshipIds": []
+        },
+        {
+          "channelIds": [
+            "demo-channel-all-tibia"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-all-tibia",
+          "name": "ALL tibia anchor",
+          "procedureId": "demo-procedure-all",
+          "relationshipIds": []
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "footprints": [],
+      "id": "demo-procedure-all",
+      "notes": "multilig:simplified-technique:v1:{\"procedure\":\"ALL\",\"rootLocation\":null,\"femur\":{\"bundle\":null,\"preparation\":\"anchor\",\"count\":null,\"diameterMm\":2.6,\"depthMm\":22},\"tibia\":{\"bundle\":null,\"preparation\":\"anchor\",\"count\":null,\"diameterMm\":2.6,\"depthMm\":22}}",
+      "presetVersion": 1,
+      "structure": "ALL",
+      "techniqueName": "ALL reconstruction plan",
+      "techniquePresetId": "simplified-all"
+    },
+    {
+      "constructs": [
+        {
+          "channelIds": [
+            "demo-channel-medial-root-tibia"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-medial-root-tibia",
+          "name": "Medial posterior root socket",
+          "procedureId": "demo-procedure-medial-root",
+          "relationshipIds": []
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "footprints": [],
+      "id": "demo-procedure-medial-root",
+      "notes": "multilig:simplified-technique:v1:{\"procedure\":\"MEDIAL_ROOT\",\"rootLocation\":\"posterior\",\"femur\":null,\"tibia\":{\"bundle\":null,\"preparation\":\"socket_with_guide_pin\",\"count\":null,\"diameterMm\":null,\"depthMm\":null}}",
+      "presetVersion": 1,
+      "structure": "MEDIAL_ROOT",
+      "techniqueName": "Medial root reconstruction plan",
+      "techniquePresetId": "simplified-medial-root"
+    },
+    {
+      "constructs": [
+        {
+          "channelIds": [
+            "demo-channel-mcl-femur"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-mcl-femur",
+          "name": "MCL femur anchor",
+          "procedureId": "demo-procedure-mcl",
+          "relationshipIds": []
+        },
+        {
+          "channelIds": [
+            "demo-channel-mcl-tibia"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-mcl-tibia",
+          "name": "MCL tibia anchor",
+          "procedureId": "demo-procedure-mcl",
+          "relationshipIds": []
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "footprints": [],
+      "id": "demo-procedure-mcl",
+      "notes": "multilig:simplified-technique:v1:{\"procedure\":\"MCL_POL_PMC\",\"rootLocation\":null,\"femur\":{\"bundle\":null,\"preparation\":\"anchor\",\"count\":1,\"diameterMm\":2.6,\"depthMm\":22},\"tibia\":{\"bundle\":null,\"preparation\":\"anchor\",\"count\":1,\"diameterMm\":2.6,\"depthMm\":22}}",
+      "presetVersion": 1,
+      "structure": "MCL_POL_PMC",
+      "techniqueName": "MCL reconstruction plan",
+      "techniquePresetId": "simplified-mcl-pol-pmc"
+    },
+    {
+      "constructs": [
+        {
+          "channelIds": [
+            "demo-channel-pcl-femur-al"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-pcl-femur-al",
+          "name": "PCL femur AL socket",
+          "procedureId": "demo-procedure-pcl",
+          "relationshipIds": []
+        },
+        {
+          "channelIds": [
+            "demo-channel-pcl-femur-pm"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-pcl-femur-pm",
+          "name": "PCL femur PM socket",
+          "procedureId": "demo-procedure-pcl",
+          "relationshipIds": []
+        },
+        {
+          "channelIds": [
+            "demo-channel-pcl-tibia"
+          ],
+          "footprintIds": [],
+          "id": "demo-construct-pcl-tibia",
+          "name": "PCL tibia socket",
+          "procedureId": "demo-procedure-pcl",
+          "relationshipIds": []
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "footprints": [],
+      "id": "demo-procedure-pcl",
+      "notes": "multilig:simplified-technique:v1:{\"procedure\":\"PCL\",\"rootLocation\":null,\"femur\":{\"bundle\":\"double_bundle\",\"preparation\":\"socket_with_guide_pin\",\"count\":null,\"diameterMm\":null,\"depthMm\":null},\"tibia\":{\"bundle\":\"single_bundle\",\"preparation\":\"socket_with_guide_pin\",\"count\":null,\"diameterMm\":null,\"depthMm\":null}}",
+      "presetVersion": 1,
+      "structure": "PCL",
+      "techniqueName": "PCL reconstruction plan",
+      "techniquePresetId": "simplified-pcl"
+    }
+  ],
+  "scaleVerified": false,
+  "schemaVersion": "1.7.0",
+  "sourceStudyIds": [],
+  "updatedAt": "2026-01-01T00:00:00.000Z",
+  "variants": [
+    {
+      "analysis": [],
+      "channels": [
+        {
+          "aperture": [
+            23.976515289893587,
+            6.5459367632387,
+            -10.884882041593894
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              23.976515289893587,
+              6.5459367632387,
+              -10.884882041593894
+            ],
+            "barycentric": [
+              0.7737964123872568,
+              0.08160552374298828,
+              0.14459806386975496
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 2.534226055845677e-07,
+            "faceIndex": 1494,
+            "faceStableId": "demo-anatomy-femur:face:1494",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              23.976515540849917,
+              6.545936727969199,
+              -10.884882041593894
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.9902681293212969,
+              0.13917266991223165,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:1494",
+            "units": "mm",
+            "vertexIndices": [
+              789,
+              815,
+              790
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:789",
+              "demo-anatomy-femur:vertex:815",
+              "demo-anatomy-femur:vertex:790"
+            ]
+          },
+          "bone": "femur",
+          "centerline": {
+            "aperturePatientRasMm": [
+              23.976515289893587,
+              6.5459367632387,
+              -10.884882041593894
+            ],
+            "directionPatientRas": [
+              -0.18834273232967816,
+              -0.13625880983782235,
+              0.9726050338756074
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-plc",
+          "crossSection": {
+            "diameterMm": 6,
+            "kind": "circle"
+          },
+          "depthMm": 26,
+          "diameterMm": 6,
+          "endpointSurfaceAttachment": null,
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "note": "Editable synthetic demonstration value; not a recommendation."
+          },
+          "geometryType": "antegrade_blind_socket",
+          "graft": {
+            "diameterMm": null,
+            "dimensionsMm": {},
+            "id": "demo-channel-plc-fcl-femoral-graft",
+            "preparation": null,
+            "source": null,
+            "type": null,
+            "verifiedByUser": false
+          },
+          "guidePin": {
+            "diameterMm": 3.5,
+            "provenance": "generic_parametric_visual_seed"
+          },
+          "id": "demo-channel-plc-fcl-femoral",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-plc-fcl-femoral-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer",
+              "product family",
+              "exact model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "FCL femoral socket",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fcl-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fcl-femoral-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fcl-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fcl-femoral-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fcl-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fcl-femoral-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fcl-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fcl-femoral-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fcl-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fcl-femoral-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fcl-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fcl-femoral-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fcl-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fcl-femoral-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": false,
+              "channelId": "demo-channel-plc-fcl-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fcl-femoral-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [],
+              "visible": true
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-plc",
+          "surfacePlacement": {
+            "endpointMethod": "blind_socket_tip",
+            "meshIds": [
+              "demo-anatomy-femur"
+            ],
+            "method": "manual_surface_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "blind_socket_tip",
+          "vector": [
+            -0.18834273232967816,
+            -0.13625880983782235,
+            0.9726050338756074
+          ],
+          "verificationState": "needs_instrument_chain",
+          "warnings": [
+            "Exact instrument chain incomplete \u2014 no device substitution has been made.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension."
+          ]
+        },
+        {
+          "aperture": [
+            28.017854,
+            5.123307,
+            20.923125
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              28.017854,
+              5.123307,
+              20.923125
+            ],
+            "barycentric": [
+              1,
+              0,
+              0
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 32.74427582261043,
+            "faceIndex": 2561,
+            "faceStableId": "demo-anatomy-femur:face:2561",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              7,
+              -2,
+              45
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.45743908141221284,
+              0.06428866727839583,
+              0.8869140060097814
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:2561",
+            "units": "mm",
+            "vertexIndices": [
+              1366,
+              1365,
+              1364
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:1366",
+              "demo-anatomy-femur:vertex:1365",
+              "demo-anatomy-femur:vertex:1364"
+            ]
+          },
+          "bone": "femur",
+          "centerline": {
+            "aperturePatientRasMm": [
+              28.017854,
+              5.123307,
+              20.923125
+            ],
+            "directionPatientRas": [
+              0.92,
+              -0.28,
+              0.12
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-plc",
+          "crossSection": {
+            "diameterMm": 6,
+            "kind": "circle"
+          },
+          "depthMm": 25,
+          "diameterMm": 6,
+          "endpointSurfaceAttachment": null,
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "note": "Editable synthetic demonstration value; not a recommendation."
+          },
+          "geometryType": "flexible_reamed_socket",
+          "graft": {
+            "diameterMm": null,
+            "dimensionsMm": {},
+            "id": "demo-channel-plc-popliteus-femoral-graft",
+            "preparation": null,
+            "source": null,
+            "type": null,
+            "verifiedByUser": false
+          },
+          "guidePin": {
+            "diameterMm": 3.5,
+            "provenance": "generic_parametric_visual_seed"
+          },
+          "id": "demo-channel-plc-popliteus-femoral",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-plc-popliteus-femoral-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer",
+              "product family",
+              "exact model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "Popliteus femoral socket",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-popliteus-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-popliteus-femoral-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-popliteus-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-popliteus-femoral-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-popliteus-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-popliteus-femoral-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-popliteus-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-popliteus-femoral-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-popliteus-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-popliteus-femoral-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-popliteus-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-popliteus-femoral-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-popliteus-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-popliteus-femoral-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": false,
+              "channelId": "demo-channel-plc-popliteus-femoral",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-popliteus-femoral-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [],
+              "visible": true
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-plc",
+          "surfacePlacement": {
+            "endpointMethod": "blind_socket_tip",
+            "meshIds": [
+              "demo-anatomy-femur"
+            ],
+            "method": "nearest_bone_surface",
+            "state": "default_applied"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "blind_socket_tip",
+          "vector": [
+            0.92,
+            -0.28,
+            0.12
+          ],
+          "verificationState": "needs_instrument_chain",
+          "warnings": [
+            "Exact instrument chain incomplete \u2014 no device substitution has been made.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension."
+          ]
+        },
+        {
+          "aperture": [
+            23,
+            2,
+            18
+          ],
+          "bone": "fibula",
+          "centerline": {
+            "aperturePatientRasMm": [
+              23,
+              2,
+              18
+            ],
+            "directionPatientRas": [
+              0.18,
+              -0.94,
+              -0.08
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-plc",
+          "crossSection": {
+            "diameterMm": 6,
+            "kind": "circle"
+          },
+          "depthMm": 24,
+          "diameterMm": 6,
+          "fixation": [],
+          "fullThickness": true,
+          "genericSeed": {
+            "note": "Editable synthetic demonstration value; not a recommendation."
+          },
+          "geometryType": "round_full_tunnel",
+          "graft": {
+            "diameterMm": null,
+            "dimensionsMm": {},
+            "id": "demo-channel-plc-fibular-graft",
+            "preparation": null,
+            "source": null,
+            "type": null,
+            "verifiedByUser": false
+          },
+          "guidePin": null,
+          "id": "demo-channel-plc-fibular",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-plc-fibular-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer",
+              "product family",
+              "exact model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "Fibular-head tunnel",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fibular",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fibular-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fibular",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fibular-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fibular",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fibular-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fibular",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fibular-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fibular",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fibular-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fibular",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fibular-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-fibular",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fibular-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": false,
+              "channelId": "demo-channel-plc-fibular",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-fibular-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [],
+              "visible": true
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-plc",
+          "surfacePlacement": {
+            "endpointMethod": "not_available",
+            "meshIds": [],
+            "method": "migration_pending",
+            "state": "pending_default"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "outer_cortex_surface",
+          "vector": [
+            0.18,
+            -0.94,
+            -0.08
+          ],
+          "verificationState": "needs_instrument_chain",
+          "warnings": [
+            "Exact instrument chain incomplete \u2014 no device substitution has been made."
+          ]
+        },
+        {
+          "aperture": [
+            33.470189438203455,
+            -15.25315156306571,
+            -43.930287266620496
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              33.470189438203455,
+              -15.25315156306571,
+              -43.930287266620496
+            ],
+            "barycentric": [
+              0.7355312208872143,
+              0.20628905707448264,
+              0.05817972203830299
+            ],
+            "bone": "tibia",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 7.692549712598757e-08,
+            "faceIndex": 5214,
+            "faceStableId": "demo-anatomy-tibia:face:5214",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              33.47018948288745,
+              -15.253151500448837,
+              -43.930287266620496
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.5808736620334328,
+              -0.8139937277128548,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:5214",
+            "units": "mm",
+            "vertexIndices": [
+              2334,
+              2708,
+              2702
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:2334",
+              "demo-anatomy-tibia:vertex:2708",
+              "demo-anatomy-tibia:vertex:2702"
+            ]
+          },
+          "bone": "tibia",
+          "centerline": {
+            "aperturePatientRasMm": [
+              33.470189438203455,
+              -15.25315156306571,
+              -43.930287266620496
+            ],
+            "directionPatientRas": [
+              -0.09117967126227479,
+              0.9935471409507297,
+              -0.06745625439597429
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-plc",
+          "crossSection": {
+            "diameterMm": 7,
+            "kind": "circle"
+          },
+          "depthMm": 22.247836717555277,
+          "diameterMm": 7,
+          "endpointSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              31.441639,
+              6.851123,
+              -45.431043
+            ],
+            "barycentric": [
+              0,
+              1,
+              0
+            ],
+            "bone": "tibia",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 20.020165095442422,
+            "faceIndex": 2339,
+            "faceStableId": "demo-anatomy-tibia:face:2339",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              18.691979448101208,
+              15.831961556962124,
+              -57.984836473417886
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.24988266735957165,
+              0.7051776952797341,
+              -0.6635382962823082
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:2339",
+            "units": "mm",
+            "vertexIndices": [
+              1255,
+              1254,
+              1253
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:1255",
+              "demo-anatomy-tibia:vertex:1254",
+              "demo-anatomy-tibia:vertex:1253"
+            ]
+          },
+          "fixation": [],
+          "fullThickness": true,
+          "genericSeed": {
+            "note": "Editable synthetic demonstration value; not a recommendation."
+          },
+          "geometryType": "round_full_tunnel",
+          "graft": {
+            "diameterMm": null,
+            "dimensionsMm": {},
+            "id": "demo-channel-plc-tibial-graft",
+            "preparation": null,
+            "source": null,
+            "type": null,
+            "verifiedByUser": false
+          },
+          "guidePin": null,
+          "id": "demo-channel-plc-tibial",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-plc-tibial-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer",
+              "product family",
+              "exact model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "PLC tibial tunnel",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-tibial",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-tibial-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-tibial",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-tibial-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-tibial",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-tibial-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-tibial",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-tibial-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-tibial",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-tibial-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-tibial",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-tibial-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-plc-tibial",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-tibial-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [],
+              "visible": true
+            },
+            {
+              "analyzable": false,
+              "channelId": "demo-channel-plc-tibial",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-plc-tibial-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [],
+              "visible": true
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-plc",
+          "surfacePlacement": {
+            "endpointMethod": "nearest_surface_projection",
+            "meshIds": [
+              "demo-anatomy-tibia"
+            ],
+            "method": "manual_surface_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "outer_cortex_surface",
+          "vector": [
+            -0.09117967126227479,
+            0.9935471409507297,
+            -0.06745625439597429
+          ],
+          "verificationState": "needs_instrument_chain",
+          "warnings": [
+            "Exact instrument chain incomplete \u2014 no device substitution has been made."
+          ]
+        },
+        {
+          "aperture": [
+            25.72930498952428,
+            -3.616006578776144,
+            -28.66021
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              25.72930498952428,
+              -3.616006578776144,
+              -28.66021
+            ],
+            "barycentric": [
+              0.3055085778056748,
+              0,
+              0.6944914221943252
+            ],
+            "bone": "tibia",
+            "constraintProvenance": {
+              "resolution": "nearest_xy_fallback",
+              "rule": "maximum_patient_ras_z_at_requested_xy",
+              "ruleVersion": "1",
+              "sourceGeometryRole": "viewer_display_surface",
+              "xyFallbackDistanceMm": 25.982160010701794
+            },
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 38.684367334439,
+            "faceIndex": 25,
+            "faceStableId": "demo-anatomy-tibia:face:25",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              0,
+              0,
+              0
+            ],
+            "reviewState": "user_defined_not_clinician_approved",
+            "surfaceNormalPatientRas": [
+              -0.4574399329118447,
+              0.06428878694848615,
+              0.8869135581612785
+            ],
+            "targetKind": "tibial_superior_envelope",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:25",
+            "units": "mm",
+            "vertexIndices": [
+              28,
+              27,
+              26
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:28",
+              "demo-anatomy-tibia:vertex:27",
+              "demo-anatomy-tibia:vertex:26"
+            ]
+          },
+          "bone": "tibia",
+          "centerline": {
+            "aperturePatientRasMm": [
+              25.72930498952428,
+              -3.616006578776144,
+              -28.66021
+            ],
+            "directionPatientRas": [
+              0.9409561595098921,
+              0.07952270802314525,
+              0.32905568645604677
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-lateral-root-tibia-anchor",
+          "crossSection": {
+            "diameterMm": null,
+            "kind": "circle"
+          },
+          "depthMm": null,
+          "endpointSurfaceAttachment": null,
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              20,
+              45
+            ],
+            "diameterMm": [
+              2.4,
+              4.5
+            ]
+          },
+          "geometryType": "onlay_no_large_tunnel",
+          "graft": null,
+          "guidePin": null,
+          "id": "demo-channel-lateral-root-tibia-anchor",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-lateral-root-tibia-anchor-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "Lateral anterior root suture anchor location",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-lateral-root-tibia-anchor",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-lateral-root-tibia-anchor-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "exact fixation selection"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-lateral-root-tibia-anchor",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-lateral-root-tibia-anchor-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "exact fixation selection"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-lateral-root-tibia-anchor",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-lateral-root-tibia-anchor-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "exact fixation selection"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-lateral-root-tibia-anchor",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-lateral-root-tibia-anchor-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "exact fixation selection"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-lateral-root-tibia-anchor",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-lateral-root-tibia-anchor-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "exact fixation selection"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-lateral-root-tibia-anchor",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-lateral-root-tibia-anchor-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "exact fixation selection"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-lateral-root-tibia-anchor",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-lateral-root-tibia-anchor-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "exact fixation selection"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-lateral-root-tibia-anchor",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-lateral-root-tibia-anchor-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "exact fixation selection"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": true,
+          "orientationDeg": 0,
+          "preparationMode": "none",
+          "procedureId": "demo-procedure-lateral-root",
+          "surfacePlacement": {
+            "endpointMethod": "not_available",
+            "meshIds": [
+              "demo-anatomy-tibia"
+            ],
+            "method": "tibial_superior_envelope",
+            "state": "default_applied"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "none",
+          "vector": [
+            0.9409561595098921,
+            0.07952270802314525,
+            0.32905568645604677
+          ],
+          "verificationState": "needs_dimensions",
+          "warnings": [
+            "Generic ranges are editable UI seeds, not recommendations or final plan values.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present.",
+            "Point-only fixation location; no bone tunnel or socket has been created.",
+            "Tibial entry uses the user-defined superior-envelope rule (maximum patient-RAS Z at the requested X/Y) on the currently loaded tibial display surface; this is not a clinician-reviewed plateau or articular annotation.",
+            "The unregistered preset trajectory did not traverse the loaded bone from its surface Entry, so the generic display seed was redirected toward the centroid of that same display mesh to create an on-surface Start. This is not a surgical recommendation; clinician repositioning and verification are required.",
+            "Tibial superior-envelope X/Y fallback: the unregistered requested X/Y was outside the derived tibial surface footprint and moved 26.0 mm to the nearest supported X/Y before selecting maximum Z. Clinician repositioning is required."
+          ]
+        },
+        {
+          "aperture": [
+            74.28451561083855,
+            -14.990270089998308,
+            -10.60627619853755
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              74.28451561083855,
+              -14.990270089998308,
+              -10.60627619853755
+            ],
+            "barycentric": [
+              0.1731198184799549,
+              0.5262447893870636,
+              0.30063539213298146
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 8.343844426091249e-07,
+            "faceIndex": 20549,
+            "faceStableId": "demo-anatomy-femur:face:20549",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              74.28451597344178,
+              -14.990269581871637,
+              -10.606275644891832
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.4345757348013092,
+              -0.6089838755990382,
+              -0.6635379190236813
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:20549",
+            "units": "mm",
+            "vertexIndices": [
+              10396,
+              10403,
+              10404
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:10396",
+              "demo-anatomy-femur:vertex:10403",
+              "demo-anatomy-femur:vertex:10404"
+            ]
+          },
+          "bone": "femur",
+          "centerline": {
+            "aperturePatientRasMm": [
+              74.28451561083855,
+              -14.990270089998308,
+              -10.60627619853755
+            ],
+            "directionPatientRas": [
+              0.39042149858844066,
+              0.38177216796864594,
+              0.8377476142636734
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-acl-femur",
+          "crossSection": {
+            "diameterMm": 9,
+            "kind": "circle"
+          },
+          "depthMm": 25,
+          "diameterMm": 9,
+          "endpointSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              91.12448180043711,
+              1.4766263897440741,
+              25.528110741277352
+            ],
+            "barycentric": [
+              0.5180026616495319,
+              0.21027267773929453,
+              0.2717246606111737
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 3.5557491961939645e-06,
+            "faceIndex": 26409,
+            "faceStableId": "demo-anatomy-femur:face:26409",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              91.12448532158183,
+              1.4766258948782252,
+              25.528110741277352
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              0.9902680210245943,
+              -0.13917344048356867,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:26409",
+            "units": "mm",
+            "vertexIndices": [
+              13301,
+              13294,
+              13302
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:13301",
+              "demo-anatomy-femur:vertex:13294",
+              "demo-anatomy-femur:vertex:13302"
+            ]
+          },
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              15,
+              35
+            ],
+            "diameterMm": [
+              7,
+              12
+            ]
+          },
+          "geometryType": "antegrade_blind_socket",
+          "graft": null,
+          "guidePin": {
+            "diameterMm": 3.5,
+            "provenance": "generic_parametric_visual_seed"
+          },
+          "id": "demo-channel-acl-femur",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-acl-femur-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "ACL femur socket",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-femur-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-femur-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-femur-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-femur-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-femur-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-femur-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-femur-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-femur-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-acl",
+          "surfacePlacement": {
+            "endpointMethod": "nearest_surface_projection",
+            "meshIds": [
+              "demo-anatomy-femur"
+            ],
+            "method": "manual_surface_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "outer_cortex_surface",
+          "vector": [
+            0.39042149858844066,
+            0.38177216796864594,
+            0.8377476142636734
+          ],
+          "verificationState": "needs_dimensions",
+          "warnings": [
+            "Generic ranges are editable UI seeds, not recommendations or final plan values.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension."
+          ]
+        },
+        {
+          "aperture": [
+            64.23204585519696,
+            7.256450866955902,
+            -23.528718870176483
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              64.23204585519696,
+              7.256450866955902,
+              -23.528718870176483
+            ],
+            "barycentric": [
+              0.5431316605658137,
+              0.07494625318108372,
+              0.38192208625310253
+            ],
+            "bone": "tibia",
+            "constraintProvenance": {
+              "resolution": "vertical_intersection",
+              "rule": "maximum_patient_ras_z_at_requested_xy",
+              "ruleVersion": "1",
+              "sourceGeometryRole": "viewer_display_surface",
+              "xyFallbackDistanceMm": 0
+            },
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 1.038069182612844e-06,
+            "faceIndex": 21643,
+            "faceStableId": "demo-anatomy-tibia:face:21643",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              64.23204585519696,
+              7.256450866955902,
+              -23.5287178321073
+            ],
+            "reviewState": "user_defined_not_clinician_approved",
+            "surfaceNormalPatientRas": [
+              0.43457573769027263,
+              0.6089829317358663,
+              0.6635387833920069
+            ],
+            "targetKind": "tibial_superior_envelope",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:21643",
+            "units": "mm",
+            "vertexIndices": [
+              10991,
+              10541,
+              10992
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:10991",
+              "demo-anatomy-tibia:vertex:10541",
+              "demo-anatomy-tibia:vertex:10992"
+            ]
+          },
+          "bone": "tibia",
+          "centerline": {
+            "aperturePatientRasMm": [
+              64.23204585519696,
+              7.256450866955902,
+              -23.528718870176483
+            ],
+            "directionPatientRas": [
+              0.3229649382168278,
+              0.4292879102059922,
+              -0.8434485988094191
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-acl-tibia",
+          "crossSection": {
+            "diameterMm": 9,
+            "kind": "circle"
+          },
+          "depthMm": 27,
+          "diameterMm": 9,
+          "endpointSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              79.521740016304,
+              27.57965031501415,
+              -63.458970084481045
+            ],
+            "barycentric": [
+              0.5519020329513551,
+              0.10387639111118213,
+              0.3442215759374628
+            ],
+            "bone": "tibia",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 4.886668900181033e-07,
+            "faceIndex": 28289,
+            "faceStableId": "demo-anatomy-tibia:face:28289",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              79.52174022866713,
+              27.579650612603672,
+              -63.458970408730494
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              0.434576467989012,
+              0.6089823770800001,
+              -0.6635388141444236
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:28289",
+            "units": "mm",
+            "vertexIndices": [
+              13970,
+              14321,
+              14324
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:13970",
+              "demo-anatomy-tibia:vertex:14321",
+              "demo-anatomy-tibia:vertex:14324"
+            ]
+          },
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              20,
+              45
+            ],
+            "diameterMm": [
+              7,
+              12
+            ]
+          },
+          "geometryType": "antegrade_blind_socket",
+          "graft": null,
+          "guidePin": {
+            "diameterMm": 3.5,
+            "provenance": "generic_parametric_visual_seed"
+          },
+          "id": "demo-channel-acl-tibia",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-acl-tibia-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "ACL tibia socket",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-tibia-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-tibia-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-tibia-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-tibia-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-tibia-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-tibia-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-tibia-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-acl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-acl-tibia-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-acl",
+          "surfacePlacement": {
+            "endpointMethod": "nearest_surface_projection",
+            "meshIds": [
+              "demo-anatomy-tibia"
+            ],
+            "method": "manual_surface_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "outer_cortex_surface",
+          "vector": [
+            0.3229649382168278,
+            0.4292879102059922,
+            -0.8434485988094191
+          ],
+          "verificationState": "needs_dimensions",
+          "warnings": [
+            "Generic ranges are editable UI seeds, not recommendations or final plan values.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present.",
+            "Tibial entry uses the user-defined superior-envelope rule (maximum patient-RAS Z at the requested X/Y) on the currently loaded tibial display surface; this is not a clinician-reviewed plateau or articular annotation.",
+            "The unregistered preset trajectory did not traverse the loaded bone from its surface Entry, so the generic display seed was redirected toward the centroid of that same display mesh to create an on-surface Start. This is not a surgical recommendation; clinician repositioning and verification are required.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension."
+          ]
+        },
+        {
+          "aperture": [
+            97.98544383339876,
+            -9.829969269043048,
+            0.8202335356013633
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              97.98544383339876,
+              -9.829969269043048,
+              0.8202335356013633
+            ],
+            "barycentric": [
+              0.36443573036294385,
+              0.6048645954625792,
+              0.030699674174476964
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 6.645390318749234e-07,
+            "faceIndex": 30451,
+            "faceStableId": "demo-anatomy-femur:face:30451",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              97.98544399945564,
+              -9.829969737661202,
+              0.8202330946543555
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              0.24988280648607641,
+              -0.7051777719290453,
+              -0.6635381624291322
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:30451",
+            "units": "mm",
+            "vertexIndices": [
+              15306,
+              15298,
+              14860
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:15306",
+              "demo-anatomy-femur:vertex:15298",
+              "demo-anatomy-femur:vertex:14860"
+            ]
+          },
+          "bone": "femur",
+          "centerline": {
+            "aperturePatientRasMm": [
+              97.98544383339876,
+              -9.829969269043048,
+              0.8202335356013633
+            ],
+            "directionPatientRas": [
+              -0.8402721695527529,
+              0.5409139132126661,
+              0.03680787372383632
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-all-femur",
+          "crossSection": {
+            "diameterMm": 2.6,
+            "kind": "circle"
+          },
+          "depthMm": 22,
+          "diameterMm": 2.6,
+          "endpointSurfaceAttachment": null,
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              15,
+              30
+            ],
+            "diameterMm": [
+              3.5,
+              7
+            ]
+          },
+          "geometryType": "anchor_pilot",
+          "graft": null,
+          "guidePin": null,
+          "id": "demo-channel-all-femur",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-all-femur-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "ALL femur anchor",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-femur-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-femur-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-femur-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-femur-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-femur-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-femur-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-femur-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-femur-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-all",
+          "surfacePlacement": {
+            "endpointMethod": "preserved_depth",
+            "meshIds": [
+              "demo-anatomy-femur"
+            ],
+            "method": "manual_trajectory_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "exterior_rod",
+          "vector": [
+            -0.8402721695527529,
+            0.5409139132126661,
+            0.03680787372383632
+          ],
+          "verificationState": "needs_instrument_chain",
+          "warnings": [
+            "Diameter and depth were entered by the clinician for this planning geometry; no device or instrument was selected.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present.",
+            "The generic anchor socket trajectory is initially directed from its surface Entry toward the centroid of the same display mesh. This only keeps the visual template intraosseous; it is not an anatomic target or surgical recommendation."
+          ]
+        },
+        {
+          "aperture": [
+            98.22371804820149,
+            9.237805667421183,
+            -46.1834073706667
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              98.22371804820149,
+              9.237805667421183,
+              -46.1834073706667
+            ],
+            "barycentric": [
+              0.019545570079863926,
+              0.9681864776289923,
+              0.012267952291143724
+            ],
+            "bone": "tibia",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 2.6366460409942126e-06,
+            "faceIndex": 41522,
+            "faceStableId": "demo-anatomy-tibia:face:41522",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              98.22371543721488,
+              9.237806034369754,
+              -46.1834073706667
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              0.9902681558845039,
+              -0.13917248090446577,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:41522",
+            "units": "mm",
+            "vertexIndices": [
+              20963,
+              20952,
+              20965
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:20963",
+              "demo-anatomy-tibia:vertex:20952",
+              "demo-anatomy-tibia:vertex:20965"
+            ]
+          },
+          "bone": "tibia",
+          "centerline": {
+            "aperturePatientRasMm": [
+              98.22371804820149,
+              9.237805667421183,
+              -46.1834073706667
+            ],
+            "directionPatientRas": [
+              -0.8371804919435928,
+              -0.531050518726588,
+              0.13082113922950575
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-all-tibia",
+          "crossSection": {
+            "diameterMm": 2.6,
+            "kind": "circle"
+          },
+          "depthMm": 22,
+          "diameterMm": 2.6,
+          "endpointSurfaceAttachment": null,
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              15,
+              30
+            ],
+            "diameterMm": [
+              3.5,
+              7
+            ]
+          },
+          "geometryType": "anchor_pilot",
+          "graft": null,
+          "guidePin": null,
+          "id": "demo-channel-all-tibia",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-all-tibia-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "ALL tibia anchor",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-tibia-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-tibia-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-tibia-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-tibia-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-tibia-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-tibia-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-tibia-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-all-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-all-tibia-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-all",
+          "surfacePlacement": {
+            "endpointMethod": "preserved_depth",
+            "meshIds": [
+              "demo-anatomy-tibia"
+            ],
+            "method": "manual_trajectory_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "exterior_rod",
+          "vector": [
+            -0.8371804919435928,
+            -0.531050518726588,
+            0.13082113922950575
+          ],
+          "verificationState": "needs_instrument_chain",
+          "warnings": [
+            "Diameter and depth were entered by the clinician for this planning geometry; no device or instrument was selected.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present.",
+            "The generic anchor socket trajectory is initially directed from its surface Entry toward the centroid of the same display mesh. This only keeps the visual template intraosseous; it is not an anatomic target or surgical recommendation."
+          ]
+        },
+        {
+          "aperture": [
+            51.96894460647553,
+            -14.894312158499503,
+            -24.500668915211804
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              51.96894460647553,
+              -14.894312158499503,
+              -24.500668915211804
+            ],
+            "barycentric": [
+              0.40960614415559915,
+              0.1813674207440366,
+              0.40902643510036424
+            ],
+            "bone": "tibia",
+            "constraintProvenance": {
+              "resolution": "vertical_intersection",
+              "rule": "maximum_patient_ras_z_at_requested_xy",
+              "ruleVersion": "1",
+              "sourceGeometryRole": "viewer_display_surface",
+              "xyFallbackDistanceMm": 0
+            },
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 6.476444234237988e-07,
+            "faceIndex": 16478,
+            "faceStableId": "demo-anatomy-tibia:face:16478",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              51.96894460647553,
+              -14.894312158499503,
+              -24.500669562856228
+            ],
+            "reviewState": "user_defined_not_clinician_approved",
+            "surfaceNormalPatientRas": [
+              0.24988266735957085,
+              -0.7051776952797317,
+              0.6635382962823109
+            ],
+            "targetKind": "tibial_superior_envelope",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:16478",
+            "units": "mm",
+            "vertexIndices": [
+              7936,
+              8397,
+              7934
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:7936",
+              "demo-anatomy-tibia:vertex:8397",
+              "demo-anatomy-tibia:vertex:7934"
+            ]
+          },
+          "bone": "tibia",
+          "centerline": {
+            "aperturePatientRasMm": [
+              51.96894460647553,
+              -14.894312158499503,
+              -24.500668915211804
+            ],
+            "directionPatientRas": [
+              0.020647612339683125,
+              0.7183908646156569,
+              -0.6953331875737263
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-medial-root-tibia",
+          "crossSection": {
+            "diameterMm": 6,
+            "kind": "circle"
+          },
+          "depthMm": 18,
+          "diameterMm": 6,
+          "endpointSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              52.891277222575056,
+              17.19633903362409,
+              -55.561329460601456
+            ],
+            "barycentric": [
+              0.7126896385469363,
+              0.10703657652985736,
+              0.18027378492320628
+            ],
+            "bone": "tibia",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 2.414182679898538e-07,
+            "faceIndex": 14177,
+            "faceStableId": "demo-anatomy-tibia:face:14177",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              52.89127730320977,
+              17.196338806070088,
+              -55.561329460601456
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.3340041874901049,
+              0.942571590246107,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:14177",
+            "units": "mm",
+            "vertexIndices": [
+              7241,
+              7239,
+              7242
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:7241",
+              "demo-anatomy-tibia:vertex:7239",
+              "demo-anatomy-tibia:vertex:7242"
+            ]
+          },
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              5,
+              15
+            ],
+            "diameterMm": [
+              5,
+              7
+            ]
+          },
+          "geometryType": "antegrade_blind_socket",
+          "graft": null,
+          "guidePin": {
+            "diameterMm": 3.5,
+            "provenance": "generic_parametric_visual_seed"
+          },
+          "id": "demo-channel-medial-root-tibia",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-medial-root-tibia-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "Medial posterior root socket",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-medial-root-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-medial-root-tibia-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-medial-root-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-medial-root-tibia-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-medial-root-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-medial-root-tibia-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-medial-root-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-medial-root-tibia-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-medial-root-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-medial-root-tibia-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-medial-root-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-medial-root-tibia-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-medial-root-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-medial-root-tibia-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-medial-root-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-medial-root-tibia-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-medial-root",
+          "surfacePlacement": {
+            "endpointMethod": "nearest_surface_projection",
+            "meshIds": [
+              "demo-anatomy-tibia"
+            ],
+            "method": "manual_surface_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "outer_cortex_surface",
+          "vector": [
+            0.020647612339683125,
+            0.7183908646156569,
+            -0.6953331875737263
+          ],
+          "verificationState": "needs_dimensions",
+          "warnings": [
+            "Generic ranges are editable UI seeds, not recommendations or final plan values.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present.",
+            "Tibial entry uses the user-defined superior-envelope rule (maximum patient-RAS Z at the requested X/Y) on the currently loaded tibial display surface; this is not a clinician-reviewed plateau or articular annotation.",
+            "The unregistered preset trajectory did not traverse the loaded bone from its surface Entry, so the generic display seed was redirected toward the centroid of that same display mesh to create an on-surface Start. This is not a surgical recommendation; clinician repositioning and verification are required.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension."
+          ]
+        },
+        {
+          "aperture": [
+            22.363818646216917,
+            10.160126733942226,
+            5.485618150583861
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              22.363818646216917,
+              10.160126733942226,
+              5.485618150583861
+            ],
+            "barycentric": [
+              0.8408343541095933,
+              0.11429197660904146,
+              0.044873669281365214
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 4.896763800885153e-07,
+            "faceIndex": 278,
+            "faceStableId": "demo-anatomy-femur:face:278",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              22.363818161306057,
+              10.160126802092172,
+              5.485618150583861
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.9902680210245957,
+              0.13917344048355904,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:278",
+            "units": "mm",
+            "vertexIndices": [
+              148,
+              169,
+              149
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:148",
+              "demo-anatomy-femur:vertex:169",
+              "demo-anatomy-femur:vertex:149"
+            ]
+          },
+          "bone": "femur",
+          "centerline": {
+            "aperturePatientRasMm": [
+              22.363818646216917,
+              10.160126733942226,
+              5.485618150583861
+            ],
+            "directionPatientRas": [
+              0.9592096794811021,
+              0.20561931462026714,
+              0.1940038356446924
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-mcl-femur",
+          "crossSection": {
+            "diameterMm": 2.6,
+            "kind": "circle"
+          },
+          "depthMm": 22,
+          "diameterMm": 2.6,
+          "endpointSurfaceAttachment": null,
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              15,
+              40
+            ],
+            "diameterMm": [
+              4,
+              8
+            ]
+          },
+          "geometryType": "anchor_pilot",
+          "graft": null,
+          "guidePin": null,
+          "id": "demo-channel-mcl-femur",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-mcl-femur-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "MCL femur anchor",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-femur-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-femur-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-femur-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-femur-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-femur-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-femur-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-femur-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-femur",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-femur-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-mcl",
+          "semanticKey": "femur-anchor-1",
+          "surfacePlacement": {
+            "endpointMethod": "preserved_depth",
+            "meshIds": [
+              "demo-anatomy-femur"
+            ],
+            "method": "manual_surface_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "exterior_rod",
+          "vector": [
+            0.9592096794811021,
+            0.20561931462026714,
+            0.1940038356446924
+          ],
+          "verificationState": "needs_instrument_chain",
+          "warnings": [
+            "Diameter and depth were entered by the clinician for this planning geometry; no device or instrument was selected.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present."
+          ]
+        },
+        {
+          "aperture": [
+            31.83970009634794,
+            2.0432878707127173,
+            -48.50299618721612
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              31.83970009634794,
+              2.0432878707127173,
+              -48.50299618721612
+            ],
+            "barycentric": [
+              0.30604832502403617,
+              0.21296381654150573,
+              0.48098785843445807
+            ],
+            "bone": "tibia",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 8.881784197001252e-16,
+            "faceIndex": 3207,
+            "faceStableId": "demo-anatomy-tibia:face:3207",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              31.83970009634794,
+              2.0432878707127164,
+              -48.50299618721612
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.24988265789110742,
+              0.705177668559393,
+              -0.6635383282451848
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:3207",
+            "units": "mm",
+            "vertexIndices": [
+              1679,
+              1690,
+              1322
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:1679",
+              "demo-anatomy-tibia:vertex:1690",
+              "demo-anatomy-tibia:vertex:1322"
+            ]
+          },
+          "bone": "tibia",
+          "centerline": {
+            "aperturePatientRasMm": [
+              31.83970009634794,
+              2.0432878707127173,
+              -48.50299618721612
+            ],
+            "directionPatientRas": [
+              0.931251587219476,
+              -0.3583615185694082,
+              0.06593559971544016
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-mcl-tibia",
+          "crossSection": {
+            "diameterMm": 2.6,
+            "kind": "circle"
+          },
+          "depthMm": 22,
+          "diameterMm": 2.6,
+          "endpointSurfaceAttachment": null,
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              15,
+              40
+            ],
+            "diameterMm": [
+              4,
+              8
+            ]
+          },
+          "geometryType": "anchor_pilot",
+          "graft": null,
+          "guidePin": null,
+          "id": "demo-channel-mcl-tibia",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-mcl-tibia-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "MCL tibia anchor",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-tibia-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-tibia-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-tibia-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-tibia-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-tibia-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-tibia-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-tibia-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-mcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-mcl-tibia-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-mcl",
+          "semanticKey": "tibia-anchor-1",
+          "surfacePlacement": {
+            "endpointMethod": "preserved_depth",
+            "meshIds": [
+              "demo-anatomy-tibia"
+            ],
+            "method": "manual_trajectory_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "exterior_rod",
+          "vector": [
+            0.931251587219476,
+            -0.3583615185694082,
+            0.06593559971544016
+          ],
+          "verificationState": "needs_instrument_chain",
+          "warnings": [
+            "Diameter and depth were entered by the clinician for this planning geometry; no device or instrument was selected.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present."
+          ]
+        },
+        {
+          "aperture": [
+            54.795479800041974,
+            4.320419669077471,
+            -9.203320080964858
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              54.795479800041974,
+              4.320419669077471,
+              -9.203320080964858
+            ],
+            "barycentric": [
+              0.1834446863317561,
+              0.36073275912182773,
+              0.45582255454641624
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 1.8283468106427015e-07,
+            "faceIndex": 13562,
+            "faceStableId": "demo-anatomy-femur:face:13562",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              54.79547986110966,
+              4.320419496742744,
+              -9.203320080964858
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              0.33400493793824876,
+              -0.9425713243213304,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:13562",
+            "units": "mm",
+            "vertexIndices": [
+              6544,
+              6895,
+              6536
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:6544",
+              "demo-anatomy-femur:vertex:6895",
+              "demo-anatomy-femur:vertex:6536"
+            ]
+          },
+          "bone": "femur",
+          "centerline": {
+            "aperturePatientRasMm": [
+              54.795479800041974,
+              4.320419669077471,
+              -9.203320080964858
+            ],
+            "directionPatientRas": [
+              -0.6297932016654229,
+              -0.006859279789125456,
+              0.7767325623512833
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-pcl-femur-al",
+          "crossSection": {
+            "diameterMm": 7,
+            "kind": "circle"
+          },
+          "depthMm": 27,
+          "diameterMm": 7,
+          "endpointSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              30.650312718383123,
+              4.057446908923314,
+              20.575244448062822
+            ],
+            "barycentric": [
+              0.5518854755860692,
+              0.18800991341405196,
+              0.26010461099987886
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 7.812016831600992e-07,
+            "faceIndex": 3283,
+            "faceStableId": "demo-anatomy-femur:face:3283",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              30.650313057874712,
+              4.057447384661867,
+              20.575243929705454
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.43457611026266674,
+              -0.6089830110535841,
+              0.6635384665843275
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:3283",
+            "units": "mm",
+            "vertexIndices": [
+              1718,
+              1382,
+              1727
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:1718",
+              "demo-anatomy-femur:vertex:1382",
+              "demo-anatomy-femur:vertex:1727"
+            ]
+          },
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              15,
+              35
+            ],
+            "diameterMm": [
+              8,
+              12.5
+            ],
+            "pilotDiameterMm": [
+              1,
+              6
+            ]
+          },
+          "geometryType": "antegrade_blind_socket",
+          "graft": null,
+          "guidePin": {
+            "diameterMm": 3.5,
+            "provenance": "generic_parametric_visual_seed"
+          },
+          "id": "demo-channel-pcl-femur-al",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-pcl-femur-al-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "PCL femur AL socket",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-al",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-al-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-al",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-al-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-al",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-al-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-al",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-al-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-al",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-al-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-al",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-al-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-al",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-al-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-al",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-al-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-pcl",
+          "semanticKey": "femur-AL-1",
+          "surfacePlacement": {
+            "endpointMethod": "nearest_surface_projection",
+            "meshIds": [
+              "demo-anatomy-femur"
+            ],
+            "method": "manual_surface_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "outer_cortex_surface",
+          "vector": [
+            -0.6297932016654229,
+            -0.006859279789125456,
+            0.7767325623512833
+          ],
+          "verificationState": "needs_dimensions",
+          "warnings": [
+            "Generic ranges are editable UI seeds, not recommendations or final plan values.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension."
+          ]
+        },
+        {
+          "aperture": [
+            50.083280703845254,
+            -3.853371322274901,
+            -13.54442841779639
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              50.083280703845254,
+              -3.853371322274901,
+              -13.54442841779639
+            ],
+            "barycentric": [
+              0.1935067972608887,
+              0.48680921801473004,
+              0.3196839847243812
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 4.2709447901950276e-07,
+            "faceIndex": 12077,
+            "faceStableId": "demo-anatomy-femur:face:12077",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              50.083281126783305,
+              -3.85337138171478,
+              -13.54442841779639
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              0.9902681293212969,
+              -0.1391726699122316,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:12077",
+            "units": "mm",
+            "vertexIndices": [
+              6177,
+              6161,
+              6178
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:6177",
+              "demo-anatomy-femur:vertex:6161",
+              "demo-anatomy-femur:vertex:6178"
+            ]
+          },
+          "bone": "femur",
+          "centerline": {
+            "aperturePatientRasMm": [
+              50.083280703845254,
+              -3.853371322274901,
+              -13.54442841779639
+            ],
+            "directionPatientRas": [
+              -0.7250951894420168,
+              0.08389697021517083,
+              0.6835190301935714
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-pcl-femur-pm",
+          "crossSection": {
+            "diameterMm": 7,
+            "kind": "circle"
+          },
+          "depthMm": 27,
+          "diameterMm": 7,
+          "endpointSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              24.809114535089183,
+              -0.9290298052595427,
+              10.280544910068684
+            ],
+            "barycentric": [
+              0.2239897899914166,
+              0.5063691493743583,
+              0.2696410606342251
+            ],
+            "bone": "femur",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 1.7449233330881446e-07,
+            "faceIndex": 1778,
+            "faceStableId": "demo-anatomy-femur:face:1778",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              24.809114636447106,
+              -0.9290296632238224,
+              10.280544910068684
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.5808732219116182,
+              -0.813994041787786,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-femur:face:1778",
+            "units": "mm",
+            "vertexIndices": [
+              433,
+              976,
+              969
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:433",
+              "demo-anatomy-femur:vertex:976",
+              "demo-anatomy-femur:vertex:969"
+            ]
+          },
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              15,
+              35
+            ],
+            "diameterMm": [
+              8,
+              12.5
+            ],
+            "pilotDiameterMm": [
+              1,
+              6
+            ]
+          },
+          "geometryType": "antegrade_blind_socket",
+          "graft": null,
+          "guidePin": {
+            "diameterMm": 3.5,
+            "provenance": "generic_parametric_visual_seed"
+          },
+          "id": "demo-channel-pcl-femur-pm",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-pcl-femur-pm-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "PCL femur PM socket",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-pm",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-pm-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-pm",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-pm-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-pm",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-pm-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-pm",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-pm-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-pm",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-pm-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-pm",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-pm-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-pm",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-pm-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-femur-pm",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-femur-pm-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-pcl",
+          "semanticKey": "femur-PM-2",
+          "surfacePlacement": {
+            "endpointMethod": "nearest_surface_projection",
+            "meshIds": [
+              "demo-anatomy-femur"
+            ],
+            "method": "manual_numeric_edit",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "outer_cortex_surface",
+          "vector": [
+            -0.7250951894420168,
+            0.08389697021517083,
+            0.6835190301935714
+          ],
+          "verificationState": "needs_dimensions",
+          "warnings": [
+            "Generic ranges are editable UI seeds, not recommendations or final plan values.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension."
+          ]
+        },
+        {
+          "aperture": [
+            62.92984920006015,
+            -18.566253964737342,
+            -26.990007251334617
+          ],
+          "apertureSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              62.92984920006015,
+              -18.566253964737342,
+              -26.990007251334617
+            ],
+            "barycentric": [
+              0.29941712967594736,
+              0.28170911226452455,
+              0.4188737580595281
+            ],
+            "bone": "tibia",
+            "constraintProvenance": {
+              "resolution": "vertical_intersection",
+              "rule": "maximum_patient_ras_z_at_requested_xy",
+              "ruleVersion": "1",
+              "sourceGeometryRole": "viewer_display_surface",
+              "xyFallbackDistanceMm": 0
+            },
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 7.516439026744592e-08,
+            "faceIndex": 23265,
+            "faceStableId": "demo-anatomy-tibia:face:23265",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              62.92984920006015,
+              -18.566253964737342,
+              -26.990007176170227
+            ],
+            "reviewState": "user_defined_not_clinician_approved",
+            "surfaceNormalPatientRas": [
+              -0.4345756214556211,
+              -0.6089821046867029,
+              0.66353961856683
+            ],
+            "targetKind": "tibial_superior_envelope",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:23265",
+            "units": "mm",
+            "vertexIndices": [
+              11807,
+              11428,
+              11430
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:11807",
+              "demo-anatomy-tibia:vertex:11428",
+              "demo-anatomy-tibia:vertex:11430"
+            ]
+          },
+          "bone": "tibia",
+          "centerline": {
+            "aperturePatientRasMm": [
+              62.92984920006015,
+              -18.566253964737342,
+              -26.990007251334617
+            ],
+            "directionPatientRas": [
+              0.0072975593463407585,
+              0.7151283523607429,
+              -0.6989550667084371
+            ],
+            "kind": "rigid"
+          },
+          "constructId": "demo-construct-pcl-tibia",
+          "crossSection": {
+            "diameterMm": 9,
+            "kind": "circle"
+          },
+          "depthMm": 28,
+          "diameterMm": 9,
+          "endpointSurfaceAttachment": {
+            "attachedPointPatientRasMm": [
+              63.34659979082035,
+              22.273449992607222,
+              -66.90608372855301
+            ],
+            "barycentric": [
+              0.47981399655416984,
+              0.06870269639406246,
+              0.4514833070517677
+            ],
+            "bone": "tibia",
+            "coordinateSpace": "patient_ras",
+            "distanceFromRequestedPointMm": 2.7075555357029933e-07,
+            "faceIndex": 20476,
+            "faceStableId": "demo-anatomy-tibia:face:20476",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              63.346599881253944,
+              22.273449737400767,
+              -66.90608372855301
+            ],
+            "reviewState": "surface_review_not_evaluated",
+            "surfaceNormalPatientRas": [
+              -0.33400458637738084,
+              0.9425714488986363,
+              0
+            ],
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "triangleStableId": "demo-anatomy-tibia:face:20476",
+            "units": "mm",
+            "vertexIndices": [
+              10397,
+              10398,
+              10403
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:10397",
+              "demo-anatomy-tibia:vertex:10398",
+              "demo-anatomy-tibia:vertex:10403"
+            ]
+          },
+          "fixation": [],
+          "fullThickness": false,
+          "genericSeed": {
+            "depthMm": [
+              20,
+              45
+            ],
+            "diameterMm": [
+              8,
+              12.5
+            ],
+            "pilotDiameterMm": [
+              1,
+              6
+            ]
+          },
+          "geometryType": "antegrade_blind_socket",
+          "graft": null,
+          "guidePin": {
+            "diameterMm": 3.5,
+            "provenance": "generic_parametric_visual_seed"
+          },
+          "id": "demo-channel-pcl-tibia",
+          "instrumentChain": {
+            "catalogVersion": "1.0.0",
+            "completionState": "incomplete",
+            "cutterInstrumentId": null,
+            "depthOrFullTunnelSetting": {
+              "depthMm": null,
+              "mode": null
+            },
+            "exactSizeOrProfileId": null,
+            "fixationImplantIds": [],
+            "fixationPreparationInstrumentIds": [],
+            "graftSelectionId": null,
+            "guideInstrumentId": null,
+            "guideSide": null,
+            "hookArmOffsetAngle": {
+              "angleDeg": null,
+              "hookOrArmId": null,
+              "offsetMm": null
+            },
+            "id": "demo-channel-pcl-tibia-instrument-chain",
+            "manufacturerId": null,
+            "marketOrRegion": null,
+            "missingSelections": [
+              "region/institution set",
+              "manufacturer or Generic/Institution Defined",
+              "product family",
+              "exact product/model/SKU",
+              "guide and side",
+              "hook/arm/offset/angle",
+              "sleeve/bullet/depth stop",
+              "pin",
+              "drill/reamer/cutter/dilator/punch/tap",
+              "exact size/profile",
+              "depth/full-tunnel setting",
+              "graft",
+              "fixation implant and preparation"
+            ],
+            "pinInstrumentId": null,
+            "productFamilyId": null,
+            "productVariantId": null,
+            "regionInstitutionSetId": null,
+            "sleeveBulletDepthStop": {
+              "depthStopMm": null,
+              "sleeveOrBulletId": null
+            },
+            "sourceIds": [],
+            "userVerified": false,
+            "verification": null
+          },
+          "intentionalRelationshipIds": [],
+          "label": "PCL tibia socket",
+          "layers": [
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-tibia-layer-bone_removal_or_compaction",
+              "kind": "bone_removal_or_compaction",
+              "label": "bone removal or compaction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-tibia-layer-pin_tract_and_overshoot",
+              "kind": "pin_tract_and_overshoot",
+              "label": "pin tract and overshoot",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": true
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-tibia-layer-instrument_access_swept_volume",
+              "kind": "instrument_access_swept_volume",
+              "label": "instrument access swept volume",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-tibia-layer-cutter_deployment_retraction",
+              "kind": "cutter_deployment_retraction",
+              "label": "cutter deployment retraction",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-tibia-layer-graft_or_bone_block",
+              "kind": "graft_or_bone_block",
+              "label": "graft or bone block",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-tibia-layer-retained_fixation",
+              "kind": "retained_fixation",
+              "label": "retained fixation",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-tibia-layer-surface_hardware_flip_deployment",
+              "kind": "surface_hardware_flip_deployment",
+              "label": "surface hardware flip deployment",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            },
+            {
+              "analyzable": true,
+              "channelId": "demo-channel-pcl-tibia",
+              "geometryGeneratorVersion": "1.2.0",
+              "id": "demo-channel-pcl-tibia-layer-safety_margin",
+              "kind": "safety_margin",
+              "label": "safety margin",
+              "missingParameters": [
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
+              ],
+              "visible": false
+            }
+          ],
+          "noLargeTunnel": false,
+          "orientationDeg": 0,
+          "preparationMode": "cut",
+          "procedureId": "demo-procedure-pcl",
+          "semanticKey": "tibia-single-1",
+          "surfacePlacement": {
+            "endpointMethod": "nearest_surface_projection",
+            "meshIds": [
+              "demo-anatomy-tibia"
+            ],
+            "method": "manual_surface_drag",
+            "state": "clinician_edited"
+          },
+          "tipOvershootMm": null,
+          "trajectoryControlMode": "outer_cortex_surface",
+          "vector": [
+            0.0072975593463407585,
+            0.7151283523607429,
+            -0.6989550667084371
+          ],
+          "verificationState": "needs_dimensions",
+          "warnings": [
+            "Generic ranges are editable UI seeds, not recommendations or final plan values.",
+            "Geometry is not evaluated until exact dimensions and required anatomy are present.",
+            "Posterior pin exit requires clinician review.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension.",
+            "Tibial entry uses the user-defined superior-envelope rule (maximum patient-RAS Z at the requested X/Y) on the currently loaded tibial display surface; this is not a clinician-reviewed plateau or articular annotation."
+          ]
+        }
+      ],
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "id": "demo-variant-a",
+      "name": "Plan A",
+      "sequence": [],
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    }
+  ]
+}

@@ -73,6 +73,11 @@ import { parseMatViewerMeshArtifactBytes } from "./imaging/matViewerMeshArtifact
 import type { MatNnunetJob, MatNnunetSourceKind } from "./imaging/matNnunetTypes";
 import { publicAssetPath } from "./publicAssetPath";
 import {
+  createBundledDemoWorkspaceDefaults,
+  loadBundledDemoAnatomy,
+  usesBundledDemoAnatomy,
+} from "./demo/bundledDemo";
+import {
   deriveAnatomicReferenceFrame,
   measureChannelStartPoint,
   measureChannelTrajectoryAngles,
@@ -559,7 +564,10 @@ export default function SimplifiedApp() {
   const [history, setHistory] = useState(() => createPlanHistory(loadInitialPlan()));
   const plan = history.present.snapshot;
   const variant = activeVariant(plan);
-  const initialWorkspace = useRef(loadSimplifiedWorkspaceDefaults(localStorage, plan)).current;
+  const initialWorkspace = useRef(
+    loadSimplifiedWorkspaceDefaults(localStorage, plan)
+      ?? (usesBundledDemoAnatomy(plan) ? createBundledDemoWorkspaceDefaults(plan) : null),
+  ).current;
   const [selectedChannelId, setSelectedChannelId] = useState<string | null>(initialWorkspace?.selectedChannelId ?? null);
   const selectedChannel = variant.channels.find((channel) => channel.id === selectedChannelId) ?? null;
   const [focusedProcedure, setFocusedProcedure] = useState<SimplifiedProcedureIdentity | null>(initialWorkspace?.focusedProcedure ?? null);
@@ -582,6 +590,7 @@ export default function SimplifiedApp() {
   }));
   const [globalOpacity, setGlobalOpacity] = useState(initialWorkspace?.globalOpacity ?? 1);
   const [standardView, setStandardView] = useState<{ view: StandardView; nonce: number }>({ view: "focus", nonce: 0 });
+  const [bundledDemoLoadNonce, setBundledDemoLoadNonce] = useState(0);
   const [showImport, setShowImport] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -598,7 +607,7 @@ export default function SimplifiedApp() {
     jobId: null,
   });
   const [patientAnatomyMeshes, setPatientAnatomyMeshes] = useState<ViewerMeshPayload[] | null>(
-    () => plan.imaging.segmentationRuns.length ? [] : null,
+    () => plan.imaging.segmentationRuns.length || usesBundledDemoAnatomy(plan) ? [] : null,
   );
   const syntheticAnatomyMeshes = useMemo(() => buildSyntheticAnatomyMeshes(), []);
   const interactionAnatomyMeshes = patientAnatomyMeshes ?? syntheticAnatomyMeshes;
@@ -1051,8 +1060,44 @@ export default function SimplifiedApp() {
 
   useEffect(() => {
     const activeRunId = plan.imaging.segmentationRuns.at(-1)?.id ?? null;
-    if (displayedAnatomySignatureRef.current === activeRunId) return;
-    displayedAnatomySignatureRef.current = activeRunId;
+    const bundledDemo = usesBundledDemoAnatomy(plan);
+    const anatomySignature = bundledDemo ? `bundled-demo-anatomy:v1:${bundledDemoLoadNonce}` : activeRunId;
+    if (displayedAnatomySignatureRef.current === anatomySignature) return;
+    displayedAnatomySignatureRef.current = anatomySignature;
+    if (bundledDemo) {
+      const generation = ++anatomyLoadGenerationRef.current;
+      setPatientAnatomyMeshes([]);
+      setSegmentationUi((current) => ({
+        ...current,
+        status: "checking",
+        progress: 0.25,
+        message: "Loading the de-identified MRI-derived demo surfaces…",
+      }));
+      void loadBundledDemoAnatomy().then((meshes) => {
+        if (generation !== anatomyLoadGenerationRef.current) return;
+        setPatientAnatomyMeshes(meshes);
+        setLayerVisibility((current) => ({ ...current, bones: true }));
+        setStandardView((current) => ({ view: "focus", nonce: current.nonce + 1 }));
+        setSegmentationUi({
+          status: "completed",
+          progress: 1,
+          message: "De-identified MRI-derived femur and tibia demo surfaces loaded. Review remains required.",
+          file: null,
+          jobId: null,
+        });
+      }).catch((error: unknown) => {
+        if (generation !== anatomyLoadGenerationRef.current) return;
+        setPatientAnatomyMeshes([]);
+        setSegmentationUi({
+          status: "failed",
+          progress: 0,
+          message: `Demo anatomy was not loaded: ${error instanceof Error ? error.message : "unknown error"}`,
+          file: null,
+          jobId: null,
+        });
+      });
+      return;
+    }
     if (!activeRunId) {
       anatomyLoadGenerationRef.current += 1;
       setPatientAnatomyMeshes(null);
@@ -1060,7 +1105,7 @@ export default function SimplifiedApp() {
     }
     setPatientAnatomyMeshes([]);
     void rehydratePatientAnatomy(plan);
-  }, [plan, rehydratePatientAnatomy]);
+  }, [bundledDemoLoadNonce, plan, rehydratePatientAnatomy]);
 
   const updateImagingReview: React.Dispatch<React.SetStateAction<ImagingReviewState>> = (update) => {
     commit((current) => {
@@ -1076,6 +1121,7 @@ export default function SimplifiedApp() {
   };
 
   const hasPatientSegmentation = plan.imaging.segmentationRuns.length > 0;
+  const hasBundledDemoAnatomy = usesBundledDemoAnatomy(plan);
 
   const saveCurrentAsDefault = () => {
     savePlanLocally(LOCAL_PLAN_KEY, deidentifiedLocalSnapshot(plan));
@@ -1096,7 +1142,8 @@ export default function SimplifiedApp() {
     const loaded = loadPlanLocally<PlanCase>(LOCAL_PLAN_KEY);
     if (!loaded) { showToast("No saved default plan found."); return; }
     const normalized = normalizeLoadedPlan(loaded);
-    const workspace = loadSimplifiedWorkspaceDefaults(localStorage, normalized);
+    const workspace = loadSimplifiedWorkspaceDefaults(localStorage, normalized)
+      ?? (usesBundledDemoAnatomy(normalized) ? createBundledDemoWorkspaceDefaults(normalized) : null);
     displayedAnatomySignatureRef.current = null;
     setHistory(createPlanHistory(normalized));
     setSelectedChannelId(workspace?.selectedChannelId ?? null);
@@ -1111,14 +1158,16 @@ export default function SimplifiedApp() {
       measurements: true,
     });
     setGlobalOpacity(workspace?.globalOpacity ?? 1);
-    setPatientAnatomyMeshes(normalized.imaging.segmentationRuns.length ? [] : null);
+    setPatientAnatomyMeshes(
+      normalized.imaging.segmentationRuns.length || usesBundledDemoAnatomy(normalized) ? [] : null,
+    );
     showToast("Saved default plan and Viewer settings reloaded.");
   };
 
   return <div className="app-shell simplified-app">
     <header className="command-bar simple-command-bar">
       <div className="brand"><img className="brand-mark" src={publicAssetPath("multilig-planner-logo.png")} alt="" aria-hidden="true" draggable={false} /><div><div className="brand-name">Multilig Planner</div><div className="brand-sub">Clinician-directed 3D planning</div></div></div>
-      <div className="simple-case-state"><strong>{plan.deidentifiedLabel}</strong><span className={hasPatientSegmentation ? "patient" : "demo"}>{hasPatientSegmentation ? "MRI-derived bone model" : "Synthetic test model"}</span></div>
+      <div className="simple-case-state"><strong>{plan.deidentifiedLabel}</strong><span className={hasPatientSegmentation ? "patient" : "demo"}>{hasPatientSegmentation ? "MRI-derived bone model" : hasBundledDemoAnatomy ? "De-identified MRI-derived demo" : "Synthetic test model"}</span></div>
       <div className="toolbar-actions">
         <button className="cmd-btn icon-only" aria-label="Undo" title="Undo" disabled={!history.past.length} onClick={() => setHistory(undoPlan)}>↶</button>
         <button className="cmd-btn icon-only" aria-label="Redo" title="Redo" disabled={!history.future.length} onClick={() => setHistory(redoPlan)}>↷</button>
@@ -1181,6 +1230,15 @@ export default function SimplifiedApp() {
         </div>
         <div className="viewer-stage">
           <MatViewerV2Adapter scene={viewerModel.scene} standardView={standardView} onHandleChange={handleViewerChange} onSelectChannel={selectChannel} onReady={() => setStandardView((current) => ({ view: "focus", nonce: current.nonce + 1 }))} />
+          {hasBundledDemoAnatomy
+            && patientAnatomyMeshes?.length === 0
+            && (segmentationUi.status === "checking" || segmentationUi.status === "failed")
+            ? <div className={`demo-anatomy-status ${segmentationUi.status}`} role="status">
+                <strong>{segmentationUi.status === "checking" ? "Loading knee study…" : "Knee study could not be loaded"}</strong>
+                <span>{segmentationUi.message}</span>
+                {segmentationUi.status === "failed" ? <button type="button" onClick={() => setBundledDemoLoadNonce((value) => value + 1)}>Retry</button> : null}
+              </div>
+            : null}
           <div className="viewer-overlay-top"><div className="orientation-pad" aria-label="Standard anatomical views">
             <button className="view-btn" onClick={() => setStandardView((current) => ({ view: "+z", nonce: current.nonce + 1 }))}>+SI</button><button className="view-btn" onClick={() => setStandardView((current) => ({ view: "+y", nonce: current.nonce + 1 }))}>+AP</button><button className="view-btn" onClick={() => setStandardView((current) => ({ view: "-z", nonce: current.nonce + 1 }))}>-SI</button>
             <button className="view-btn" onClick={() => setStandardView((current) => ({ view: "-x", nonce: current.nonce + 1 }))}>-ML</button><button className="view-btn center" onClick={() => setStandardView((current) => ({ view: "focus", nonce: current.nonce + 1 }))}>FIT</button><button className="view-btn" onClick={() => setStandardView((current) => ({ view: "+x", nonce: current.nonce + 1 }))}>+ML</button>

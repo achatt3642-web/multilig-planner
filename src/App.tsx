@@ -64,6 +64,10 @@ import { publicAssetPath } from "./publicAssetPath";
 import { requireClinicianSelectedDimensions } from "./app/channelAnalysis";
 import { createSyntheticDemoCase } from "./app/caseFactory";
 import {
+  createBundledDemoPlan,
+  usesBundledDemoAnatomy,
+} from "./demo/bundledDemo";
+import {
   activeVariant,
   addTechniquePreset,
   cloneActiveVariant,
@@ -544,14 +548,17 @@ export function normalizeLoadedPlan(plan: PlanCase): PlanCase {
 export function loadInitialPlan(): PlanCase {
   try {
     const saved = loadPlanLocally<PlanCase>(LOCAL_PLAN_KEY);
-    const initial = saved ? normalizeLoadedPlan(saved) : createSyntheticDemoCase();
+    if (!saved) return createBundledDemoPlan();
+    const initial = normalizeLoadedPlan(saved);
+    if (usesBundledDemoAnatomy(initial)) return initial;
     return initial.imaging.segmentationRuns.length
       ? initial
       : initializePendingChannelSurfacePlacements(initial, buildSyntheticAnatomyMeshes());
   } catch {
     // Corrupt, incompatible, or unavailable browser storage must never prevent a
-    // planning workspace from opening. The synthetic fixture remains explicit.
-    return createSyntheticDemoCase();
+    // planning workspace from opening. The bundled fixture is de-identified,
+    // geometry-only, unreviewed, and explicitly research/demo use only.
+    return createBundledDemoPlan();
   }
 }
 

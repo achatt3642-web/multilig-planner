@@ -554,6 +554,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .simple-viewer .view-btn { border-color: var(--viewer-button-border); background: var(--viewer-button-bg); color: var(--viewer-button-color); }
 .simple-viewer .view-btn:hover { border-color: #5c9bd6; background: rgba(13, 38, 78, .96); }
 .simple-viewer .view-btn.center { border-color: var(--viewer-button-active-border); color: #53d4ff; }
+.demo-anatomy-status { position: absolute; z-index: 4; top: 50%; left: 50%; width: min(330px, calc(100% - 40px)); transform: translate(-50%, -50%); display: grid; gap: 7px; padding: 14px 16px; border: 1px solid rgba(82, 152, 205, .7); border-radius: 8px; background: rgba(5, 17, 34, .94); box-shadow: 0 12px 35px rgba(0, 0, 0, .38); text-align: center; }
+.demo-anatomy-status strong { color: #e9f5ff; font-size: 12px; }
+.demo-anatomy-status span { color: #9eb8cb; font-size: 9px; line-height: 1.45; }
+.demo-anatomy-status.failed { border-color: rgba(222, 116, 116, .72); }
+.demo-anatomy-status button { justify-self: center; height: 27px; padding: 0 14px; border: 1px solid var(--viewer-button-border); border-radius: 6px; background: var(--viewer-button-bg); color: var(--viewer-button-color); font-size: 9px; font-weight: 750; cursor: pointer; }
 
 .simple-right { min-width: 0; }
 .simple-empty { height: 100%; padding: 26px 18px; display: grid; align-content: center; gap: 5px; text-align: center; }
