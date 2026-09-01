@@ -422,7 +422,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .dialog-actions { padding: 9px 15px; display: flex; justify-content: flex-end; gap: 6px; border-top: 1px solid #2a3d47; }
 
 .import-drop { padding: 22px 12px; border: 1px dashed #41606b; border-radius: 7px; background: #0d1c24; text-align: center; color: #8fa2aa; font-size: 10px; cursor: pointer; }
-.import-drop:hover { border-color: #4a9690; background: #10272a; }
+.import-drop:not(:disabled):hover { border-color: #4a9690; background: #10272a; }
+.import-drop:disabled { cursor: default; opacity: 1; }
 .import-drop strong { display: block; margin-bottom: 4px; color: #d8e3e6; }
 
 .segmentation-card { margin-top: 10px; padding: 11px; border: 1px solid #34525b; border-radius: 7px; background: #0b171e; }

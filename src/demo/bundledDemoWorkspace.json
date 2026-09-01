@@ -88,7 +88,13 @@
   "focusedProcedure": "ACL",
   "format": "multilig-simplified-workspace",
   "globalOpacity": 1,
-  "visibleGraftVisibilityKeys": [],
+  "visibleGraftVisibilityKeys": [
+    "ACL:single:ACL femur socket:ACL tibia socket",
+    "PCL:bundle-1:femur-AL-1:tibia-single-1",
+    "PCL:bundle-2:femur-PM-2:tibia-single-1",
+    "MCL_POL_PMC:single:femur-anchor-1:tibia-anchor-1",
+    "ALL:single:ALL femur anchor:ALL tibia anchor"
+  ],
   "highlightedProcedures": [
     "ACL",
     "PCL",

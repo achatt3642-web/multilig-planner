@@ -4,8 +4,10 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { CURRENT_PLAN_SCHEMA_VERSION } from "../domain/schema";
 import { createAnatomicChannelSeedContext } from "../app/anatomicChannelSurfaceSeed";
+import { buildViewerScene } from "../app/channelGeometry";
 import { initializePendingChannelSurfacePlacements } from "../app/channelSurfaceInitialization";
 import { resolveChannelStartPointPatientRas } from "../app/channelTrajectorySemantics";
+import { graftPreviewTitle } from "../app/graftPreviewPresentation";
 import {
   BUNDLED_DEMO_ASSETS,
   BUNDLED_DEMO_PLAN_ID,
@@ -54,12 +56,18 @@ describe("bundled de-identified knee demo", () => {
     expect(createHash("sha256").update(planBytes).digest("hex"))
       .toBe("f2907dbe76ad5fc036b2cd7ee13fa2f2c6f51c8f34b6791743a356b5dbd93d4d");
     expect(createHash("sha256").update(workspaceBytes).digest("hex"))
-      .toBe("6a96ba58dbfbf477c6f882e375e3b05af10e9d4bd8da630cf986747d4afe9b3f");
+      .toBe("54390efee0df8216adedb454a798de5c66b275beceed7a96a270cdc064858d57");
 
     expect(workspace.highlightedProcedures).toEqual(["ACL", "PCL", "MCL_POL_PMC", "ALL", "MEDIAL_ROOT"]);
     expect(workspace.focusedProcedure).toBe("ACL");
     expect(workspace.selectedChannelId).toBe("demo-channel-acl-tibia");
-    expect(workspace.visibleGraftVisibilityKeys).toEqual([]);
+    expect(workspace.visibleGraftVisibilityKeys).toEqual([
+      "ACL:single:ACL femur socket:ACL tibia socket",
+      "PCL:bundle-1:femur-AL-1:tibia-single-1",
+      "PCL:bundle-2:femur-PM-2:tibia-single-1",
+      "MCL_POL_PMC:single:femur-anchor-1:tibia-anchor-1",
+      "ALL:single:ALL femur anchor:ALL tibia anchor",
+    ]);
     expect(workspace.stepIndex).toBe(1);
     expect(workspace.globalOpacity).toBe(1);
 
@@ -134,6 +142,50 @@ describe("bundled de-identified knee demo", () => {
       { id: "demo-anatomy-femur", bone: "femur", vertices: 15_770, faces: 31_536, opacity: 0.22 },
       { id: "demo-anatomy-tibia", bone: "tibia", vertices: 23_350, faces: 46_520, opacity: 0.22 },
     ]);
+  });
+
+  it("renders every graft requested by the bundled public opening state", async () => {
+    const fetcher: BundledDemoFetch = async (url) => {
+      const assetPath = url.replace(/^\/demo-base\//, "").split("?")[0] ?? "";
+      const bytes = await readAsset(assetPath);
+      return { ok: true, status: 200, arrayBuffer: async () => arrayBuffer(bytes) };
+    };
+    const meshes = await loadBundledDemoAnatomy({ fetcher, baseUrl: "/demo-base/" });
+    const plan = initializePendingChannelSurfacePlacements(createBundledDemoPlan(), meshes);
+    const workspace = createBundledDemoWorkspaceDefaults(plan);
+    const activeVariant = plan.variants.find((variant) => variant.id === plan.activeVariantId)!;
+    const procedureById = Object.fromEntries(
+      plan.procedures.map((procedure) => [procedure.id, procedure.structure]),
+    );
+    const requestedVisibilityKeys = new Set(workspace.visibleGraftVisibilityKeys);
+    const viewer = buildViewerScene({
+      revision: 0,
+      channels: activeVariant.channels,
+      procedureById,
+      anatomyMeshes: meshes,
+      selectedChannelId: workspace.selectedChannelId,
+      visibleProcedureIdentities: new Set(workspace.highlightedProcedures),
+      visibleGraftVisibilityKeys: requestedVisibilityKeys,
+      layerVisibility: { ...workspace.layerVisibility, grafts: true },
+      globalOpacity: workspace.globalOpacity,
+      laterality: plan.laterality,
+      lateralityVerified: plan.lateralityVerified,
+    });
+    const requestedGrafts = viewer.grafts.filter((graft) => requestedVisibilityKeys.has(graft.visibilityKey));
+
+    expect(requestedGrafts).toHaveLength(requestedVisibilityKeys.size);
+    expect(requestedGrafts.map((graft) => ({
+      title: graftPreviewTitle(graft),
+      rendered: graft.rendered,
+      unavailableReason: graft.unavailableReason,
+    }))).toEqual([
+      { title: "ACL", rendered: true, unavailableReason: null },
+      { title: "ALL", rendered: true, unavailableReason: null },
+      { title: "MCL", rendered: true, unavailableReason: null },
+      { title: "PCL AL", rendered: true, unavailableReason: null },
+      { title: "PCL PM", rendered: true, unavailableReason: null },
+    ]);
+    expect(viewer.scene.meshes.filter((mesh) => mesh.layer === "grafts")).toHaveLength(requestedVisibilityKeys.size);
   });
 
   it("derives bundled PLC starts on the right-knee lateral side when its surfaces load", async () => {

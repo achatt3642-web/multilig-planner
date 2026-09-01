@@ -1334,6 +1334,7 @@ export default function SimplifiedApp() {
       review={plan.imaging.review}
       onReview={updateImagingReview}
       inputRef={fileInputRef}
+      existingGeometryImportMode="coming_soon"
       segmentationInputRef={segmentationInputRef}
       segmentationUi={segmentationUi}
       onFiles={importFiles}

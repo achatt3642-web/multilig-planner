@@ -2422,6 +2422,7 @@ export function ImportDialog({
   review,
   onReview,
   inputRef,
+  existingGeometryImportMode = "enabled",
   segmentationInputRef,
   segmentationUi,
   onFiles,
@@ -2435,6 +2436,7 @@ export function ImportDialog({
   review: ImagingReviewState;
   onReview: React.Dispatch<React.SetStateAction<ImagingReviewState>>;
   inputRef: React.RefObject<HTMLInputElement | null>;
+  existingGeometryImportMode?: "enabled" | "coming_soon";
   segmentationInputRef: React.RefObject<HTMLInputElement | null>;
   segmentationUi: SegmentationUiState;
   onFiles: (files: FileList | null) => void;
@@ -2443,6 +2445,7 @@ export function ImportDialog({
   onStopSegmentation: () => void;
   onClose: () => void;
 }) {
+  const existingGeometryImportEnabled = existingGeometryImportMode === "enabled";
   const transformMetadataReady = sources.length > 0 && sources.every((source) => source.spacingMm && source.orientation && source.transformIds.length > 0);
   const representedBones = new Set([
     ...sources.map((source) => source.boneIdentity),
@@ -2450,8 +2453,14 @@ export function ImportDialog({
   ]);
   const separateBonesReady = ["femur", "tibia", "fibula"].every((bone) => representedBones.has(bone as ImmutableImagingSource["boneIdentity"]));
   return <div className="dialog-backdrop" role="dialog" aria-modal="true" aria-label="Import imaging and segmentation"><div className="dialog"><div className="dialog-header"><div className="dialog-title">Case imaging &amp; segmentation review</div><div className="dialog-copy">Accepts DICOM MRI, NIfTI, immutable label maps, and surface meshes. No unvalidated segmentation inference is presented as clinical.</div></div><div className="dialog-body">
-    <input ref={inputRef} hidden multiple type="file" accept=".dcm,.dicom,.nii,.nii.gz,.nrrd,.mha,.mhd,.seg,.stl,.obj,.ply" onChange={(event) => void onFiles(event.target.files)} />
-    <button className="import-drop" style={{ width: "100%" }} onClick={() => inputRef.current?.click()}><strong>Import existing segmentation or geometry</strong>DICOM · NIfTI · immutable label map · STL · OBJ · PLY</button>
+    {existingGeometryImportEnabled ? <input ref={inputRef} hidden multiple type="file" accept=".dcm,.dicom,.nii,.nii.gz,.nrrd,.mha,.mhd,.seg,.stl,.obj,.ply" onChange={(event) => void onFiles(event.target.files)} /> : null}
+    <button
+      type="button"
+      className="import-drop"
+      style={{ width: "100%" }}
+      disabled={!existingGeometryImportEnabled}
+      onClick={existingGeometryImportEnabled ? () => inputRef.current?.click() : undefined}
+    ><strong>{existingGeometryImportEnabled ? "Import existing segmentation or geometry" : "Import option coming soon"}</strong>DICOM · NIfTI · immutable label map · STL · OBJ · PLY</button>
     <input ref={segmentationInputRef} hidden type="file" accept=".tar.gz,.tgz,.nii,.nii.gz" onChange={(event) => { onSegmentationSource(event.target.files); event.currentTarget.value = ""; }} />
     <div className="segmentation-card">
       <div className="segmentation-card-header"><div><strong>MAT Planner nnUNetv2</strong><span>Local research-only bone segmentation</span></div><span className={`pill ${segmentationUi.status === "failed" ? "conflict" : segmentationUi.status === "completed" ? "ok" : "warn"}`}>{segmentationUi.status.replaceAll("_", " ")}</span></div>
