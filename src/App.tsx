@@ -1828,10 +1828,7 @@ function App() {
       <header className="command-bar">
         <div className="brand">
           <img className="brand-mark" src={publicAssetPath("multilig-planner-logo.png")} alt="" aria-hidden="true" draggable={false} />
-          <div>
-            <div className="brand-name">Multilig Planner</div>
-            <div className="brand-sub">Clinician-directed 3D planning</div>
-          </div>
+          <div className="brand-name">Multilig Planner</div>
         </div>
         <div className="case-crumb">
           <span className="case-title">{plan.deidentifiedLabel}</span>
@@ -2463,7 +2460,7 @@ export function ImportDialog({
     ><strong>{existingGeometryImportEnabled ? "Import existing segmentation or geometry" : "Import option coming soon"}</strong>DICOM · NIfTI · immutable label map · STL · OBJ · PLY</button>
     <input ref={segmentationInputRef} hidden type="file" accept=".tar.gz,.tgz,.nii,.nii.gz" onChange={(event) => { onSegmentationSource(event.target.files); event.currentTarget.value = ""; }} />
     <div className="segmentation-card">
-      <div className="segmentation-card-header"><div><strong>MAT Planner nnUNetv2</strong><span>Local research-only bone segmentation</span></div><span className={`pill ${segmentationUi.status === "failed" ? "conflict" : segmentationUi.status === "completed" ? "ok" : "warn"}`}>{segmentationUi.status.replaceAll("_", " ")}</span></div>
+      <div className="segmentation-card-header"><div><strong>MAT Planner nnUNetv2</strong></div><span className={`pill ${segmentationUi.status === "failed" ? "conflict" : segmentationUi.status === "completed" ? "ok" : "warn"}`}>{segmentationUi.status.replaceAll("_", " ")}</span></div>
       {existingGeometryImportEnabled ? <div className="dialog-copy">Uses MAT Planner's existing Python environment, registry, full-resolution model, fold, and checkpoint. It predicts femur and tibia; the current MAT model does not predict fibula.</div> : null}
       <div className="segmentation-progress" aria-label="Segmentation progress"><span style={{ width: `${Math.round(segmentationUi.progress * 100)}%` }} /></div>
       {segmentationUi.message ? <div className="segmentation-message">{segmentationUi.message}</div> : null}

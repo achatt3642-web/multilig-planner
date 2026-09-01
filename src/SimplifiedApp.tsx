@@ -1233,7 +1233,7 @@ export default function SimplifiedApp() {
 
   return <div className="app-shell simplified-app">
     <header className="command-bar simple-command-bar">
-      <div className="brand"><img className="brand-mark" src={publicAssetPath("multilig-planner-logo.png")} alt="" aria-hidden="true" draggable={false} /><div><div className="brand-name">Multilig Planner</div><div className="brand-sub">Clinician-directed 3D planning</div></div></div>
+      <div className="brand"><img className="brand-mark" src={publicAssetPath("multilig-planner-logo.png")} alt="" aria-hidden="true" draggable={false} /><div className="brand-name">Multilig Planner</div></div>
       <div className="toolbar-actions">
         <button className="cmd-btn icon-only" aria-label="Undo" title="Undo" disabled={!history.past.length} onClick={() => setHistory(undoPlan)}>↶</button>
         <button className="cmd-btn icon-only" aria-label="Redo" title="Redo" disabled={!history.future.length} onClick={() => setHistory(redoPlan)}>↷</button>

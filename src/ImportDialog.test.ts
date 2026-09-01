@@ -47,6 +47,7 @@ describe("imaging import dialog", () => {
     expect(markup).toContain("Accepts DICOM MRI and NIfTI.");
     expect(markup).not.toContain("immutable label maps, and surface meshes");
     expect(markup).not.toContain("Uses MAT Planner&#x27;s existing Python environment");
+    expect(markup).not.toContain("Local research-only bone segmentation");
     expect(control).toContain("Import option coming soon");
     expect(control).toContain('disabled=""');
     expect(control).not.toContain("Import existing segmentation or geometry");
@@ -61,6 +62,7 @@ describe("imaging import dialog", () => {
     expect(control).not.toContain("disabled");
     expect(markup).toContain("immutable label maps, and surface meshes");
     expect(markup).toContain("Uses MAT Planner&#x27;s existing Python environment");
+    expect(markup).not.toContain("Local research-only bone segmentation");
     expect(markup).toContain('accept=".dcm,.dicom,.nii,.nii.gz,.nrrd,.mha,.mhd,.seg,.stl,.obj,.ply"');
   });
 
