@@ -393,64 +393,64 @@
       "channels": [
         {
           "aperture": [
-            23.976515289893587,
-            6.5459367632387,
-            -10.884882041593894
+            100.397419,
+            7.100514,
+            -0.951876
           ],
           "apertureSurfaceAttachment": {
-            "attachedPointPatientRasMm": [
-              23.976515289893587,
-              6.5459367632387,
-              -10.884882041593894
-            ],
-            "barycentric": [
-              0.7737964123872568,
-              0.08160552374298828,
-              0.14459806386975496
-            ],
-            "bone": "femur",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 2.534226055845677e-07,
-            "faceIndex": 1494,
-            "faceStableId": "demo-anatomy-femur:face:1494",
-            "meshId": "demo-anatomy-femur",
-            "requestedPointPatientRasMm": [
-              23.976515540849917,
-              6.545936727969199,
-              -10.884882041593894
-            ],
-            "reviewState": "surface_review_not_evaluated",
-            "surfaceNormalPatientRas": [
-              -0.9902681293212969,
-              0.13917266991223165,
-              0
-            ],
+            "units": "mm",
+            "bone": "femur",
             "targetKind": "whole_bone_surface",
             "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-femur:face:1494",
-            "units": "mm",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              100.397419,
+              7.100514,
+              -0.951876
+            ],
+            "attachedPointPatientRasMm": [
+              100.397419,
+              7.100514,
+              -0.951876
+            ],
+            "distanceFromRequestedPointMm": 0,
+            "triangleStableId": "demo-anatomy-femur:face:30456",
+            "faceStableId": "demo-anatomy-femur:face:30456",
+            "faceIndex": 30456,
             "vertexIndices": [
-              789,
-              815,
-              790
+              15308,
+              15299,
+              15300
             ],
             "vertexStableIds": [
-              "demo-anatomy-femur:vertex:789",
-              "demo-anatomy-femur:vertex:815",
-              "demo-anatomy-femur:vertex:790"
-            ]
+              "demo-anatomy-femur:vertex:15308",
+              "demo-anatomy-femur:vertex:15299",
+              "demo-anatomy-femur:vertex:15300"
+            ],
+            "barycentric": [
+              1,
+              0,
+              0
+            ],
+            "surfaceNormalPatientRas": [
+              0.9902681293212969,
+              -0.13917266991223165,
+              0
+            ],
+            "reviewState": "surface_review_not_evaluated"
           },
           "bone": "femur",
           "centerline": {
             "aperturePatientRasMm": [
-              23.976515289893587,
-              6.5459367632387,
-              -10.884882041593894
+              100.397419,
+              7.100514,
+              -0.951876
             ],
             "directionPatientRas": [
-              -0.18834273232967816,
-              -0.13625880983782235,
-              0.9726050338756074
+              -0.9332971774346625,
+              0.08160671437053883,
+              0.3497094833746113
             ],
             "kind": "rigid"
           },
@@ -620,84 +620,88 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-plc",
           "surfacePlacement": {
-            "endpointMethod": "not_available",
-            "meshIds": [],
-            "method": "preset_seed_unregistered",
-            "state": "pending_default"
+            "state": "default_applied",
+            "method": "nearest_bone_surface",
+            "meshIds": [
+              "demo-anatomy-femur"
+            ],
+            "endpointMethod": "blind_socket_tip"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "blind_socket_tip",
           "vector": [
-            -0.18834273232967816,
-            -0.13625880983782235,
-            0.9726050338756074
+            -0.9332971774346625,
+            0.08160671437053883,
+            0.3497094833746113
           ],
           "verificationState": "needs_instrument_chain",
           "warnings": [
-            "Exact instrument chain incomplete \u2014 no device substitution has been made.",
-            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension."
+            "Exact instrument chain incomplete — no device substitution has been made.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension.",
+            "The initial surface location and trajectory were derived from the loaded bone surfaces and provisional medial/lateral reference axes. This is an editable visual starting point, not an anatomic recommendation; confirm knee laterality and placement.",
+            "The generic ipsilateral socket and coaxial guide-pin trajectory is initially directed from its surface Entry toward the centroid of the same display mesh. The deep Start is the analytic socket tip, not a contralateral cortex target or surgical recommendation."
           ]
         },
         {
           "aperture": [
-            28.017854,
-            5.123307,
-            20.923125
+            95.121225,
+            -15.352443,
+            -4.233126
           ],
           "apertureSurfaceAttachment": {
+            "coordinateSpace": "patient_ras",
+            "units": "mm",
+            "bone": "femur",
+            "targetKind": "whole_bone_surface",
+            "targetRegionId": null,
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              95.121225,
+              -15.352443,
+              -4.233126
+            ],
             "attachedPointPatientRasMm": [
-              28.017854,
-              5.123307,
-              20.923125
+              95.121225,
+              -15.352443,
+              -4.233126
+            ],
+            "distanceFromRequestedPointMm": 0,
+            "triangleStableId": "demo-anatomy-femur:face:29744",
+            "faceStableId": "demo-anatomy-femur:face:29744",
+            "faceIndex": 29744,
+            "vertexIndices": [
+              14952,
+              14930,
+              14931
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-femur:vertex:14952",
+              "demo-anatomy-femur:vertex:14930",
+              "demo-anatomy-femur:vertex:14931"
             ],
             "barycentric": [
               1,
               0,
               0
             ],
-            "bone": "femur",
-            "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 32.74427582261043,
-            "faceIndex": 2561,
-            "faceStableId": "demo-anatomy-femur:face:2561",
-            "meshId": "demo-anatomy-femur",
-            "requestedPointPatientRasMm": [
-              7,
-              -2,
-              45
-            ],
-            "reviewState": "surface_review_not_evaluated",
             "surfaceNormalPatientRas": [
-              -0.45743908141221284,
-              0.06428866727839583,
-              0.8869140060097814
+              0.9902681293212969,
+              -0.13917266991223162,
+              0
             ],
-            "targetKind": "whole_bone_surface",
-            "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-femur:face:2561",
-            "units": "mm",
-            "vertexIndices": [
-              1366,
-              1365,
-              1364
-            ],
-            "vertexStableIds": [
-              "demo-anatomy-femur:vertex:1366",
-              "demo-anatomy-femur:vertex:1365",
-              "demo-anatomy-femur:vertex:1364"
-            ]
+            "reviewState": "surface_review_not_evaluated"
           },
           "bone": "femur",
           "centerline": {
             "aperturePatientRasMm": [
-              28.017854,
-              5.123307,
-              20.923125
+              95.121225,
+              -15.352443,
+              -4.233126
             ],
             "directionPatientRas": [
-              0.92,
-              -0.28,
-              0.12
+              -0.7117732912230844,
+              0.5862190109704793,
+              0.3869445090426421
             ],
             "kind": "rigid"
           },
@@ -867,22 +871,26 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-plc",
           "surfacePlacement": {
-            "endpointMethod": "not_available",
-            "meshIds": [],
-            "method": "preset_seed_unregistered",
-            "state": "pending_default"
+            "state": "default_applied",
+            "method": "nearest_bone_surface",
+            "meshIds": [
+              "demo-anatomy-femur"
+            ],
+            "endpointMethod": "blind_socket_tip"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "blind_socket_tip",
           "vector": [
-            0.92,
-            -0.28,
-            0.12
+            -0.7117732912230844,
+            0.5862190109704793,
+            0.3869445090426421
           ],
           "verificationState": "needs_instrument_chain",
           "warnings": [
-            "Exact instrument chain incomplete \u2014 no device substitution has been made.",
-            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension."
+            "Exact instrument chain incomplete — no device substitution has been made.",
+            "The displayed 3.5 mm guide pin is an editable generic parametric display seed, not a selected device, recommendation, or verified catalog dimension.",
+            "The initial surface location and trajectory were derived from the loaded bone surfaces and provisional medial/lateral reference axes. This is an editable visual starting point, not an anatomic recommendation; confirm knee laterality and placement.",
+            "The generic ipsilateral socket and coaxial guide-pin trajectory is initially directed from its surface Entry toward the centroid of the same display mesh. The deep Start is the analytic socket tip, not a contralateral cortex target or surgical recommendation."
           ]
         },
         {
@@ -1081,69 +1089,69 @@
           ],
           "verificationState": "needs_instrument_chain",
           "warnings": [
-            "Exact instrument chain incomplete \u2014 no device substitution has been made."
+            "Exact instrument chain incomplete — no device substitution has been made."
           ]
         },
         {
           "aperture": [
-            33.470189438203455,
-            -15.25315156306571,
-            -43.930287266620496
+            96.431098,
+            -23.636193,
+            -27.931043
           ],
           "apertureSurfaceAttachment": {
-            "attachedPointPatientRasMm": [
-              33.470189438203455,
-              -15.25315156306571,
-              -43.930287266620496
-            ],
-            "barycentric": [
-              0.7355312208872143,
-              0.20628905707448264,
-              0.05817972203830299
-            ],
-            "bone": "tibia",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 7.692549712598757e-08,
-            "faceIndex": 5214,
-            "faceStableId": "demo-anatomy-tibia:face:5214",
-            "meshId": "demo-anatomy-tibia",
-            "requestedPointPatientRasMm": [
-              33.47018948288745,
-              -15.253151500448837,
-              -43.930287266620496
-            ],
-            "reviewState": "surface_review_not_evaluated",
-            "surfaceNormalPatientRas": [
-              -0.5808736620334328,
-              -0.8139937277128548,
-              0
-            ],
+            "units": "mm",
+            "bone": "tibia",
             "targetKind": "whole_bone_surface",
             "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-tibia:face:5214",
-            "units": "mm",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              96.431098,
+              -23.636193,
+              -27.931043
+            ],
+            "attachedPointPatientRasMm": [
+              96.431098,
+              -23.636193,
+              -27.931043
+            ],
+            "distanceFromRequestedPointMm": 0,
+            "triangleStableId": "demo-anatomy-tibia:face:42752",
+            "faceStableId": "demo-anatomy-tibia:face:42752",
+            "faceIndex": 42752,
             "vertexIndices": [
-              2334,
-              2708,
-              2702
+              21552,
+              21551,
+              21560
             ],
             "vertexStableIds": [
-              "demo-anatomy-tibia:vertex:2334",
-              "demo-anatomy-tibia:vertex:2708",
-              "demo-anatomy-tibia:vertex:2702"
-            ]
+              "demo-anatomy-tibia:vertex:21552",
+              "demo-anatomy-tibia:vertex:21551",
+              "demo-anatomy-tibia:vertex:21560"
+            ],
+            "barycentric": [
+              0,
+              0,
+              1
+            ],
+            "surfaceNormalPatientRas": [
+              0.3340045863773768,
+              -0.9425714488986378,
+              0
+            ],
+            "reviewState": "surface_review_not_evaluated"
           },
           "bone": "tibia",
           "centerline": {
             "aperturePatientRasMm": [
-              33.470189438203455,
-              -15.25315156306571,
-              -43.930287266620496
+              96.431098,
+              -23.636193,
+              -27.931043
             ],
             "directionPatientRas": [
-              -0.09117967126227479,
-              0.9935471409507297,
-              -0.06745625439597429
+              -0.04442198017053532,
+              0.9972413660795784,
+              -0.059467179666306526
             ],
             "kind": "rigid"
           },
@@ -1152,50 +1160,50 @@
             "diameterMm": 7,
             "kind": "circle"
           },
-          "depthMm": 22.247836717555277,
+          "depthMm": 37.045349933008545,
           "diameterMm": 7,
           "endpointSurfaceAttachment": {
-            "attachedPointPatientRasMm": [
-              31.441639,
-              6.851123,
-              -45.431043
-            ],
-            "barycentric": [
-              0,
-              1,
-              0
-            ],
-            "bone": "tibia",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 20.020165095442422,
-            "faceIndex": 2339,
-            "faceStableId": "demo-anatomy-tibia:face:2339",
-            "meshId": "demo-anatomy-tibia",
-            "requestedPointPatientRasMm": [
-              18.691979448101208,
-              15.831961556962124,
-              -57.984836473417886
-            ],
-            "reviewState": "surface_review_not_evaluated",
-            "surfaceNormalPatientRas": [
-              -0.24988266735957165,
-              0.7051776952797341,
-              -0.6635382962823082
-            ],
+            "units": "mm",
+            "bone": "tibia",
             "targetKind": "whole_bone_surface",
             "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-tibia:face:2339",
-            "units": "mm",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              95.44280503849546,
+              -1.449729919469771,
+              -29.254059103269512
+            ],
+            "attachedPointPatientRasMm": [
+              94.78547019986536,
+              13.306962374089458,
+              -30.134025480267415
+            ],
+            "distanceFromRequestedPointMm": 14.797513215453264,
+            "triangleStableId": "demo-anatomy-tibia:face:38895",
+            "faceStableId": "demo-anatomy-tibia:face:38895",
+            "faceIndex": 38895,
             "vertexIndices": [
-              1255,
-              1254,
-              1253
+              19645,
+              19639,
+              19640
             ],
             "vertexStableIds": [
-              "demo-anatomy-tibia:vertex:1255",
-              "demo-anatomy-tibia:vertex:1254",
-              "demo-anatomy-tibia:vertex:1253"
-            ]
+              "demo-anatomy-tibia:vertex:19645",
+              "demo-anatomy-tibia:vertex:19639",
+              "demo-anatomy-tibia:vertex:19640"
+            ],
+            "barycentric": [
+              0.04246627041693479,
+              0.6730058373093321,
+              0.28452789227373315
+            ],
+            "surfaceNormalPatientRas": [
+              0.43457573769027463,
+              0.6089829317358824,
+              0.6635387833919908
+            ],
+            "reviewState": "surface_review_not_evaluated"
           },
           "fixation": [],
           "fullThickness": true,
@@ -1352,21 +1360,24 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-plc",
           "surfacePlacement": {
-            "endpointMethod": "not_available",
-            "meshIds": [],
-            "method": "preset_seed_unregistered",
-            "state": "pending_default"
+            "state": "default_applied",
+            "method": "nearest_bone_surface",
+            "meshIds": [
+              "demo-anatomy-tibia"
+            ],
+            "endpointMethod": "opposite_surface_intersection"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "outer_cortex_surface",
           "vector": [
-            -0.09117967126227479,
-            0.9935471409507297,
-            -0.06745625439597429
+            -0.04442198017053532,
+            0.9972413660795784,
+            -0.059467179666306526
           ],
           "verificationState": "needs_instrument_chain",
           "warnings": [
-            "Exact instrument chain incomplete \u2014 no device substitution has been made."
+            "Exact instrument chain incomplete — no device substitution has been made.",
+            "The initial surface location and trajectory were derived from the loaded bone surfaces and provisional medial/lateral reference axes. This is an editable visual starting point, not an anatomic recommendation; confirm knee laterality and placement."
           ]
         },
         {
@@ -1441,10 +1452,10 @@
           },
           "constructId": "demo-construct-lateral-root-tibia-anchor",
           "crossSection": {
-            "diameterMm": null,
-            "kind": "circle"
+            "kind": "circle",
+            "diameterMm": 3.5
           },
-          "depthMm": null,
+          "depthMm": 20,
           "endpointSurfaceAttachment": null,
           "fixation": [],
           "fullThickness": false,
@@ -1458,7 +1469,7 @@
               4.5
             ]
           },
-          "geometryType": "onlay_no_large_tunnel",
+          "geometryType": "rigid_pin",
           "graft": null,
           "guidePin": null,
           "id": "demo-channel-lateral-root-tibia-anchor",
@@ -1522,7 +1533,10 @@
               "kind": "bone_removal_or_compaction",
               "label": "bone removal or compaction",
               "missingParameters": [
-                "exact fixation selection"
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
               ],
               "visible": true
             },
@@ -1534,7 +1548,10 @@
               "kind": "pin_tract_and_overshoot",
               "label": "pin tract and overshoot",
               "missingParameters": [
-                "exact fixation selection"
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
               ],
               "visible": true
             },
@@ -1546,7 +1563,10 @@
               "kind": "instrument_access_swept_volume",
               "label": "instrument access swept volume",
               "missingParameters": [
-                "exact fixation selection"
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
               ],
               "visible": false
             },
@@ -1558,7 +1578,10 @@
               "kind": "cutter_deployment_retraction",
               "label": "cutter deployment retraction",
               "missingParameters": [
-                "exact fixation selection"
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
               ],
               "visible": false
             },
@@ -1570,7 +1593,10 @@
               "kind": "graft_or_bone_block",
               "label": "graft or bone block",
               "missingParameters": [
-                "exact fixation selection"
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
               ],
               "visible": false
             },
@@ -1582,7 +1608,10 @@
               "kind": "retained_fixation",
               "label": "retained fixation",
               "missingParameters": [
-                "exact fixation selection"
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
               ],
               "visible": false
             },
@@ -1594,7 +1623,10 @@
               "kind": "surface_hardware_flip_deployment",
               "label": "surface hardware flip deployment",
               "missingParameters": [
-                "exact fixation selection"
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
               ],
               "visible": false
             },
@@ -1606,25 +1638,28 @@
               "kind": "safety_margin",
               "label": "safety margin",
               "missingParameters": [
-                "exact fixation selection"
+                "aperture",
+                "vector",
+                "exact dimensions",
+                "instrument chain"
               ],
               "visible": false
             }
           ],
-          "noLargeTunnel": true,
+          "noLargeTunnel": false,
           "orientationDeg": 0,
-          "preparationMode": "none",
+          "preparationMode": "cut",
           "procedureId": "demo-procedure-lateral-root",
           "surfacePlacement": {
-            "endpointMethod": "not_available",
+            "state": "default_applied",
+            "method": "tibial_superior_envelope",
             "meshIds": [
               "demo-anatomy-tibia"
             ],
-            "method": "tibial_superior_envelope",
-            "state": "default_applied"
+            "endpointMethod": "preserved_depth"
           },
           "tipOvershootMm": null,
-          "trajectoryControlMode": "none",
+          "trajectoryControlMode": "exterior_rod",
           "vector": [
             0.9409561595098921,
             0.07952270802314525,
@@ -1634,72 +1669,73 @@
           "warnings": [
             "Generic ranges are editable UI seeds, not recommendations or final plan values.",
             "Geometry is not evaluated until exact dimensions and required anatomy are present.",
-            "Point-only fixation location; no bone tunnel or socket has been created.",
             "Tibial entry uses the user-defined superior-envelope rule (maximum patient-RAS Z at the requested X/Y) on the currently loaded tibial display surface; this is not a clinician-reviewed plateau or articular annotation.",
             "The unregistered preset trajectory did not traverse the loaded bone from its surface Entry, so the generic display seed was redirected toward the centroid of that same display mesh to create an on-surface Start. This is not a surgical recommendation; clinician repositioning and verification are required.",
-            "Tibial superior-envelope X/Y fallback: the unregistered requested X/Y was outside the derived tibial surface footprint and moved 26.0 mm to the nearest supported X/Y before selecting maximum Z. Clinician repositioning is required."
-          ]
+            "Tibial superior-envelope X/Y fallback: the unregistered requested X/Y was outside the derived tibial surface footprint and moved 26.0 mm to the nearest supported X/Y before selecting maximum Z. Clinician repositioning is required.",
+            "The displayed 3.5 mm guide pin and 20 mm drill depth are editable generic parametric visual seeds, not a selected device, recommendation, or verified catalog dimension."
+          ],
+          "diameterMm": 3.5
         },
         {
           "aperture": [
-            74.28451561083855,
-            -14.990270089998308,
-            -10.60627619853755
+            69.27536914468472,
+            -14.780122768914943,
+            7.794034043367632
           ],
           "apertureSurfaceAttachment": {
-            "attachedPointPatientRasMm": [
-              74.28451561083855,
-              -14.990270089998308,
-              -10.60627619853755
-            ],
-            "barycentric": [
-              0.1731198184799549,
-              0.5262447893870636,
-              0.30063539213298146
-            ],
-            "bone": "femur",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 8.343844426091249e-07,
-            "faceIndex": 20549,
-            "faceStableId": "demo-anatomy-femur:face:20549",
-            "meshId": "demo-anatomy-femur",
-            "requestedPointPatientRasMm": [
-              74.28451597344178,
-              -14.990269581871637,
-              -10.606275644891832
-            ],
-            "reviewState": "surface_review_not_evaluated",
-            "surfaceNormalPatientRas": [
-              -0.4345757348013092,
-              -0.6089838755990382,
-              -0.6635379190236813
-            ],
+            "units": "mm",
+            "bone": "femur",
             "targetKind": "whole_bone_surface",
             "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-femur:face:20549",
-            "units": "mm",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              69.27536941068897,
+              -14.780122396156226,
+              7.794034449519284
+            ],
+            "attachedPointPatientRasMm": [
+              69.27536914468472,
+              -14.780122768914943,
+              7.794034043367632
+            ],
+            "distanceFromRequestedPointMm": 6.121000619167351e-7,
+            "triangleStableId": "demo-anatomy-femur:face:18563",
+            "faceStableId": "demo-anatomy-femur:face:18563",
+            "faceIndex": 18563,
             "vertexIndices": [
-              10396,
-              10403,
-              10404
+              9401,
+              8999,
+              9009
             ],
             "vertexStableIds": [
-              "demo-anatomy-femur:vertex:10396",
-              "demo-anatomy-femur:vertex:10403",
-              "demo-anatomy-femur:vertex:10404"
-            ]
+              "demo-anatomy-femur:vertex:9401",
+              "demo-anatomy-femur:vertex:8999",
+              "demo-anatomy-femur:vertex:9009"
+            ],
+            "barycentric": [
+              0.5485926169103271,
+              0.4439267766762012,
+              0.007480606413471738
+            ],
+            "surfaceNormalPatientRas": [
+              -0.43457640917695606,
+              -0.6089833031227414,
+              -0.6635380027583786
+            ],
+            "reviewState": "surface_review_not_evaluated"
           },
           "bone": "femur",
           "centerline": {
             "aperturePatientRasMm": [
-              74.28451561083855,
-              -14.990270089998308,
-              -10.60627619853755
+              69.27536914468472,
+              -14.780122768914943,
+              7.794034043367632
             ],
             "directionPatientRas": [
-              0.39042149858844066,
-              0.38177216796864594,
-              0.8377476142636734
+              0.4702107700835767,
+              0.6768548288981762,
+              0.566365052148021
             ],
             "kind": "rigid"
           },
@@ -1711,47 +1747,47 @@
           "depthMm": 25,
           "diameterMm": 9,
           "endpointSurfaceAttachment": {
-            "attachedPointPatientRasMm": [
-              91.12448180043711,
-              1.4766263897440741,
-              25.528110741277352
-            ],
-            "barycentric": [
-              0.5180026616495319,
-              0.21027267773929453,
-              0.2717246606111737
-            ],
-            "bone": "femur",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 3.5557491961939645e-06,
-            "faceIndex": 26409,
-            "faceStableId": "demo-anatomy-femur:face:26409",
-            "meshId": "demo-anatomy-femur",
-            "requestedPointPatientRasMm": [
-              91.12448532158183,
-              1.4766258948782252,
-              25.528110741277352
-            ],
-            "reviewState": "surface_review_not_evaluated",
-            "surfaceNormalPatientRas": [
-              0.9902680210245943,
-              -0.13917344048356867,
-              0
-            ],
+            "units": "mm",
+            "bone": "femur",
             "targetKind": "whole_bone_surface",
             "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-femur:face:26409",
-            "units": "mm",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              88.4845765633836,
+              12.870977404693967,
+              30.93136880172925
+            ],
+            "attachedPointPatientRasMm": [
+              88.48457697477406,
+              12.870977346877044,
+              30.93136880172925
+            ],
+            "distanceFromRequestedPointMm": 4.154333962388265e-7,
+            "triangleStableId": "demo-anatomy-femur:face:24921",
+            "faceStableId": "demo-anatomy-femur:face:24921",
+            "faceIndex": 24921,
             "vertexIndices": [
-              13301,
-              13294,
-              13302
+              12565,
+              12543,
+              12566
             ],
             "vertexStableIds": [
-              "demo-anatomy-femur:vertex:13301",
-              "demo-anatomy-femur:vertex:13294",
-              "demo-anatomy-femur:vertex:13302"
-            ]
+              "demo-anatomy-femur:vertex:12565",
+              "demo-anatomy-femur:vertex:12543",
+              "demo-anatomy-femur:vertex:12566"
+            ],
+            "barycentric": [
+              0.5582771607103538,
+              0.15039433300960026,
+              0.291328506280046
+            ],
+            "surfaceNormalPatientRas": [
+              0.9902681470301148,
+              -0.1391725439069895,
+              0
+            ],
+            "reviewState": "surface_review_not_evaluated"
           },
           "fixation": [],
           "fullThickness": false,
@@ -1950,19 +1986,19 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-acl",
           "surfacePlacement": {
-            "endpointMethod": "nearest_surface_projection",
+            "state": "clinician_edited",
+            "method": "manual_surface_drag",
             "meshIds": [
               "demo-anatomy-femur"
             ],
-            "method": "manual_surface_drag",
-            "state": "clinician_edited"
+            "endpointMethod": "nearest_surface_projection"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "outer_cortex_surface",
           "vector": [
-            0.39042149858844066,
-            0.38177216796864594,
-            0.8377476142636734
+            0.4702107700835767,
+            0.6768548288981762,
+            0.566365052148021
           ],
           "verificationState": "needs_dimensions",
           "warnings": [
@@ -1973,71 +2009,71 @@
         },
         {
           "aperture": [
-            64.23204585519696,
-            7.256450866955902,
-            -23.528718870176483
+            65.60868916964141,
+            5.8251374697752,
+            -23.845867017931432
           ],
           "apertureSurfaceAttachment": {
+            "coordinateSpace": "patient_ras",
+            "units": "mm",
+            "bone": "tibia",
+            "targetKind": "tibial_superior_envelope",
+            "targetRegionId": null,
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              65.60868916964141,
+              5.8251374697752,
+              -23.845867638248425
+            ],
             "attachedPointPatientRasMm": [
-              64.23204585519696,
-              7.256450866955902,
-              -23.528718870176483
+              65.60868916964141,
+              5.8251374697752,
+              -23.845867017931432
+            ],
+            "distanceFromRequestedPointMm": 6.203169924390295e-7,
+            "triangleStableId": "demo-anatomy-tibia:face:22436",
+            "faceStableId": "demo-anatomy-tibia:face:22436",
+            "faceIndex": 22436,
+            "vertexIndices": [
+              11377,
+              11391,
+              11390
+            ],
+            "vertexStableIds": [
+              "demo-anatomy-tibia:vertex:11377",
+              "demo-anatomy-tibia:vertex:11391",
+              "demo-anatomy-tibia:vertex:11390"
             ],
             "barycentric": [
-              0.5431316605658137,
-              0.07494625318108372,
-              0.38192208625310253
+              0.4609584688841579,
+              0.28313715957835567,
+              0.2559043715374864
             ],
-            "bone": "tibia",
+            "surfaceNormalPatientRas": [
+              0.4345758098921084,
+              0.6089844802447041,
+              0.6635373149097987
+            ],
+            "reviewState": "user_defined_not_clinician_approved",
             "constraintProvenance": {
-              "resolution": "vertical_intersection",
               "rule": "maximum_patient_ras_z_at_requested_xy",
               "ruleVersion": "1",
               "sourceGeometryRole": "viewer_display_surface",
+              "resolution": "vertical_intersection",
               "xyFallbackDistanceMm": 0
-            },
-            "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 1.038069182612844e-06,
-            "faceIndex": 21643,
-            "faceStableId": "demo-anatomy-tibia:face:21643",
-            "meshId": "demo-anatomy-tibia",
-            "requestedPointPatientRasMm": [
-              64.23204585519696,
-              7.256450866955902,
-              -23.5287178321073
-            ],
-            "reviewState": "user_defined_not_clinician_approved",
-            "surfaceNormalPatientRas": [
-              0.43457573769027263,
-              0.6089829317358663,
-              0.6635387833920069
-            ],
-            "targetKind": "tibial_superior_envelope",
-            "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-tibia:face:21643",
-            "units": "mm",
-            "vertexIndices": [
-              10991,
-              10541,
-              10992
-            ],
-            "vertexStableIds": [
-              "demo-anatomy-tibia:vertex:10991",
-              "demo-anatomy-tibia:vertex:10541",
-              "demo-anatomy-tibia:vertex:10992"
-            ]
+            }
           },
           "bone": "tibia",
           "centerline": {
             "aperturePatientRasMm": [
-              64.23204585519696,
-              7.256450866955902,
-              -23.528718870176483
+              65.60868916964141,
+              5.8251374697752,
+              -23.845867017931432
             ],
             "directionPatientRas": [
-              0.3229649382168278,
-              0.4292879102059922,
-              -0.8434485988094191
+              0.2942277182500666,
+              0.46005586744706084,
+              -0.8377222980444605
             ],
             "kind": "rigid"
           },
@@ -2061,7 +2097,7 @@
             ],
             "bone": "tibia",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 4.886668900181033e-07,
+            "distanceFromRequestedPointMm": 4.886668900181033e-7,
             "faceIndex": 28289,
             "faceStableId": "demo-anatomy-tibia:face:28289",
             "meshId": "demo-anatomy-tibia",
@@ -2288,19 +2324,19 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-acl",
           "surfacePlacement": {
-            "endpointMethod": "nearest_surface_projection",
+            "state": "clinician_edited",
+            "method": "manual_surface_drag",
             "meshIds": [
               "demo-anatomy-tibia"
             ],
-            "method": "manual_surface_drag",
-            "state": "clinician_edited"
+            "endpointMethod": "nearest_surface_projection"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "outer_cortex_surface",
           "vector": [
-            0.3229649382168278,
-            0.4292879102059922,
-            -0.8434485988094191
+            0.2942277182500666,
+            0.46005586744706084,
+            -0.8377222980444605
           ],
           "verificationState": "needs_dimensions",
           "warnings": [
@@ -2313,64 +2349,64 @@
         },
         {
           "aperture": [
-            97.98544383339876,
-            -9.829969269043048,
-            0.8202335356013633
+            95.67086600530422,
+            -11.441540531339093,
+            9.209606083977114
           ],
           "apertureSurfaceAttachment": {
-            "attachedPointPatientRasMm": [
-              97.98544383339876,
-              -9.829969269043048,
-              0.8202335356013633
-            ],
-            "barycentric": [
-              0.36443573036294385,
-              0.6048645954625792,
-              0.030699674174476964
-            ],
-            "bone": "femur",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 6.645390318749234e-07,
-            "faceIndex": 30451,
-            "faceStableId": "demo-anatomy-femur:face:30451",
-            "meshId": "demo-anatomy-femur",
-            "requestedPointPatientRasMm": [
-              97.98544399945564,
-              -9.829969737661202,
-              0.8202330946543555
-            ],
-            "reviewState": "surface_review_not_evaluated",
-            "surfaceNormalPatientRas": [
-              0.24988280648607641,
-              -0.7051777719290453,
-              -0.6635381624291322
-            ],
+            "units": "mm",
+            "bone": "femur",
             "targetKind": "whole_bone_surface",
             "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-femur:face:30451",
-            "units": "mm",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              95.67086879058851,
+              -11.441540922786245,
+              9.209606083977114
+            ],
+            "attachedPointPatientRasMm": [
+              95.67086600530422,
+              -11.441540531339093,
+              9.209606083977114
+            ],
+            "distanceFromRequestedPointMm": 0.000002812657013477389,
+            "triangleStableId": "demo-anatomy-femur:face:29349",
+            "faceStableId": "demo-anatomy-femur:face:29349",
+            "faceIndex": 29349,
             "vertexIndices": [
-              15306,
-              15298,
-              14860
+              14749,
+              14731,
+              14750
             ],
             "vertexStableIds": [
-              "demo-anatomy-femur:vertex:15306",
-              "demo-anatomy-femur:vertex:15298",
-              "demo-anatomy-femur:vertex:14860"
-            ]
+              "demo-anatomy-femur:vertex:14749",
+              "demo-anatomy-femur:vertex:14731",
+              "demo-anatomy-femur:vertex:14750"
+            ],
+            "barycentric": [
+              0.320325466442516,
+              0.29049699106478943,
+              0.38917754249269454
+            ],
+            "surfaceNormalPatientRas": [
+              0.9902680210245963,
+              -0.1391734404835561,
+              0
+            ],
+            "reviewState": "surface_review_not_evaluated"
           },
           "bone": "femur",
           "centerline": {
             "aperturePatientRasMm": [
-              97.98544383339876,
-              -9.829969269043048,
-              0.8202335356013633
+              95.67086600530422,
+              -11.441540531339093,
+              9.209606083977114
             ],
             "directionPatientRas": [
-              -0.8402721695527529,
-              0.5409139132126661,
-              0.03680787372383632
+              -0.5379275123916111,
+              0.8298896719412642,
+              -0.14804433058173508
             ],
             "kind": "rigid"
           },
@@ -2576,19 +2612,19 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-all",
           "surfacePlacement": {
-            "endpointMethod": "preserved_depth",
+            "state": "clinician_edited",
+            "method": "manual_surface_drag",
             "meshIds": [
               "demo-anatomy-femur"
             ],
-            "method": "manual_trajectory_drag",
-            "state": "clinician_edited"
+            "endpointMethod": "preserved_depth"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "exterior_rod",
           "vector": [
-            -0.8402721695527529,
-            0.5409139132126661,
-            0.03680787372383632
+            -0.5379275123916111,
+            0.8298896719412642,
+            -0.14804433058173508
           ],
           "verificationState": "needs_instrument_chain",
           "warnings": [
@@ -2599,64 +2635,64 @@
         },
         {
           "aperture": [
-            98.22371804820149,
-            9.237805667421183,
-            -46.1834073706667
+            91.61380093986892,
+            17.907294801837352,
+            -48.21096717575888
           ],
           "apertureSurfaceAttachment": {
-            "attachedPointPatientRasMm": [
-              98.22371804820149,
-              9.237805667421183,
-              -46.1834073706667
-            ],
-            "barycentric": [
-              0.019545570079863926,
-              0.9681864776289923,
-              0.012267952291143724
-            ],
-            "bone": "tibia",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 2.6366460409942126e-06,
-            "faceIndex": 41522,
-            "faceStableId": "demo-anatomy-tibia:face:41522",
-            "meshId": "demo-anatomy-tibia",
-            "requestedPointPatientRasMm": [
-              98.22371543721488,
-              9.237806034369754,
-              -46.1834073706667
-            ],
-            "reviewState": "surface_review_not_evaluated",
-            "surfaceNormalPatientRas": [
-              0.9902681558845039,
-              -0.13917248090446577,
-              0
-            ],
+            "units": "mm",
+            "bone": "tibia",
             "targetKind": "whole_bone_surface",
             "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-tibia:face:41522",
-            "units": "mm",
+            "meshId": "demo-anatomy-tibia",
+            "requestedPointPatientRasMm": [
+              91.61380105076768,
+              17.907295590924747,
+              -48.21096717575888
+            ],
+            "attachedPointPatientRasMm": [
+              91.61380093986892,
+              17.907294801837352,
+              -48.21096717575888
+            ],
+            "distanceFromRequestedPointMm": 7.96842173644801e-7,
+            "triangleStableId": "demo-anatomy-tibia:face:36653",
+            "faceStableId": "demo-anatomy-tibia:face:36653",
+            "faceIndex": 36653,
             "vertexIndices": [
-              20963,
-              20952,
-              20965
+              18536,
+              18085,
+              18532
             ],
             "vertexStableIds": [
-              "demo-anatomy-tibia:vertex:20963",
-              "demo-anatomy-tibia:vertex:20952",
-              "demo-anatomy-tibia:vertex:20965"
-            ]
+              "demo-anatomy-tibia:vertex:18536",
+              "demo-anatomy-tibia:vertex:18085",
+              "demo-anatomy-tibia:vertex:18532"
+            ],
+            "barycentric": [
+              0.7752171340464884,
+              0.03724967839249251,
+              0.1875331875610191
+            ],
+            "surfaceNormalPatientRas": [
+              0.13917279258586668,
+              0.9902681120806888,
+              0
+            ],
+            "reviewState": "surface_review_not_evaluated"
           },
           "bone": "tibia",
           "centerline": {
             "aperturePatientRasMm": [
-              98.22371804820149,
-              9.237805667421183,
-              -46.1834073706667
+              91.61380093986892,
+              17.907294801837352,
+              -48.21096717575888
             ],
             "directionPatientRas": [
-              -0.8371804919435928,
-              -0.531050518726588,
-              0.13082113922950575
+              -0.6887870181819893,
+              -0.7184917034512396,
+              -0.09665462045706902
             ],
             "kind": "rigid"
           },
@@ -2862,19 +2898,19 @@
           "preparationMode": "cut",
           "procedureId": "demo-procedure-all",
           "surfacePlacement": {
-            "endpointMethod": "preserved_depth",
+            "state": "clinician_edited",
+            "method": "manual_trajectory_drag",
             "meshIds": [
               "demo-anatomy-tibia"
             ],
-            "method": "manual_trajectory_drag",
-            "state": "clinician_edited"
+            "endpointMethod": "preserved_depth"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "exterior_rod",
           "vector": [
-            -0.8371804919435928,
-            -0.531050518726588,
-            0.13082113922950575
+            -0.6887870181819893,
+            -0.7184917034512396,
+            -0.09665462045706902
           ],
           "verificationState": "needs_instrument_chain",
           "warnings": [
@@ -2909,7 +2945,7 @@
               "xyFallbackDistanceMm": 0
             },
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 6.476444234237988e-07,
+            "distanceFromRequestedPointMm": 6.476444234237988e-7,
             "faceIndex": 16478,
             "faceStableId": "demo-anatomy-tibia:face:16478",
             "meshId": "demo-anatomy-tibia",
@@ -2973,7 +3009,7 @@
             ],
             "bone": "tibia",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 2.414182679898538e-07,
+            "distanceFromRequestedPointMm": 2.414182679898538e-7,
             "faceIndex": 14177,
             "faceStableId": "demo-anatomy-tibia:face:14177",
             "meshId": "demo-anatomy-tibia",
@@ -3242,7 +3278,7 @@
             ],
             "bone": "femur",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 4.896763800885153e-07,
+            "distanceFromRequestedPointMm": 4.896763800885153e-7,
             "faceIndex": 278,
             "faceStableId": "demo-anatomy-femur:face:278",
             "meshId": "demo-anatomy-femur",
@@ -3797,64 +3833,64 @@
         },
         {
           "aperture": [
-            54.795479800041974,
-            4.320419669077471,
-            -9.203320080964858
+            53.42379635995401,
+            3.834357233355565,
+            -9.111795647143646
           ],
           "apertureSurfaceAttachment": {
-            "attachedPointPatientRasMm": [
-              54.795479800041974,
-              4.320419669077471,
-              -9.203320080964858
-            ],
-            "barycentric": [
-              0.1834446863317561,
-              0.36073275912182773,
-              0.45582255454641624
-            ],
-            "bone": "femur",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 1.8283468106427015e-07,
-            "faceIndex": 13562,
-            "faceStableId": "demo-anatomy-femur:face:13562",
-            "meshId": "demo-anatomy-femur",
-            "requestedPointPatientRasMm": [
-              54.79547986110966,
-              4.320419496742744,
-              -9.203320080964858
-            ],
-            "reviewState": "surface_review_not_evaluated",
-            "surfaceNormalPatientRas": [
-              0.33400493793824876,
-              -0.9425713243213304,
-              0
-            ],
+            "units": "mm",
+            "bone": "femur",
             "targetKind": "whole_bone_surface",
             "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-femur:face:13562",
-            "units": "mm",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              53.423796370505485,
+              3.8343572035789606,
+              -9.111795647143646
+            ],
+            "attachedPointPatientRasMm": [
+              53.42379635995401,
+              3.834357233355565,
+              -9.111795647143646
+            ],
+            "distanceFromRequestedPointMm": 3.1590817881674596e-8,
+            "triangleStableId": "demo-anatomy-femur:face:12850",
+            "faceStableId": "demo-anatomy-femur:face:12850",
+            "faceIndex": 12850,
             "vertexIndices": [
-              6544,
-              6895,
-              6536
+              6536,
+              6535,
+              6543
             ],
             "vertexStableIds": [
-              "demo-anatomy-femur:vertex:6544",
-              "demo-anatomy-femur:vertex:6895",
-              "demo-anatomy-femur:vertex:6536"
-            ]
+              "demo-anatomy-femur:vertex:6536",
+              "demo-anatomy-femur:vertex:6535",
+              "demo-anatomy-femur:vertex:6543"
+            ],
+            "barycentric": [
+              0.1315059983045021,
+              0.4079960385927361,
+              0.46049796310276175
+            ],
+            "surfaceNormalPatientRas": [
+              0.33400445341485563,
+              -0.9425714960145164,
+              0
+            ],
+            "reviewState": "surface_review_not_evaluated"
           },
           "bone": "femur",
           "centerline": {
             "aperturePatientRasMm": [
-              54.795479800041974,
-              4.320419669077471,
-              -9.203320080964858
+              53.42379635995401,
+              3.834357233355565,
+              -9.111795647143646
             ],
             "directionPatientRas": [
-              -0.6297932016654229,
-              -0.006859279789125456,
-              0.7767325623512833
+              -0.6088652136499424,
+              0.07679469811453322,
+              0.7895477983938071
             ],
             "kind": "rigid"
           },
@@ -3866,47 +3902,47 @@
           "depthMm": 27,
           "diameterMm": 7,
           "endpointSurfaceAttachment": {
-            "attachedPointPatientRasMm": [
-              30.650312718383123,
-              4.057446908923314,
-              20.575244448062822
-            ],
-            "barycentric": [
-              0.5518854755860692,
-              0.18800991341405196,
-              0.26010461099987886
-            ],
-            "bone": "femur",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 7.812016831600992e-07,
-            "faceIndex": 3283,
-            "faceStableId": "demo-anatomy-femur:face:3283",
-            "meshId": "demo-anatomy-femur",
-            "requestedPointPatientRasMm": [
-              30.650313057874712,
-              4.057447384661867,
-              20.575243929705454
-            ],
-            "reviewState": "surface_review_not_evaluated",
-            "surfaceNormalPatientRas": [
-              -0.43457611026266674,
-              -0.6089830110535841,
-              0.6635384665843275
-            ],
+            "units": "mm",
+            "bone": "femur",
             "targetKind": "whole_bone_surface",
             "targetRegionId": null,
-            "triangleStableId": "demo-anatomy-femur:face:3283",
-            "units": "mm",
+            "meshId": "demo-anatomy-femur",
+            "requestedPointPatientRasMm": [
+              29.691686791453208,
+              6.827630862931265,
+              21.66288872324772
+            ],
+            "attachedPointPatientRasMm": [
+              29.69168656927706,
+              6.827630894155988,
+              21.662889154018295
+            ],
+            "distanceFromRequestedPointMm": 4.85695906415924e-7,
+            "triangleStableId": "demo-anatomy-femur:face:3255",
+            "faceStableId": "demo-anatomy-femur:face:3255",
+            "faceIndex": 3255,
             "vertexIndices": [
-              1718,
-              1382,
-              1727
+              1703,
+              1361,
+              1363
             ],
             "vertexStableIds": [
-              "demo-anatomy-femur:vertex:1718",
-              "demo-anatomy-femur:vertex:1382",
-              "demo-anatomy-femur:vertex:1727"
-            ]
+              "demo-anatomy-femur:vertex:1703",
+              "demo-anatomy-femur:vertex:1361",
+              "demo-anatomy-femur:vertex:1363"
+            ],
+            "barycentric": [
+              0.3527115959191719,
+              0.4033480588504512,
+              0.2439403452303769
+            ],
+            "surfaceNormalPatientRas": [
+              -0.4574387897466145,
+              0.0642886262875987,
+              0.8869141594118374
+            ],
+            "reviewState": "surface_review_not_evaluated"
           },
           "fixation": [],
           "fullThickness": false,
@@ -4110,19 +4146,19 @@
           "procedureId": "demo-procedure-pcl",
           "semanticKey": "femur-AL-1",
           "surfacePlacement": {
-            "endpointMethod": "nearest_surface_projection",
+            "state": "clinician_edited",
+            "method": "manual_surface_drag",
             "meshIds": [
               "demo-anatomy-femur"
             ],
-            "method": "manual_surface_drag",
-            "state": "clinician_edited"
+            "endpointMethod": "nearest_surface_projection"
           },
           "tipOvershootMm": null,
           "trajectoryControlMode": "outer_cortex_surface",
           "vector": [
-            -0.6297932016654229,
-            -0.006859279789125456,
-            0.7767325623512833
+            -0.6088652136499424,
+            0.07679469811453322,
+            0.7895477983938071
           ],
           "verificationState": "needs_dimensions",
           "warnings": [
@@ -4150,7 +4186,7 @@
             ],
             "bone": "femur",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 4.2709447901950276e-07,
+            "distanceFromRequestedPointMm": 4.2709447901950276e-7,
             "faceIndex": 12077,
             "faceStableId": "demo-anatomy-femur:face:12077",
             "meshId": "demo-anatomy-femur",
@@ -4214,7 +4250,7 @@
             ],
             "bone": "femur",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 1.7449233330881446e-07,
+            "distanceFromRequestedPointMm": 1.7449233330881446e-7,
             "faceIndex": 1778,
             "faceStableId": "demo-anatomy-femur:face:1778",
             "meshId": "demo-anatomy-femur",
@@ -4493,7 +4529,7 @@
               "xyFallbackDistanceMm": 0
             },
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 7.516439026744592e-08,
+            "distanceFromRequestedPointMm": 7.516439026744592e-8,
             "faceIndex": 23265,
             "faceStableId": "demo-anatomy-tibia:face:23265",
             "meshId": "demo-anatomy-tibia",
@@ -4557,7 +4593,7 @@
             ],
             "bone": "tibia",
             "coordinateSpace": "patient_ras",
-            "distanceFromRequestedPointMm": 2.7075555357029933e-07,
+            "distanceFromRequestedPointMm": 2.7075555357029933e-7,
             "faceIndex": 20476,
             "faceStableId": "demo-anatomy-tibia:face:20476",
             "meshId": "demo-anatomy-tibia",

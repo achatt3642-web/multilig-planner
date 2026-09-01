@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:segmentation": "./scripts/run_mat_nnunet_bridge.sh test",
+    "demo:import-default": "node scripts/update_bundled_demo_from_export.mjs",
     "segmentation:capabilities": "./scripts/run_mat_nnunet_bridge.sh capabilities",
     "segmentation:serve": "./scripts/run_mat_nnunet_bridge.sh serve --storage-root .multilig-local/segmentation",
     "typecheck": "tsc -b --pretty false",

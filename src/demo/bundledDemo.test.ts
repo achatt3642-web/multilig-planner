@@ -54,7 +54,7 @@ describe("bundled de-identified knee demo", () => {
     expect(plan.variants[0].channels).toHaveLength(15);
     expect(usesBundledDemoAnatomy(plan)).toBe(true);
     expect(createHash("sha256").update(planBytes).digest("hex"))
-      .toBe("f2907dbe76ad5fc036b2cd7ee13fa2f2c6f51c8f34b6791743a356b5dbd93d4d");
+      .toBe("ffcdb530609bdcc30ccb66ba0c6a7b516124e2f3b682a1d8f37f63c76ec88df1");
     expect(createHash("sha256").update(workspaceBytes).digest("hex"))
       .toBe("54390efee0df8216adedb454a798de5c66b275beceed7a96a270cdc064858d57");
 
@@ -80,6 +80,21 @@ describe("bundled de-identified knee demo", () => {
       depthMm: 27,
       guidePin: { diameterMm: 3.5 },
     });
+
+    expect(plan.variants[0].channels.find((channel) => channel.id === "demo-channel-plc-tibial"))
+      .toMatchObject({
+        aperture: [96.431098, -23.636193, -27.931043],
+        depthMm: 37.045349933008545,
+        geometryType: "round_full_tunnel",
+        surfacePlacement: { state: "default_applied", endpointMethod: "opposite_surface_intersection" },
+      });
+    expect(plan.variants[0].channels.find((channel) => channel.id === "demo-channel-lateral-root-tibia-anchor"))
+      .toMatchObject({
+        geometryType: "rigid_pin",
+        diameterMm: 3.5,
+        depthMm: 20,
+        trajectoryControlMode: "exterior_rod",
+      });
   });
 
   it("keeps every surface attachment bound to one of the bundled mesh identifiers", () => {

@@ -20,9 +20,25 @@ function lateralRootChannels(plan: PlanCase) {
     variant.channels.filter((channel) => channel.procedureId === procedureId));
 }
 
+function legacyLateralRootPlan(): PlanCase {
+  const plan = createBundledDemoPlan();
+  for (const channel of lateralRootChannels(plan)) {
+    channel.geometryType = "onlay_no_large_tunnel";
+    channel.preparationMode = "none";
+    channel.depthMm = null;
+    channel.diameterMm = undefined;
+    channel.noLargeTunnel = true;
+    channel.warnings = [
+      ...channel.warnings,
+      "Point-only fixation location retained for legacy migration coverage.",
+    ];
+  }
+  return plan;
+}
+
 describe("legacy root suture-anchor guide-pin migration", () => {
   it("replaces only legacy root point placeholders with finite pin-only geometry", () => {
-    const plan = createBundledDemoPlan();
+    const plan = legacyLateralRootPlan();
     const legacyChannels = lateralRootChannels(plan);
     expect(legacyChannels.length).toBeGreaterThan(0);
     expect(legacyChannels.every((channel) =>
@@ -84,7 +100,7 @@ describe("legacy root suture-anchor guide-pin migration", () => {
   });
 
   it("accepts the v2 simplified-technique note prefix and is idempotent", () => {
-    const plan = createBundledDemoPlan();
+    const plan = legacyLateralRootPlan();
     const procedure = lateralRootProcedure(plan);
     procedure.notes = procedure.notes!.replace(
       "multilig:simplified-technique:v1:",
@@ -98,7 +114,7 @@ describe("legacy root suture-anchor guide-pin migration", () => {
   });
 
   it("returns the original plan when the root technique does not select a suture anchor", () => {
-    const plan = createBundledDemoPlan();
+    const plan = legacyLateralRootPlan();
     const procedure = lateralRootProcedure(plan);
     procedure.notes = procedure.notes!.replace(
       '"preparation":"suture_anchor_location"',
@@ -109,7 +125,7 @@ describe("legacy root suture-anchor guide-pin migration", () => {
   });
 
   it("does not alter a non-root point-only channel even if its note contains the same words", () => {
-    const plan = createBundledDemoPlan();
+    const plan = legacyLateralRootPlan();
     const rootProcedure = lateralRootProcedure(plan);
     const rootChannel = lateralRootChannels(plan)[0];
     const nonRootProcedure = plan.procedures.find((procedure) => procedure.structure === "PCL")!;
