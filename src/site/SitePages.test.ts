@@ -64,7 +64,9 @@ describe("public site pages", () => {
 
     expect(siteHtml).toContain('src="/src/landing.tsx"');
     expect(demoHtml).toContain('src="/src/main.tsx"');
-    expect(siteHtml).toContain("https://multilig-planner.org/og.png");
-    expect(demoHtml).toContain("https://multilig-planner.org/og.png");
+    expect(siteHtml).toContain("https://multilig-planner.org/og-v2.png");
+    expect(demoHtml).toContain("https://multilig-planner.org/og-v2.png");
+    expect(siteHtml).not.toContain("Clinician-directed 3D planning");
+    expect(demoHtml).not.toContain("Clinician-directed 3D planning");
   });
 });
