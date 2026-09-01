@@ -2452,7 +2452,7 @@ export function ImportDialog({
     ...anatomy.flatMap((object) => ["femur", "tibia", "fibula", "patella"].includes(object.kind) ? [object.kind] : []),
   ]);
   const separateBonesReady = ["femur", "tibia", "fibula"].every((bone) => representedBones.has(bone as ImmutableImagingSource["boneIdentity"]));
-  return <div className="dialog-backdrop" role="dialog" aria-modal="true" aria-label="Import imaging and segmentation"><div className="dialog"><div className="dialog-header"><div className="dialog-title">Case imaging &amp; segmentation review</div><div className="dialog-copy">Accepts DICOM MRI, NIfTI, immutable label maps, and surface meshes. No unvalidated segmentation inference is presented as clinical.</div></div><div className="dialog-body">
+  return <div className="dialog-backdrop" role="dialog" aria-modal="true" aria-label="Import imaging and segmentation"><div className="dialog"><div className="dialog-header"><div className="dialog-title">Case imaging &amp; segmentation review</div><div className="dialog-copy">{existingGeometryImportEnabled ? "Accepts DICOM MRI, NIfTI, immutable label maps, and surface meshes. No unvalidated segmentation inference is presented as clinical." : "Accepts DICOM MRI and NIfTI."}</div></div><div className="dialog-body">
     {existingGeometryImportEnabled ? <input ref={inputRef} hidden multiple type="file" accept=".dcm,.dicom,.nii,.nii.gz,.nrrd,.mha,.mhd,.seg,.stl,.obj,.ply" onChange={(event) => void onFiles(event.target.files)} /> : null}
     <button
       type="button"
@@ -2464,9 +2464,9 @@ export function ImportDialog({
     <input ref={segmentationInputRef} hidden type="file" accept=".tar.gz,.tgz,.nii,.nii.gz" onChange={(event) => { onSegmentationSource(event.target.files); event.currentTarget.value = ""; }} />
     <div className="segmentation-card">
       <div className="segmentation-card-header"><div><strong>MAT Planner nnUNetv2</strong><span>Local research-only bone segmentation</span></div><span className={`pill ${segmentationUi.status === "failed" ? "conflict" : segmentationUi.status === "completed" ? "ok" : "warn"}`}>{segmentationUi.status.replaceAll("_", " ")}</span></div>
-      <div className="dialog-copy">Uses MAT Planner's existing Python environment, registry, full-resolution model, fold, and checkpoint. It predicts femur and tibia; the current MAT model does not predict fibula.</div>
+      {existingGeometryImportEnabled ? <div className="dialog-copy">Uses MAT Planner's existing Python environment, registry, full-resolution model, fold, and checkpoint. It predicts femur and tibia; the current MAT model does not predict fibula.</div> : null}
       <div className="segmentation-progress" aria-label="Segmentation progress"><span style={{ width: `${Math.round(segmentationUi.progress * 100)}%` }} /></div>
-      <div className="segmentation-message">{segmentationUi.message}</div>
+      {segmentationUi.message ? <div className="segmentation-message">{segmentationUi.message}</div> : null}
       <div className="segmentation-actions">
         <button className="secondary-btn" disabled={["checking", "uploading", "running"].includes(segmentationUi.status)} onClick={() => segmentationInputRef.current?.click()}>Choose MRI archive / NIfTI</button>
         <button className="primary-btn" disabled={!segmentationUi.file || !["selected", "failed"].includes(segmentationUi.status)} onClick={onRunSegmentation}>Run research segmentation</button>

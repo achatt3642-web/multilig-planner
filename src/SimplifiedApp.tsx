@@ -1149,7 +1149,7 @@ export default function SimplifiedApp() {
         setSegmentationUi({
           status: "completed",
           progress: 1,
-          message: "De-identified MRI-derived femur and tibia demo surfaces loaded. Review remains required.",
+          message: "",
           file: null,
           jobId: null,
         });
