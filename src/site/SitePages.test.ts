@@ -23,14 +23,21 @@ describe("public site pages", () => {
     expect(markup).toContain("What is a multiligament knee injury?");
     expect(markup).toContain("How common is it?");
     expect(markup).toContain("Why might surgery be performed?");
-    expect(markup).toContain("Goals of surgery");
     expect(markup).toContain("Challenges in surgical planning");
     expect(markup).toContain("How Multilig Planner may help");
+    expect(markup).toContain("approximately 10,000 MLKIs occur annually");
+    expect(markup).toContain("an estimated 4,000 patients undergoing multiligament repair");
+    expect(markup).toContain("Some knees remain unstable after injury.");
+    expect(markup).toContain("The broad goals are to restore stability and motion");
     expect(markup).toContain("Application will be available for download soon.");
     expect(markup.match(/available for download soon/gi)).toHaveLength(1);
     expect(markup).not.toMatch(/public download|download package|download \.zip|href="[^"]*download/i);
-    expect(markup).toContain("not validated for clinical care");
-    expect(markup).toContain("does not decide which operation should be performed");
+    expect(markup).not.toContain("Goals of surgery");
+    expect(markup).not.toContain("Goals of care");
+    expect(markup).not.toContain("not every multiligament injury is caused by one");
+    expect(markup).not.toContain("not validated for clinical care");
+    expect(markup).not.toContain("does not decide which operation should be performed");
+    expect(markup).not.toContain("site-footer");
   });
 
   it("uses a restrained article layout with one small header logo", () => {

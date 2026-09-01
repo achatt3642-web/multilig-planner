@@ -22,43 +22,30 @@ export default function LandingPage() {
             <p>
               These injuries involve high-grade damage to at least two of the knee&apos;s principal
               stabilizing ligament structures. The ACL, PCL, medial structures, posterolateral
-              corner, or several of these regions may be involved. They can occur with a knee
-              dislocation, but not every multiligament injury is caused by one.
+              corner, or several of these regions may be involved.
             </p>
           </section>
 
           <section aria-labelledby="frequency-heading">
             <h2 id="frequency-heading">How common is it?</h2>
             <p>
-              Multiligament knee injuries are uncommon compared with isolated ligament tears.
-              Published frequency estimates vary because studies use different definitions and
-              examine different patient populations. A recent review described them as roughly
-              0.2% of orthopaedic injuries and 11–20% of knee-ligament sprains, but those estimates
-              are not interchangeable across clinical settings.
+              Although their true U.S. incidence is unknown and likely underestimated, available
+              population and operative data suggest that approximately 10,000 MLKIs occur annually
+              in the United States, with an estimated 4,000 patients undergoing multiligament repair
+              or reconstruction each year.
             </p>
           </section>
 
           <section aria-labelledby="why-heading">
             <h2 id="why-heading">Why might surgery be performed?</h2>
             <p>
-              Some knees remain unstable in more than one direction after injury. Depending on the
-              structures involved, tissue quality, associated injuries, examination, imaging, and
-              the patient&apos;s goals, the clinical team may discuss repair, reconstruction, staged
-              treatment, or nonoperative care.
-            </p>
-            <p>
-              When surgery is chosen, it is intended to address the particular pattern of
-              instability and associated injury—not simply the number of torn ligaments. The
-              decision and timing belong to the patient and their treating clinicians.
-            </p>
-          </section>
-
-          <section aria-labelledby="goals-heading">
-            <h2 id="goals-heading">Goals of surgery</h2>
-            <p>
-              The broad goals are to restore useful stability and motion, address important
-              associated injuries, and support the patient&apos;s daily, occupational, or athletic
-              function. The surgical plan also needs to preserve a practical path through
+              Some knees remain unstable after injury. Depending on the structures involved, tissue
+              quality, associated injuries, examination, imaging, and the patient&apos;s goals, repair,
+              reconstruction, staged treatment, or nonoperative care may be recommended. When
+              surgery is chosen, it is intended to address the particular pattern of instability
+              and associated injury. The broad goals are to restore stability and motion, address
+              important associated injuries, and support the patient&apos;s daily, occupational, or
+              athletic function. The surgical plan also needs to preserve a practical path through
               rehabilitation while limiting avoidable stiffness and protecting healing tissue.
             </p>
           </section>
@@ -86,24 +73,11 @@ export default function LandingPage() {
               explore alternatives, understand spatial relationships, and communicate a plan more
               clearly before a procedure.
             </p>
-            <p>
-              The software does not decide which operation should be performed, recommend a
-              technique, or replace independent clinical judgment. The current public demonstration
-              is not validated for clinical care, and the information on this page is not medical
-              advice.
-            </p>
             <p><a className="site-text-link" href="./demo.html">View the application demo</a></p>
             <p className="site-availability">Application will be available for download soon.</p>
           </section>
         </article>
       </main>
-
-      <footer className="site-footer">
-        <div className="site-content site-footer-inner">
-          <span>Multilig Planner</span>
-          <span>Clinician-directed 3D planning</span>
-        </div>
-      </footer>
     </div>
   );
 }
