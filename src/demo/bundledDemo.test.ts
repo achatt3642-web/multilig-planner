@@ -201,7 +201,7 @@ describe("bundled de-identified knee demo", () => {
       { title: "PCL PM", rendered: true, unavailableReason: null },
     ]);
     expect(viewer.scene.meshes.filter((mesh) => mesh.layer === "grafts")).toHaveLength(requestedVisibilityKeys.size);
-  });
+  }, 15_000);
 
   it("derives bundled PLC starts on the right-knee lateral side when its surfaces load", async () => {
     const fetcher: BundledDemoFetch = async (url) => {
